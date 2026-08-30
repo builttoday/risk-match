@@ -156,13 +156,15 @@ td.neg { color: var(--bad); }
 .fca-none { color: var(--muted); }
 .fund-name { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
 .fund-name:hover { color: var(--navy); border-bottom-color: var(--navy); }
-.sheet {
+/* NOT .sheet -- that name belongs to the record modal below, and a second rule using it
+   turned every one of these little links into a full-screen dark overlay. */
+.factsheet {
   display: inline-block; margin-left: 8px; font-size: .7rem; white-space: nowrap;
   color: var(--muted); text-decoration: none; border: 1px solid var(--line);
   border-radius: 999px; padding: 1px 8px;
 }
-.sheet:hover { color: var(--navy); border-color: var(--navy); }
-.fund-name:focus-visible, .sheet:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.factsheet:hover { color: var(--navy); border-color: var(--navy); }
+.fund-name:focus-visible, .factsheet:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 .fca-weak { color: var(--warn); text-decoration: none; font-weight: 500; border-bottom: 1px dotted var(--warn); }
 .fca-ok:hover, .fca-other:hover { text-decoration: underline; }
 
@@ -526,7 +528,7 @@ function cellFor(f, key) {
     return `<td>
       <a class="fund-name" href="${dataUrl(f)}" target="_blank" rel="noopener" title="Prices and performance for ${esc(f.symbol)}">${esc(f.name)}</a>
       <span class="tag">${label}</span>${lev}${thin}
-      <a class="sheet" href="${factsheetSearchUrl(f)}" target="_blank" rel="noopener" title="Find this fund's Trustnet factsheet">factsheet &#8599;</a>
+      <a class="factsheet" href="${factsheetSearchUrl(f)}" target="_blank" rel="noopener" title="Find this fund's Trustnet factsheet">factsheet &#8599;</a>
     </td>`;
   }
   if (key === "fcaStatus") {
