@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Risk Match</title>
+<meta name="theme-color" content="#1B3A6B">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231B3A6B'/%3E%3Cpath d='M18 70 L38 46 L56 58 L82 26' stroke='%237FA8E6' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F8FAFC; --surface: #FFFFFF; --surface-2: #F1F5F9;
+  --ink: #121821; --muted: #5A6675; --line: #DDE4EC;
+  --navy: #1B3A6B; --navy-soft: #E7EDF7;
+  --good: #1B6E45; --good-bg: #E6F4EC;
+  --bad: #A8231C;  --bad-bg: #FBEAE8;
+  --warn: #915000; --warn-bg: #FBF1E1; --warn-edge: #EBD3AA;
+  --shadow: 0 1px 2px rgba(18,24,33,.04), 0 6px 20px rgba(18,24,33,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0A0F16; --surface: #111925; --surface-2: #172231;
+    --ink: #E4EBF3; --muted: #8B9AAC; --line: #22303F;
+    --navy: #86AEE8; --navy-soft: #16243A;
+    --good: #63C594; --good-bg: #0F2A1E;
+    --bad: #EE9188;  --bad-bg: #2B1512;
+    --warn: #DFAE63; --warn-bg: #2A2010; --warn-edge: #55411D;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 6px 20px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0A0F16; --surface: #111925; --surface-2: #172231;
+  --ink: #E4EBF3; --muted: #8B9AAC; --line: #22303F;
+  --navy: #86AEE8; --navy-soft: #16243A;
+  --good: #63C594; --good-bg: #0F2A1E;
+  --bad: #EE9188;  --bad-bg: #2B1512;
+  --warn: #DFAE63; --warn-bg: #2A2010; --warn-edge: #55411D;
+  --shadow: 0 1px 2px rgba(0,0,0,.35), 0 6px 20px rgba(0,0,0,.4);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.55; -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: "Newsreader", Georgia, serif; font-weight: 600; margin: 0; text-wrap: balance; }
+button, input, select { font: inherit; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 20; background: var(--surface);
+  border-bottom: 1px solid var(--line); padding: 12px 20px;
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+}
+.topbar h1 { font-size: 1.22rem; }
+.nav { display: flex; gap: 4px; margin-left: auto; }
+.nav a {
+  text-decoration: none; color: var(--muted); border: 1px solid var(--line);
+  border-radius: 8px; padding: 6px 12px; font-size: .84rem;
+}
+.nav a.here { background: var(--navy-soft); border-color: var(--navy); color: var(--navy); font-weight: 600; }
+
+.wrap { max-width: 1240px; margin: 0 auto; padding: 22px 20px 90px; }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px;
+}
+.panel h2 { font-size: 1.1rem; margin-bottom: 4px; }
+.panel .sub { color: var(--muted); font-size: .87rem; margin: 0 0 16px; max-width: 74ch; }
+
+.askrow { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+.fld { display: grid; gap: 5px; }
+.fld label {
+  font-family: "IBM Plex Mono", monospace; font-size: .66rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.fld input, .fld select {
+  background: var(--paper); border: 1.5px solid var(--line); color: var(--ink);
+  border-radius: 9px; padding: 10px 12px; font-size: .95rem; width: 100%;
+}
+.fld input:focus, .fld select:focus { outline: none; border-color: var(--navy); }
+#riskInput { width: 96px; font-size: 1.5rem; text-align: center; font-family: "IBM Plex Mono", monospace; }
+.btn {
+  border: none; background: var(--navy); color: #fff; border-radius: 9px;
+  padding: 11px 20px; font-weight: 600; font-size: .92rem; cursor: pointer;
+}
+:root[data-theme="dark"] .btn { color: #0A0F16; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn { color: #0A0F16; } }
+.btn.ghost { background: transparent; border: 1.5px solid var(--line); color: var(--ink); font-weight: 500; }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn:focus-visible, .nav a:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+
+.bandline {
+  margin-top: 14px; padding: 12px 14px; border-radius: 9px;
+  background: var(--navy-soft); font-size: .92rem;
+}
+.bandline strong { font-family: "IBM Plex Mono", monospace; }
+
+/* ---------- Bands editor ---------- */
+details.bands { margin-bottom: 20px; }
+details.bands > summary {
+  cursor: pointer; color: var(--muted); font-size: .88rem; padding: 6px 0;
+  list-style: none;
+}
+details.bands > summary::-webkit-details-marker { display: none; }
+details.bands > summary::before { content: "▸ "; display: inline-block; transition: transform .15s ease; }
+details.bands[open] > summary::before { content: "▾ "; }
+.bandgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin-top: 12px; }
+.band {
+  border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; background: var(--surface-2);
+  display: grid; gap: 6px;
+}
+.band .lvl { font-family: "IBM Plex Mono", monospace; font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.band .inputs { display: flex; gap: 6px; align-items: center; font-size: .9rem; }
+.band input {
+  width: 100%; background: var(--surface); border: 1.5px solid var(--line); color: var(--ink);
+  border-radius: 7px; padding: 6px 8px; font-family: "IBM Plex Mono", monospace; font-size: .9rem;
+}
+
+/* ---------- Results ---------- */
+.summary { display: flex; gap: 14px; flex-wrap: wrap; align-items: baseline; margin-bottom: 14px; }
+.summary .count { font-family: "Newsreader", serif; font-size: 1.5rem; font-weight: 600; }
+.summary .of { color: var(--muted); font-size: .9rem; }
+.tools { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tools select, .tools input {
+  background: var(--surface); border: 1.5px solid var(--line); color: var(--ink);
+  border-radius: 8px; padding: 7px 10px; font-size: .85rem;
+}
+
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+th, td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; white-space: normal; min-width: 240px; }
+thead th {
+  font-family: "IBM Plex Mono", monospace; font-size: .64rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted); cursor: pointer; user-select: none;
+  position: sticky; top: 0; background: var(--surface);
+}
+thead th.sorted { color: var(--navy); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--surface-2); }
+td.num { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+td.pos { color: var(--good); }
+td.neg { color: var(--bad); }
+.tag {
+  display: inline-block; font-size: .66rem; padding: 1px 7px; border-radius: 999px;
+  background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); margin-left: 6px;
+}
+.short { color: var(--warn); }
+.fca-ok { color: var(--good); text-decoration: none; font-weight: 500; }
+.fca-other { color: var(--warn); text-decoration: none; font-weight: 500; }
+.fca-none { color: var(--muted); }
+.fund-name { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
+.fund-name:hover { color: var(--navy); border-bottom-color: var(--navy); }
+.sheet {
+  display: inline-block; margin-left: 8px; font-size: .7rem; white-space: nowrap;
+  color: var(--muted); text-decoration: none; border: 1px solid var(--line);
+  border-radius: 999px; padding: 1px 8px;
+}
+.sheet:hover { color: var(--navy); border-color: var(--navy); }
+.fund-name:focus-visible, .sheet:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.fca-weak { color: var(--warn); text-decoration: none; font-weight: 500; border-bottom: 1px dotted var(--warn); }
+.fca-ok:hover, .fca-other:hover { text-decoration: underline; }
+
+.status { text-align: center; color: var(--muted); padding: 40px 20px; }
+.status.err { color: var(--bad); }
+.bar { height: 8px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin: 14px auto; max-width: 420px; }
+.bar > div { height: 100%; width: 0; background: var(--navy); transition: width .3s ease; }
+
+.caveat {
+  background: var(--warn-bg); border: 1px solid var(--warn-edge); border-left: 4px solid var(--warn);
+  border-radius: 10px; padding: 14px 16px; font-size: .86rem; margin-top: 22px;
+}
+.caveat strong { color: var(--warn); }
+.caveat p { margin: 0 0 8px; }
+.caveat p:last-child { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Risk Match</h1>
+  
+</div>
+
+<div class="wrap">
+
+  <div class="panel">
+    <h2>Which risk level did the questionnaire give?</h2>
+    <p class="sub">Type the score your own attitude-to-risk process produced. The tool shows funds whose measured volatility falls inside the band you have set for that level — it does not decide what the level means.</p>
+    <div class="askrow">
+      <div class="fld">
+        <label for="riskInput">Risk level</label>
+        <input type="number" id="riskInput" min="1" max="10" step="1" value="5">
+      </div>
+      <div class="fld" style="flex:0 0 190px;">
+        <label for="typeFilter">Show</label>
+        <select id="typeFilter">
+          <option value="">Funds and trusts</option>
+          <option value="MUTUALFUND">Funds only</option>
+          <option value="ETF">ETFs only</option>
+          <option value="EQUITY">Investment trusts only</option>
+        </select>
+      </div>
+      <div class="fld" style="flex:0 0 160px;">
+        <label for="minYears">Minimum history</label>
+        <select id="minYears">
+          <option value="3">3 years</option>
+          <option value="5">5 years</option>
+          <option value="1">1 year</option>
+        </select>
+      </div>
+      <button class="btn" id="matchBtn">Show matches</button>
+    </div>
+    <label style="display:flex;gap:8px;align-items:center;margin-top:14px;font-size:.86rem;color:var(--muted);cursor:pointer;">
+      <input type="checkbox" id="showLeveraged" style="accent-color:var(--navy);width:16px;height:16px;">
+      Include leveraged and inverse products
+    </label>
+    <div class="bandline" id="bandLine"></div>
+  </div>
+
+  <details class="bands" id="bandsPanel">
+    <summary>Set what each risk level means for your firm</summary>
+    <div class="panel" style="margin-top:10px;">
+      <p class="sub">Enter the annualised volatility range your risk process associates with each level. These are your firm's definitions, stored in this browser — the tool applies them, it doesn't supply them. Leave a level blank to skip it.</p>
+      <div class="bandgrid" id="bandGrid"></div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+        <button class="btn" id="saveBands">Save</button>
+        <button class="btn ghost" id="resetBands">Reset to defaults</button>
+      </div>
+    </div>
+  </details>
+
+  <div id="results"></div>
+
+  <div class="caveat">
+    <p><strong>What these numbers are.</strong> Volatility is the annualised standard deviation of daily returns over the period shown. Maximum drawdown is the worst peak-to-trough fall. Both are calculated here from public daily closing prices, so every figure can be reproduced from the price history.</p>
+    <p><strong>What they are not.</strong> This is realised, backward-looking risk. Risk-profiling services publish forward-looking expected volatility from a capital markets model, which is a different measure and will not agree with these figures. Past volatility is not a promise about future volatility.</p>
+    <p>Leveraged and inverse products are hidden unless you ask for them. Their volatility is measured the same way, but it describes a daily-rebalancing trading instrument rather than a holding, so the number is not comparable with the rest of the table.</p>
+    <p><strong>The two links.</strong> The fund name opens its prices and performance page, built straight from the symbol. <em>Factsheet</em> searches Trustnet for that share class. It is a search rather than a direct link because Trustnet factsheet addresses use their own internal fund codes, which nothing in this data can predict. Check you have landed on the right share class &mdash; Acc and Inc are different factsheets &mdash; before filing anything.</p>
+    <p><strong>The FCA column</strong> is matched to the Financial Services Register by name and links to the official entry. A dash means no confident match was found for that name — not that the fund is unauthorised. A status followed by <span class="fca-weak">?</span> means the name match was loose and may be the wrong fund, usually the umbrella company rather than the fund inside it. Click through before relying on either.</p>
+    <p>This tool measures funds. It does not rate them, rank them for suitability, or recommend anything. Suitability remains the adviser's judgement.</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const LS_BANDS = "riskmatch.bands";
+
+/* Starting points only, and deliberately overlapping -- a fund on a boundary should appear for
+   both neighbouring levels rather than being silently excluded from one. The firm is expected
+   to replace these with its own numbers. */
+const DEFAULT_BANDS = {
+  1: [0, 3], 2: [2, 5], 3: [4, 7], 4: [6, 9], 5: [8, 12],
+  6: [11, 15], 7: [14, 18], 8: [17, 22], 9: [21, 27], 10: [26, 100],
+};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+let bands = loadBands();
+let universe = { builtAt: null, count: 0, funds: [] };
+let shown = [];
+let sortKey = "vol", sortDir = 1;
+
+function loadBands() {
+  try {
+    const raw = localStorage.getItem(LS_BANDS);
+    if (raw) return JSON.parse(raw);
+  } catch (_) { /* private mode or corrupt value -- fall back to defaults */ }
+  return { ...DEFAULT_BANDS };
+}
+function saveBands() {
+  try { localStorage.setItem(LS_BANDS, JSON.stringify(bands)); } catch (_) {}
+}
+
+/* ---------- Bands editor ---------- */
+function renderBands() {
+  $("bandGrid").innerHTML = Object.keys(DEFAULT_BANDS).map(lvl => {
+    const b = bands[lvl] || ["", ""];
+    return `
+      <div class="band">
+        <span class="lvl">Risk ${lvl}</span>
+        <div class="inputs">
+          <input type="number" step="0.5" min="0" max="100" data-lvl="${lvl}" data-i="0" value="${b[0]}" aria-label="Risk ${lvl} minimum volatility">
+          <span>to</span>
+          <input type="number" step="0.5" min="0" max="100" data-lvl="${lvl}" data-i="1" value="${b[1]}" aria-label="Risk ${lvl} maximum volatility">
+          <span>%</span>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+$("saveBands").addEventListener("click", () => {
+  const next = {};
+  $("bandGrid").querySelectorAll("input").forEach(inp => {
+    const lvl = inp.dataset.lvl, i = Number(inp.dataset.i);
+    if (!next[lvl]) next[lvl] = [null, null];
+    next[lvl][i] = inp.value === "" ? null : Number(inp.value);
+  });
+  bands = next;
+  saveBands();
+  $("bandsPanel").open = false;
+  updateBandLine();
+  runMatch();
+});
+
+$("resetBands").addEventListener("click", () => {
+  bands = { ...DEFAULT_BANDS };
+  saveBands();
+  renderBands();
+  updateBandLine();
+});
+
+function bandFor(level) {
+  const b = bands[level];
+  if (!b || b[0] === null || b[1] === null || b[0] === "" || b[1] === "") return null;
+  return [Number(b[0]), Number(b[1])];
+}
+
+function updateBandLine() {
+  const lvl = $("riskInput").value;
+  const b = bandFor(lvl);
+  $("bandLine").innerHTML = b
+    ? `Risk ${esc(lvl)} at your firm means volatility of <strong>${b[0]}% to ${b[1]}%</strong> a year.`
+    : `No volatility range set for risk ${esc(lvl)} yet — open the panel below and set one.`;
+}
+$("riskInput").addEventListener("input", updateBandLine);
+
+/* ---------- Data ---------- */
+/* Read as an ordinary file, not through an API. The measured universe is a static artefact --
+   it only changes when someone rebuilds it -- so serving it as funds.json means the whole tool
+   runs as plain HTML on any web host, with nothing to install and no server to start. The local
+   server serves the same file, so one code path covers both. */
+async function loadUniverse() {
+  // A standalone build inlines the data as window.FUNDS_DATA, because a page opened straight
+  // from disk (file://) is not allowed to fetch a sibling file. That is what lets this be one
+  // file someone can be emailed and simply double-click.
+  if (window.FUNDS_DATA) { universe = window.FUNDS_DATA; return universe; }
+  const r = await fetch("funds.json", { cache: "no-cache" });
+  if (!r.ok) throw new Error("funds.json missing");
+  universe = await r.json();
+  return universe;
+}
+
+/* Rebuilding needs the local server; browsing does not. Probed once so the button is only
+   offered where it can actually work, rather than appearing and then failing. */
+let canRebuild = false;
+async function checkRebuildable() {
+  if (window.FUNDS_DATA) { canRebuild = false; return; }   // nothing to rebuild against
+  try {
+    const r = await fetch("api/status", { cache: "no-store" });
+    canRebuild = r.ok;
+  } catch (_) {
+    canRebuild = false;
+  }
+}
+
+async function buildUniverse() {
+  await fetch("api/build");
+  $("results").innerHTML = `
+    <div class="status">
+      <p id="buildStage">Starting…</p>
+      <div class="bar"><div id="buildBar"></div></div>
+      <p style="font-size:.82rem;">This runs once and is then cached. It takes a few minutes — it is measuring five years of daily prices for every fund it finds.</p>
+    </div>`;
+  // Poll rather than stream: a build that outlives one HTTP request needs its progress asked
+  // for, and a 1.2s poll is invisible to the user but trivial for the server.
+  const timer = setInterval(async () => {
+    const s = await (await fetch("api/status")).json();
+    const stage = $("buildStage"), bar = $("buildBar");
+    if (!stage) { clearInterval(timer); return; }
+    stage.textContent = s.stage === "measuring risk"
+      ? `Measuring risk — ${s.done} of ${s.total} funds`
+      : s.stage === "finding funds" ? `Finding funds — ${s.done} of ${s.total} searches`
+      : s.stage === "checking the FCA register" ? `Checking the FCA register — ${s.done} of ${s.total}`
+      : s.stage;
+    if (bar && s.total) bar.style.width = Math.round((s.done / s.total) * 100) + "%";
+    if (!s.running) {
+      clearInterval(timer);
+      if (s.error) { $("results").innerHTML = `<p class="status err">Build failed: ${esc(s.error)}</p>`; return; }
+      await loadUniverse();
+      runMatch();
+    }
+  }, 1200);
+}
+
+/* ---------- Matching ---------- */
+function runMatch() {
+  const lvl = $("riskInput").value;
+  const band = bandFor(lvl);
+  const target = $("results");
+
+  if (!universe.funds.length) {
+    target.innerHTML = canRebuild
+      ? `<div class="status">
+           <p>No fund data yet.</p>
+           <button class="btn" id="buildBtn">Build the fund list</button>
+         </div>`
+      : `<div class="status err">The fund data file didn't load. It should sit next to this page as funds.json.</div>`;
+    const b = $("buildBtn");
+    if (b) b.addEventListener("click", buildUniverse);
+    return;
+  }
+  if (!band) { target.innerHTML = `<p class="status">Set a volatility range for risk ${esc(lvl)} first.</p>`; return; }
+
+  const type = $("typeFilter").value;
+  const minYears = Number($("minYears").value);
+
+  // Leveraged and inverse products are excluded unless explicitly asked for. Their volatility
+  // is a real figure but it describes a daily-rebalancing trading instrument, not a holding --
+  // offering one as an ordinary match for a risk-profiled client would be a suitability failure
+  // dressed up as a data feature.
+  const withLeveraged = $("showLeveraged").checked;
+
+  shown = universe.funds.filter(f =>
+    f.vol >= band[0] && f.vol <= band[1] &&
+    (!type || f.type === type) &&
+    f.years >= minYears &&
+    (withLeveraged || !f.leveraged));
+
+  sortRows();
+  renderTable(band, lvl);
+}
+
+function sortRows() {
+  shown.sort((a, b) => {
+    const x = a[sortKey], y = b[sortKey];
+    if (x === null || x === undefined) return 1;
+    if (y === null || y === undefined) return -1;
+    if (typeof x === "string") return x.localeCompare(y) * sortDir;
+    return (x - y) * sortDir;
+  });
+}
+
+const COLUMNS = [
+  ["name", "Fund"],
+  ["vol", "Volatility"],
+  ["maxDD", "Max drawdown"],
+  ["r1", "1yr p.a."],
+  ["r3", "3yr p.a."],
+  ["r5", "5yr p.a."],
+  ["years", "History"],
+  ["fcaStatus", "FCA"],
+];
+
+/* Two different things get called a "factsheet", and only one of them can be built from what
+   we hold.
+
+   The price and performance page is derivable: the symbol is all it needs.
+
+   The Trustnet factsheet is not. Their URLs are /factsheets/O/{code}/{slug} where {code} is
+   Trustnet's own fund identifier (H707, M24D...), which nothing in our data predicts, and
+   their search is an AJAX POST rather than a linkable address. Harvesting those codes would
+   mean scraping a site whose data is licensed from FE fundinfo. A search scoped to trustnet.com
+   lands on the same factsheet, costs nobody anything, and stays honest about what we hold. */
+function dataUrl(f) {
+  return `https://finance.yahoo.com/quote/${encodeURIComponent(f.symbol)}`;
+}
+
+function factsheetSearchUrl(f) {
+  // The share-class name, not the register's fund name: Trustnet publishes a factsheet per
+  // share class, and "Fundsmith Equity I Acc" finds the right one where "Fundsmith Equity
+  // Fund" would land on whichever class happens to rank first.
+  return `https://duckduckgo.com/?q=${encodeURIComponent("site:trustnet.com " + f.name)}`;
+}
+
+function cellFor(f, key) {
+  if (key === "name") {
+    const label = f.type === "EQUITY" ? "trust" : f.type === "ETF" ? "ETF" : "fund";
+    const thin = f.years < 5 ? `<span class="tag short">${f.years}y only</span>` : "";
+    const lev = f.leveraged ? `<span class="tag short">leveraged / inverse</span>` : "";
+    return `<td>
+      <a class="fund-name" href="${dataUrl(f)}" target="_blank" rel="noopener" title="Prices and performance for ${esc(f.symbol)}">${esc(f.name)}</a>
+      <span class="tag">${label}</span>${lev}${thin}
+      <a class="sheet" href="${factsheetSearchUrl(f)}" target="_blank" rel="noopener" title="Find this fund's Trustnet factsheet">factsheet &#8599;</a>
+    </td>`;
+  }
+  if (key === "fcaStatus") {
+    if (!f.fcaPrn) return `<td class="num fca-none" title="No matching entry found on the register for this name">—</td>`;
+    // A weak name match is shown as "check" rather than dressed up as a confirmed status.
+    // Presenting a 0.6 match with the same confidence as a 1.0 one is how a wrong PRN ends
+    // up in a suitability file.
+    const weak = (f.fcaScore ?? 1) < 0.75;
+    const cls = weak ? "fca-weak" : (f.fcaStatus === "Authorised" ? "fca-ok" : "fca-other");
+    if (weak) {
+      return `<td class="num"><a class="${cls}" href="${f.fcaUrl}" target="_blank" rel="noopener" title="Loose name match (${f.fcaScore}) to &quot;${esc(f.fcaName || "")}&quot; — check this is the right fund">${esc(f.fcaStatus || "listed")} ?</a></td>`;
+    }
+    // Linking to the register entry rather than restating it: the adviser's evidence should
+    // point at the regulator's own page, not at our copy of what it said.
+    return `<td class="num"><a class="${cls}" href="${f.fcaUrl}" target="_blank" rel="noopener" title="${esc(f.fcaName || "")} — PRN ${esc(f.fcaPrn)}">${esc(f.fcaStatus || "listed")}</a></td>`;
+  }
+  const v = f[key];
+  if (v === null || v === undefined) return `<td class="num">—</td>`;
+  if (key === "years") return `<td class="num">${v}y</td>`;
+  if (key === "vol") return `<td class="num">${v.toFixed(1)}%</td>`;
+  const cls = key === "maxDD" ? "neg" : (v >= 0 ? "pos" : "neg");
+  return `<td class="num ${cls}">${v > 0 && key !== "maxDD" ? "+" : ""}${v.toFixed(1)}%</td>`;
+}
+
+function renderTable(band, lvl) {
+  const head = COLUMNS.map(([k, label]) =>
+    `<th data-key="${k}" class="${k === sortKey ? "sorted" : ""}">${label}${k === sortKey ? (sortDir > 0 ? " ↑" : " ↓") : ""}</th>`).join("");
+
+  const body = shown.length
+    ? shown.map(f => `<tr>${COLUMNS.map(([k]) => cellFor(f, k)).join("")}</tr>`).join("")
+    : `<tr><td colspan="${COLUMNS.length}" style="text-align:center;color:var(--muted);padding:30px;">Nothing in the ${band[0]}–${band[1]}% band. Widen the band, or lower the minimum history.</td></tr>`;
+
+  $("results").innerHTML = `
+    <div class="summary">
+      <span class="count">${shown.length}</span>
+      <span class="of">match risk ${esc(lvl)} — volatility ${band[0]}% to ${band[1]}% — from ${universe.count} measured</span>
+      <span class="tools">
+        <button class="btn ghost" id="csvBtn">Export CSV</button>
+        ${canRebuild ? `<button class="btn ghost" id="rebuildBtn">Refresh data</button>` : ""}
+      </span>
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr>${head}</tr></thead>
+      <tbody>${body}</tbody>
+    </table></div>
+    <p style="color:var(--muted);font-size:.78rem;margin-top:10px;">
+      Prices to ${universe.builtAt ? esc(universe.builtAt.slice(0, 10)) : "—"}. Sterling share classes only.
+    </p>`;
+
+  document.querySelectorAll("thead th").forEach(th => th.addEventListener("click", () => {
+    const k = th.dataset.key;
+    if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = k === "name" ? 1 : 1; }
+    sortRows();
+    renderTable(band, lvl);
+  }));
+  $("csvBtn").addEventListener("click", exportCsv);
+  const rebuild = $("rebuildBtn");
+  if (rebuild) rebuild.addEventListener("click", buildUniverse);
+}
+
+/* CSV rather than a print view: it lands in the adviser's own suitability file, which is
+   where this evidence has to end up. */
+function exportCsv() {
+  const rows = [["Fund", "Type", "Symbol", "Volatility %", "Max drawdown %", "1yr pa %", "3yr pa %", "5yr pa %", "Years of history", "FCA status", "FCA reference", "FCA registered name", "Prices page", "Factsheet search"]];
+  for (const f of shown) {
+    rows.push([f.name, f.type, f.symbol, f.vol, f.maxDD, f.r1 ?? "", f.r3 ?? "", f.r5 ?? "", f.years,
+               f.fcaStatus ?? "", f.fcaPrn ?? "", f.fcaName ?? "",
+               dataUrl(f), factsheetSearchUrl(f)]);
+  }
+  const csv = rows.map(r => r.map(c => {
+    const s = String(c);
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  }).join(",")).join("\r\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `risk-${$("riskInput").value}-funds-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- Init ---------- */
+$("matchBtn").addEventListener("click", runMatch);
+$("typeFilter").addEventListener("change", runMatch);
+$("minYears").addEventListener("change", runMatch);
+$("showLeveraged").addEventListener("change", runMatch);
+$("riskInput").addEventListener("keydown", (e) => { if (e.key === "Enter") runMatch(); });
+
+renderBands();
+updateBandLine();
+checkRebuildable()
+  .then(loadUniverse)
+  .then(runMatch)
+  .catch(() => {
+    $("results").innerHTML = `<p class="status err">Couldn't load the fund data. funds.json should sit in the same folder as this page.</p>`;
+  });
+</script>
+</body>
+</html>
