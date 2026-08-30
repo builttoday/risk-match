@@ -171,6 +171,17 @@ td.neg { color: var(--bad); }
 .bar { height: 8px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin: 14px auto; max-width: 420px; }
 .bar > div { height: 100%; width: 0; background: var(--navy); transition: width .3s ease; }
 
+.sheet { position: fixed; inset: 0; background: rgba(10,15,22,.55); display: flex;
+  align-items: center; justify-content: center; padding: 20px; z-index: 60; }
+.sheet[hidden] { display: none; }
+.sheet-card { background: var(--surface); border-radius: 14px; padding: 24px; width: 100%;
+  max-width: 560px; box-shadow: var(--shadow); max-height: 90vh; overflow-y: auto; }
+.sheet-card h2 { font-size: 1.15rem; margin-bottom: 8px; }
+.sheet-card .sub { color: var(--muted); font-size: .86rem; margin: 0 0 16px; }
+.sheet-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+.pickbox { width: 16px; height: 16px; accent-color: var(--navy); }
+td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
+
 .caveat {
   background: var(--warn-bg); border: 1px solid var(--warn-edge); border-left: 4px solid var(--warn);
   border-radius: 10px; padding: 14px 16px; font-size: .86rem; margin-top: 22px;
@@ -238,6 +249,37 @@ td.neg { color: var(--bad); }
 
   <div id="results"></div>
 
+  <div class="sheet" id="recordSheet" hidden>
+    <div class="sheet-card">
+      <h2>Fund selection record</h2>
+      <p class="sub">Produces a dated, printable record of what was searched, what matched, and what you chose &mdash; for the client file. Nothing typed here is saved by this tool except your own name and firm.</p>
+      <div class="fld" style="margin-bottom:12px;">
+        <label for="recClient">Client reference</label>
+        <input type="text" id="recClient" placeholder="e.g. Smith J / client number" autocomplete="off">
+      </div>
+      <div class="field-row" style="display:flex;gap:12px;">
+        <div class="fld" style="flex:1;margin-bottom:12px;">
+          <label for="recAdviser">Adviser</label>
+          <input type="text" id="recAdviser" autocomplete="off">
+        </div>
+        <div class="fld" style="flex:1;margin-bottom:12px;">
+          <label for="recFirm">Firm</label>
+          <input type="text" id="recFirm" autocomplete="off">
+        </div>
+      </div>
+      <div class="fld" style="margin-bottom:12px;">
+        <label for="recRationale">Reason for the selection, in your words</label>
+        <textarea id="recRationale" rows="5" placeholder="Why these funds, for this client, at this risk level. This is your reasoning &mdash; the tool does not supply it."
+          style="width:100%;background:var(--paper);border:1.5px solid var(--line);color:var(--ink);border-radius:9px;padding:10px 12px;font-family:inherit;font-size:.92rem;resize:vertical;"></textarea>
+      </div>
+      <p class="sub" id="recSummary" style="margin-bottom:0;"></p>
+      <div class="sheet-actions">
+        <button class="btn ghost" id="recCancel">Cancel</button>
+        <button class="btn" id="recCreate">Create record</button>
+      </div>
+    </div>
+  </div>
+
   <div class="caveat">
     <p><strong>What these numbers are.</strong> Volatility is the annualised standard deviation of daily returns over the period shown. Maximum drawdown is the worst peak-to-trough fall. Both are calculated here from public daily closing prices, so every figure can be reproduced from the price history.</p>
     <p><strong>What they are not.</strong> This is realised, backward-looking risk. Risk-profiling services publish forward-looking expected volatility from a capital markets model, which is a different measure and will not agree with these figures. Past volatility is not a promise about future volatility.</p>
@@ -269,6 +311,10 @@ let bands = loadBands();
 let universe = { builtAt: null, count: 0, funds: [] };
 let shown = [];
 let sortKey = "vol", sortDir = 1;
+/* Which funds the adviser has ticked for the record. Held by symbol so it survives re-sorting
+   and re-filtering; cleared when the risk level changes, because a shortlist for risk 5 is not
+   a shortlist for risk 6. */
+let picked = new Set();
 
 function loadBands() {
   try {
@@ -332,7 +378,7 @@ function updateBandLine() {
     ? `Risk ${esc(lvl)} at your firm means volatility of <strong>${b[0]}% to ${b[1]}%</strong> a year.`
     : `No volatility range set for risk ${esc(lvl)} yet — open the panel below and set one.`;
 }
-$("riskInput").addEventListener("input", updateBandLine);
+$("riskInput").addEventListener("input", () => { picked.clear(); updateBandLine(); });
 
 /* ---------- Data ---------- */
 /* Read as an ordinary file, not through an API. The measured universe is a static artefact --
@@ -506,18 +552,20 @@ function cellFor(f, key) {
 }
 
 function renderTable(band, lvl) {
-  const head = COLUMNS.map(([k, label]) =>
+  const head = `<th class="pick" title="Tick the funds you are recommending"></th>` +
+    COLUMNS.map(([k, label]) =>
     `<th data-key="${k}" class="${k === sortKey ? "sorted" : ""}">${label}${k === sortKey ? (sortDir > 0 ? " ↑" : " ↓") : ""}</th>`).join("");
 
   const body = shown.length
-    ? shown.map(f => `<tr>${COLUMNS.map(([k]) => cellFor(f, k)).join("")}</tr>`).join("")
-    : `<tr><td colspan="${COLUMNS.length}" style="text-align:center;color:var(--muted);padding:30px;">Nothing in the ${band[0]}–${band[1]}% band. Widen the band, or lower the minimum history.</td></tr>`;
+    ? shown.map(f => `<tr><td class="pick"><input type="checkbox" class="pickbox" data-pick="${esc(f.symbol)}" ${picked.has(f.symbol) ? "checked" : ""} aria-label="Include ${esc(f.name)} in the record"></td>${COLUMNS.map(([k]) => cellFor(f, k)).join("")}</tr>`).join("")
+    : `<tr><td colspan="${COLUMNS.length + 1}" style="text-align:center;color:var(--muted);padding:30px;">Nothing in the ${band[0]}–${band[1]}% band. Widen the band, or lower the minimum history.</td></tr>`;
 
   $("results").innerHTML = `
     <div class="summary">
       <span class="count">${shown.length}</span>
       <span class="of">match risk ${esc(lvl)} — volatility ${band[0]}% to ${band[1]}% — from ${universe.count} measured</span>
       <span class="tools">
+        <button class="btn" id="recordBtn">Create suitability record${picked.size ? ` (${picked.size})` : ""}</button>
         <button class="btn ghost" id="csvBtn">Export CSV</button>
         ${canRebuild ? `<button class="btn ghost" id="rebuildBtn">Refresh data</button>` : ""}
       </span>
@@ -536,9 +584,185 @@ function renderTable(band, lvl) {
     sortRows();
     renderTable(band, lvl);
   }));
+  document.querySelectorAll("[data-pick]").forEach(cb => cb.addEventListener("change", () => {
+    if (cb.checked) picked.add(cb.dataset.pick); else picked.delete(cb.dataset.pick);
+    renderTable(band, lvl);
+  }));
+  $("recordBtn").addEventListener("click", openRecord);
   $("csvBtn").addEventListener("click", exportCsv);
   const rebuild = $("rebuildBtn");
   if (rebuild) rebuild.addEventListener("click", buildUniverse);
+}
+
+/* ============================== Suitability record ==============================
+   The FCA's supervision has moved from "did you follow the rules" to "can you prove the client
+   got a good outcome", and it has named evidence gaps as a sector-wide weakness. A research
+   screen does not answer that; a dated record of what was searched, what the criteria were,
+   what matched and what was chosen does.
+
+   Two rules this document obeys:
+
+   - It records, it does not conclude. Every number is measured; the reasoning is the adviser's
+     own words, typed in, and appears as theirs. The tool never says a fund is suitable.
+   - It is reproducible. The method, the data date and the filters are printed on it, so the
+     same search can be re-run and checked years later.
+
+   Client details are typed at generation time and written only into the downloaded file --
+   nothing about the client is stored in this browser. */
+const LS_ADVISER = "riskmatch.adviser";
+
+function openRecord() {
+  if (!picked.size) {
+    alert("Tick the funds you are recommending first \u2014 the record needs to say what you chose, not just what you looked at.");
+    return;
+  }
+  try {
+    const saved = JSON.parse(localStorage.getItem(LS_ADVISER) || "{}");
+    $("recAdviser").value = saved.adviser || "";
+    $("recFirm").value = saved.firm || "";
+  } catch (_) { /* nothing saved yet */ }
+  $("recSummary").textContent =
+    `${picked.size} fund${picked.size === 1 ? "" : "s"} selected from ${shown.length} that matched risk ${$("riskInput").value}.`;
+  $("recordSheet").hidden = false;
+  $("recClient").focus();
+}
+
+$("recCancel").addEventListener("click", () => { $("recordSheet").hidden = true; });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("recordSheet").hidden = true; });
+
+$("recCreate").addEventListener("click", () => {
+  const adviser = $("recAdviser").value.trim();
+  const firm = $("recFirm").value.trim();
+  try { localStorage.setItem(LS_ADVISER, JSON.stringify({ adviser, firm })); } catch (_) {}
+  buildRecord({
+    client: $("recClient").value.trim(),
+    adviser, firm,
+    rationale: $("recRationale").value.trim(),
+  });
+  $("recordSheet").hidden = true;
+});
+
+function recordRow(f, chosen) {
+  const fca = f.fcaPrn
+    ? `${esc(f.fcaStatus || "listed")}${(f.fcaScore ?? 1) < 0.75 ? " (name match uncertain)" : ""}, PRN ${esc(f.fcaPrn)}`
+    : "no register match on this name";
+  const n = (v, suffix) => (v === null || v === undefined ? "\u2014" : v.toFixed(1) + (suffix || ""));
+  return `<tr class="${chosen ? "chosen" : ""}">
+    <td>${chosen ? "\u25cf " : ""}${esc(f.name)}</td>
+    <td class="num">${n(f.vol, "%")}</td>
+    <td class="num">${n(f.maxDD, "%")}</td>
+    <td class="num">${n(f.r3, "%")}</td>
+    <td class="num">${n(f.r5, "%")}</td>
+    <td class="num">${f.years}y</td>
+    <td style="text-align:left;font-size:.9em;">${fca}</td>
+  </tr>`;
+}
+
+function buildRecord(meta) {
+  const lvl = $("riskInput").value;
+  const band = bandFor(lvl);
+  const chosen = shown.filter(f => picked.has(f.symbol));
+  const others = shown.filter(f => !picked.has(f.symbol));
+  const now = new Date();
+  const stamp = now.toLocaleString("en-GB", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  const typeLabel = { "": "funds, ETFs and investment trusts", MUTUALFUND: "funds only", ETF: "ETFs only", EQUITY: "investment trusts only" }[$("typeFilter").value];
+
+  const doc = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>Fund selection record${meta.client ? " \u2014 " + esc(meta.client) : ""}</title>
+<style>
+  @page { margin: 18mm; }
+  body { font-family: Georgia, "Times New Roman", serif; color: #16202b; line-height: 1.5;
+         max-width: 52em; margin: 36px auto; padding: 0 24px; background: #fff; font-size: 15px; }
+  header { border-bottom: 2px solid #16202b; padding-bottom: 10px; margin-bottom: 22px; }
+  .firm { font-family: system-ui, sans-serif; font-size: .8rem; letter-spacing: .1em;
+          text-transform: uppercase; color: #5a6675; }
+  h1 { font-size: 1.4rem; margin: 4px 0 0; }
+  dl { display: grid; grid-template-columns: 12em 1fr; gap: 4px 16px; margin: 0 0 24px; font-size: .95em; }
+  dt { color: #5a6675; font-family: system-ui, sans-serif; font-size: .82rem; padding-top: 2px; }
+  dd { margin: 0; }
+  h2 { font-size: 1rem; font-family: system-ui, sans-serif; text-transform: uppercase;
+       letter-spacing: .06em; color: #5a6675; margin: 26px 0 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: .84rem; font-family: system-ui, sans-serif; }
+  th, td { border-bottom: 1px solid #dde4ec; padding: 6px 8px; text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: #5a6675; }
+  tr.chosen { background: #eef4fb; font-weight: 600; }
+  .rationale { border-left: 3px solid #1b3a6b; background: #f6f9fd; padding: 12px 16px;
+               white-space: pre-wrap; margin: 0; }
+  .method { font-size: .82rem; color: #3d4a58; }
+  .method li { margin-bottom: 5px; }
+  footer { margin-top: 30px; padding-top: 12px; border-top: 1px solid #dde4ec;
+           font-size: .78rem; color: #5a6675; }
+  .sign { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; font-size: .85rem; }
+  .sign div { border-top: 1px solid #16202b; padding-top: 6px; }
+  @media print { body { margin: 0; } .noprint { display: none; } }
+</style></head><body>
+<header>
+  <div class="firm">${esc(meta.firm || "")}</div>
+  <h1>Fund selection record</h1>
+</header>
+
+<dl>
+  <dt>Client reference</dt><dd>${esc(meta.client || "\u2014")}</dd>
+  <dt>Adviser</dt><dd>${esc(meta.adviser || "\u2014")}</dd>
+  <dt>Date produced</dt><dd>${stamp}</dd>
+  <dt>Risk level assessed</dt><dd>${esc(lvl)}</dd>
+  <dt>Firm's definition</dt><dd>Risk ${esc(lvl)} corresponds to annualised volatility of ${band[0]}% to ${band[1]}%</dd>
+  <dt>Selection searched</dt><dd>${typeLabel}, minimum ${$("minYears").value} years of history${$("showLeveraged").checked ? ", including leveraged and inverse products" : ", excluding leveraged and inverse products"}</dd>
+  <dt>Universe measured</dt><dd>${universe.count} sterling share classes, prices to ${esc((universe.builtAt || "").slice(0, 10))}</dd>
+  <dt>Funds matching</dt><dd>${shown.length}</dd>
+  <dt>Funds selected</dt><dd>${chosen.length}</dd>
+</dl>
+
+<h2>Reason for the selection</h2>
+<p class="rationale">${esc(meta.rationale || "[No reasoning recorded.]")}</p>
+
+<h2>Funds selected</h2>
+<table>
+  <thead><tr><th>Fund</th><th>Volatility</th><th>Max drawdown</th><th>3yr p.a.</th><th>5yr p.a.</th><th>History</th><th style="text-align:left;">FCA register</th></tr></thead>
+  <tbody>${chosen.map(f => recordRow(f, true)).join("")}</tbody>
+</table>
+
+<h2>Also considered &mdash; everything else that met the criteria</h2>
+<table>
+  <thead><tr><th>Fund</th><th>Volatility</th><th>Max drawdown</th><th>3yr p.a.</th><th>5yr p.a.</th><th>History</th><th style="text-align:left;">FCA register</th></tr></thead>
+  <tbody>${others.length ? others.map(f => recordRow(f, false)).join("")
+    : `<tr><td colspan="7" style="text-align:center;color:#5a6675;">Nothing else met the criteria.</td></tr>`}</tbody>
+</table>
+
+<h2>How these figures were produced</h2>
+<ul class="method">
+  <li>Annualised volatility is the standard deviation of daily returns over the period shown, scaled by the square root of 252 trading days.</li>
+  <li>Maximum drawdown is the largest peak-to-trough fall over the same period.</li>
+  <li>Both are calculated from public daily closing prices. Any figure here can be reproduced from that price history.</li>
+  <li>Price series carrying a redenomination or share-class rebasing were corrected where the change was identifiable, and excluded where it was not.</li>
+  <li>Register status was matched to the FCA Financial Services Register by fund name. Where the match was uncertain this is stated in the row, and the register entry should be checked directly.</li>
+</ul>
+
+<h2>Limitations</h2>
+<ul class="method">
+  <li>These are <strong>realised</strong> figures describing what has already happened. Risk-profiling services publish forward-looking expected volatility derived from a capital markets model; that is a different measure and will not agree with these numbers.</li>
+  <li>Past volatility is not a prediction of future volatility, and past returns are not a guide to future returns.</li>
+  <li>The universe searched is ${universe.count} sterling share classes, which is not the whole market. Funds outside it were not considered and their absence is not a judgement on them.</li>
+  <li>Charges are not included in these figures and must be considered separately.</li>
+  <li>This document records what was searched and what was selected. It contains no recommendation from the software, and the assessment of suitability for this client rests with the adviser named above.</li>
+</ul>
+
+<div class="sign">
+  <div>Adviser signature</div>
+  <div>Date</div>
+</div>
+
+<footer>Produced by Risk Match on ${stamp}. Figures derived from public price data; this document is a record of research, not advice.</footer>
+</body></html>`;
+
+  const url = URL.createObjectURL(new Blob([doc], { type: "text/html" }));
+  const a = document.createElement("a");
+  const ref = (meta.client || "client").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
+  a.href = url;
+  a.download = `fund-selection-record-${ref}-${now.toISOString().slice(0, 10)}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 /* CSV rather than a print view: it lands in the adviser's own suitability file, which is
