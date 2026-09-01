@@ -192,16 +192,65 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 .caveat p { margin: 0 0 8px; }
 .caveat p:last-child { margin-bottom: 0; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---- added: browse + growth ---- */
+.view { display: none; }
+.view.on { display: block; }
+.nav a { padding:6px 12px; border-radius:7px; text-decoration:none; color:var(--muted);
+         font-size:.9rem; font-weight:500; }
+.nav a.on { background: var(--navy-soft); color: var(--navy); }
+.ctrls { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:14px; }
+.ctrls .fld { flex:1 1 170px; min-width:150px; }
+.ctrls label { display:block; font-size:.72rem; text-transform:uppercase;
+               letter-spacing:.08em; color:var(--muted); margin-bottom:4px; }
+.ctrls input, .ctrls select { width:100%; padding:8px 10px; border:1px solid var(--line);
+               border-radius:8px; background:var(--surface); color:var(--ink); }
+.azletter { position:sticky; top:56px; background:var(--surface-2); padding:5px 12px;
+            font-weight:600; font-size:.8rem; letter-spacing:.1em; color:var(--muted);
+            border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.fundrow { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px;
+           gap:10px; padding:8px 12px; border-bottom:1px solid var(--line);
+           align-items:center; font-size:.88rem; }
+.fundrow:hover { background:var(--surface-2); }
+.fundrow .nm { font-weight:500; }
+.fundrow .meta { color:var(--muted); font-size:.78rem; }
+.fundrow .num { text-align:right; font-family:"IBM Plex Mono",monospace; font-size:.82rem; }
+.fhead { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px; gap:10px;
+         padding:8px 12px; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em;
+         color:var(--muted); border-bottom:2px solid var(--line); position:sticky; top:0;
+         background:var(--surface); }
+.fhead .num { text-align:right; }
+.chip { display:inline-flex; align-items:center; gap:6px; background:var(--navy-soft);
+        color:var(--navy); border-radius:20px; padding:4px 8px 4px 12px; margin:0 6px 6px 0;
+        font-size:.83rem; }
+.chip button { border:none; background:none; color:inherit; cursor:pointer; font-size:1rem;
+        line-height:1; padding:0 2px; }
+.pickres { max-height:230px; overflow:auto; border:1px solid var(--line); border-radius:8px;
+        margin-top:6px; }
+.pickres div { padding:7px 10px; cursor:pointer; font-size:.86rem;
+        border-bottom:1px solid var(--line); }
+.pickres div:hover { background:var(--navy-soft); }
+.gtot { display:flex; gap:26px; flex-wrap:wrap; margin:14px 0; }
+.gtot div span { display:block; font-size:.72rem; text-transform:uppercase;
+        letter-spacing:.08em; color:var(--muted); }
+.gtot div b { font-family:"Newsreader",Georgia,serif; font-size:1.6rem; font-weight:600; }
+.warnline { background:var(--warn-bg); border:1px solid var(--warn-edge); color:var(--warn);
+        padding:9px 12px; border-radius:8px; font-size:.85rem; margin:10px 0; }
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <h1>Risk Match</h1>
-  
+  <div class="nav">
+    <a href="#" data-view="match" class="on">Match by risk</a>
+    <a href="#" data-view="browse">Browse funds</a>
+    <a href="#" data-view="growth">Growth calculator</a>
+  </div>
 </div>
 
 <div class="wrap">
+<div id="matchView" class="view on">
 
   <div class="panel">
     <h2>Which risk level did the questionnaire give?</h2>
@@ -289,6 +338,68 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
     <p><strong>The two links.</strong> The fund name opens its prices and performance page, built straight from the symbol. <em>Factsheet</em> searches Trustnet for that share class. It is a search rather than a direct link because Trustnet factsheet addresses use their own internal fund codes, which nothing in this data can predict. Check you have landed on the right share class &mdash; Acc and Inc are different factsheets &mdash; before filing anything.</p>
     <p><strong>The FCA column</strong> is matched to the Financial Services Register by name and links to the official entry. A dash means no confident match was found for that name — not that the fund is unauthorised. A status followed by <span class="fca-weak">?</span> means the name match was loose and may be the wrong fund, usually the umbrella company rather than the fund inside it. Click through before relying on either.</p>
     <p>This tool measures funds. It does not rate them, rank them for suitability, or recommend anything. Suitability remains the adviser's judgement.</p>
+  </div>
+</div>
+
+<div id="browseView" class="view">
+  <div class="panel">
+    <h2>Every fund, A to Z</h2>
+    <p class="sub">The whole measured universe. Manager and sector are <strong>derived from the
+    fund name</strong>, not taken from a classification feed &mdash; good enough to filter by,
+    not the IA sector of record.</p>
+    <div class="ctrls">
+      <div class="fld"><label for="bqName">Search name</label>
+        <input id="bqName" type="text" placeholder="e.g. Artemis Global Income"></div>
+      <div class="fld"><label for="bqHouse">Fund manager</label>
+        <select id="bqHouse"><option value="">All managers</option></select></div>
+      <div class="fld"><label for="bqSector">Sector</label>
+        <select id="bqSector"><option value="">All sectors</option></select></div>
+      <div class="fld"><label for="bqSort">Sort</label>
+        <select id="bqSort">
+          <option value="name">Name A&ndash;Z</option>
+          <option value="volDaily">Volatility, lowest first</option>
+          <option value="-r5">5-year return, highest first</option>
+          <option value="-sharpe">Sharpe, highest first</option>
+          <option value="maxDD">Drawdown, shallowest first</option>
+        </select></div>
+      <div class="fld" style="flex:0 0 120px;"><label for="bqYears">Min years</label>
+        <input id="bqYears" type="number" min="0" max="25" step="1" value="0"></div>
+    </div>
+    <p class="sub" id="bCount"></p>
+    <div class="fhead">
+      <div>Fund</div><div>Manager</div><div>Sector</div>
+      <div class="num">Vol %</div><div class="num">5yr %</div><div class="num">Max DD</div>
+    </div>
+    <div id="bList"></div>
+  </div>
+</div>
+
+<div id="growthView" class="view">
+  <div class="panel">
+    <h2>What would it have grown to?</h2>
+    <p class="sub">Pick funds, set an amount, choose how far back. The figures are computed in
+    your browser from the sterling price history &mdash; past performance, not a forecast.</p>
+    <div class="ctrls">
+      <div class="fld" style="flex:2 1 320px;"><label for="gSearch">Add a fund</label>
+        <input id="gSearch" type="text" placeholder="Type a fund name"></div>
+      <div class="fld" style="flex:0 0 150px;"><label for="gAmount">Amount (&pound;)</label>
+        <input id="gAmount" type="number" min="1" step="100" value="1000"></div>
+      <div class="fld" style="flex:0 0 180px;"><label for="gYears">Period</label>
+        <select id="gYears">
+          <option value="1">1 year</option><option value="3">3 years</option>
+          <option value="5" selected>5 years</option><option value="10">10 years</option>
+          <option value="20">20 years</option><option value="0">As far back as possible</option>
+          <option value="date">From a date&hellip;</option>
+        </select></div>
+      <div class="fld" style="flex:0 0 165px;" id="gFromWrap" hidden>
+        <label for="gFrom">Start date</label>
+        <input id="gFrom" type="date" value="2026-01-01"></div>
+    </div>
+    <div id="gPick" class="pickres" hidden></div>
+    <div id="gChips" style="margin:10px 0;"></div>
+    <div id="gWarn"></div>
+    <div id="gTotals" class="gtot"></div>
+    <div id="gTable"></div>
   </div>
 </div>
 
@@ -698,6 +809,50 @@ function buildRecord(meta) {
   .sign { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; font-size: .85rem; }
   .sign div { border-top: 1px solid #16202b; padding-top: 6px; }
   @media print { body { margin: 0; } .noprint { display: none; } }
+
+/* ---- added: browse + growth ---- */
+.view { display: none; }
+.view.on { display: block; }
+.nav a { padding:6px 12px; border-radius:7px; text-decoration:none; color:var(--muted);
+         font-size:.9rem; font-weight:500; }
+.nav a.on { background: var(--navy-soft); color: var(--navy); }
+.ctrls { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:14px; }
+.ctrls .fld { flex:1 1 170px; min-width:150px; }
+.ctrls label { display:block; font-size:.72rem; text-transform:uppercase;
+               letter-spacing:.08em; color:var(--muted); margin-bottom:4px; }
+.ctrls input, .ctrls select { width:100%; padding:8px 10px; border:1px solid var(--line);
+               border-radius:8px; background:var(--surface); color:var(--ink); }
+.azletter { position:sticky; top:56px; background:var(--surface-2); padding:5px 12px;
+            font-weight:600; font-size:.8rem; letter-spacing:.1em; color:var(--muted);
+            border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.fundrow { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px;
+           gap:10px; padding:8px 12px; border-bottom:1px solid var(--line);
+           align-items:center; font-size:.88rem; }
+.fundrow:hover { background:var(--surface-2); }
+.fundrow .nm { font-weight:500; }
+.fundrow .meta { color:var(--muted); font-size:.78rem; }
+.fundrow .num { text-align:right; font-family:"IBM Plex Mono",monospace; font-size:.82rem; }
+.fhead { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px; gap:10px;
+         padding:8px 12px; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em;
+         color:var(--muted); border-bottom:2px solid var(--line); position:sticky; top:0;
+         background:var(--surface); }
+.fhead .num { text-align:right; }
+.chip { display:inline-flex; align-items:center; gap:6px; background:var(--navy-soft);
+        color:var(--navy); border-radius:20px; padding:4px 8px 4px 12px; margin:0 6px 6px 0;
+        font-size:.83rem; }
+.chip button { border:none; background:none; color:inherit; cursor:pointer; font-size:1rem;
+        line-height:1; padding:0 2px; }
+.pickres { max-height:230px; overflow:auto; border:1px solid var(--line); border-radius:8px;
+        margin-top:6px; }
+.pickres div { padding:7px 10px; cursor:pointer; font-size:.86rem;
+        border-bottom:1px solid var(--line); }
+.pickres div:hover { background:var(--navy-soft); }
+.gtot { display:flex; gap:26px; flex-wrap:wrap; margin:14px 0; }
+.gtot div span { display:block; font-size:.72rem; text-transform:uppercase;
+        letter-spacing:.08em; color:var(--muted); }
+.gtot div b { font-family:"Newsreader",Georgia,serif; font-size:1.6rem; font-weight:600; }
+.warnline { background:var(--warn-bg); border:1px solid var(--warn-edge); color:var(--warn);
+        padding:9px 12px; border-radius:8px; font-size:.85rem; margin:10px 0; }
 </style></head><body>
 <header>
   <div class="firm">${esc(meta.firm || "")}</div>
@@ -800,9 +955,280 @@ updateBandLine();
 checkRebuildable()
   .then(loadUniverse)
   .then(runMatch)
+  .then(() => { if (typeof openFromHash === 'function') openFromHash(); })
+  .then(() => { if (typeof openFromQuery === 'function') return openFromQuery(); })
   .catch(() => {
     $("results").innerHTML = `<p class="status err">Couldn't load the fund data. funds.json should sit in the same folder as this page.</p>`;
   });
+
+/* ============================================================================
+   Browse (A-Z) and Growth calculator.
+
+   Both read the same `universe` object the match view already loads. Growth
+   additionally loads series.json lazily -- monthly sterling closes -- so the
+   page does not make everyone download several megabytes before anyone has
+   asked a growth question.
+   ========================================================================== */
+let SERIES = null;
+let gSel = [];
+
+document.querySelectorAll('.nav a').forEach(function (a) {
+  a.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    document.querySelectorAll('.nav a').forEach(function (x) { x.classList.remove('on'); });
+    a.classList.add('on');
+    var v = a.dataset.view;
+    document.querySelectorAll('.view').forEach(function (x) { x.classList.remove('on'); });
+    $(v + 'View').classList.add('on');
+    if (v === 'browse') initBrowse();
+    if (v === 'growth') initGrowth();
+    history.replaceState(null, '', v === 'match' ? '#' : '#' + v);
+  });
+});
+
+// Deep-link to a tab: #browse / #growth. Useful for sending someone straight to the
+// fund list, and it is what makes the views testable without simulating a click.
+// A growth scenario can be linked: ?g=SYM,SYM&amt=1000&y=10#growth
+// Useful for sending someone a specific comparison, and it is what makes the calculator
+// testable without simulating clicks.
+async function openFromQuery() {
+  var q = new URLSearchParams(location.search);
+  var syms = (q.get('g') || '').split(',').filter(Boolean);
+  if (!syms.length) return;
+  var a = document.querySelector('.nav a[data-view="growth"]');
+  if (a) a.click();
+  await initGrowth();
+  if (q.get('amt')) $('gAmount').value = q.get('amt');
+  if (q.get('y') !== null) $('gYears').value = q.get('y');
+  if (q.get('from')) {
+    $('gYears').value = 'date';
+    $('gFrom').value = q.get('from');
+    $('gFromWrap').hidden = false;
+  }
+  var missing = syms.filter(function (x) { return !SERIES[x]; });
+  gSel = syms.filter(function (x) { return SERIES[x]; });
+  gRender();
+  if (missing.length) {
+    // Never drop a requested holding in silence -- say which and why.
+    $('gWarn').innerHTML = '<div class="warnline"><strong>Not shown: ' +
+      missing.map(esc).join(', ') + '.</strong> These have too little price history to ' +
+      'chart (a fund needs at least a year of month-ends). They are excluded from the ' +
+      'totals above, so this is not your whole portfolio.</div>' + $('gWarn').innerHTML;
+  }
+}
+
+function openFromHash() {
+  var v = (location.hash || '').replace('#', '');
+  if (['browse', 'growth'].indexOf(v) < 0) return;
+  var a = document.querySelector('.nav a[data-view="' + v + '"]');
+  if (a) a.click();
+}
+window.addEventListener('hashchange', openFromHash);
+
+/* ---------------------------------------------------------------- browse */
+let browseReady = false;
+
+function initBrowse() {
+  if (browseReady) return;
+  browseReady = true;
+  var houses = Array.from(new Set(universe.funds.map(function (f) { return f.house; })
+    .filter(Boolean))).sort();
+  var sectors = Array.from(new Set(universe.funds.map(function (f) { return f.sector; })
+    .filter(Boolean))).sort();
+  houses.forEach(function (h) { $('bqHouse').add(new Option(h, h)); });
+  sectors.forEach(function (x) { $('bqSector').add(new Option(x, x)); });
+  ['bqName', 'bqHouse', 'bqSector', 'bqSort', 'bqYears'].forEach(function (id) {
+    $(id).addEventListener('input', renderBrowse);
+  });
+  renderBrowse();
+}
+
+function renderBrowse() {
+  var q = $('bqName').value.trim().toLowerCase();
+  var h = $('bqHouse').value;
+  var sec = $('bqSector').value;
+  var minY = parseFloat($('bqYears').value) || 0;
+  var sort = $('bqSort').value;
+
+  var rows = universe.funds.filter(function (f) {
+    return (!q || (f.name || '').toLowerCase().indexOf(q) >= 0) &&
+      (!h || f.house === h) && (!sec || f.sector === sec) && ((f.years || 0) >= minY);
+  });
+
+  var desc = sort.charAt(0) === '-';
+  var key = desc ? sort.slice(1) : sort;
+  rows.sort(function (a, b) {
+    if (key === 'name') return (a.name || '').localeCompare(b.name || '');
+    var av = a[key], bv = b[key];
+    if (av == null) return 1;      // missing data sinks; it must never top a sorted list
+    if (bv == null) return -1;
+    return desc ? bv - av : av - bv;
+  });
+
+  $('bCount').textContent = rows.length + ' of ' + universe.funds.length + ' funds' +
+    (minY ? ' with ' + minY + '+ years of history' : '');
+
+  function num(v, d) { return v == null ? '<span class="meta">&mdash;</span>' : v.toFixed(d || 1); }
+
+  var html = '', letter = '';
+  rows.forEach(function (f) {
+    if (key === 'name') {
+      var L = (f.name || '?').charAt(0).toUpperCase();
+      if (L !== letter) { letter = L; html += '<div class="azletter">' + esc(L) + '</div>'; }
+    }
+    html += '<div class="fundrow">' +
+      '<div><div class="nm">' + esc(f.name || f.symbol) + '</div><div class="meta">' +
+      esc(f.symbol) + (f.years ? ' &middot; ' + f.years + 'y' : '') +
+      (f.gbpConverted ? ' &middot; converted to GBP' : '') + '</div></div>' +
+      '<div class="meta">' + esc(f.house || '') + '</div>' +
+      '<div class="meta">' + esc(f.sector || '') + '</div>' +
+      '<div class="num">' + num(f.volDaily) + '</div>' +
+      '<div class="num">' + num(f.r5) + '</div>' +
+      '<div class="num">' + num(f.maxDD) + '</div></div>';
+  });
+  $('bList').innerHTML = html ||
+    '<p class="sub" style="padding:14px">Nothing matches those filters.</p>';
+}
+
+/* ---------------------------------------------------------------- growth */
+async function initGrowth() {
+  if (SERIES) return;
+  $('gTotals').innerHTML = '<div><span>Loading price history</span><b>&hellip;</b></div>';
+  try {
+    var r = await fetch('series.json', { cache: 'no-cache' });
+    SERIES = (await r.json()).series || {};
+  } catch (e) {
+    SERIES = {};
+  }
+  $('gTotals').innerHTML = '';
+  $('gSearch').addEventListener('input', gSuggest);
+  $('gAmount').addEventListener('input', gRender);
+  $('gYears').addEventListener('change', function () {
+    $('gFromWrap').hidden = ($('gYears').value !== 'date');
+    gRender();
+  });
+  $('gFrom').addEventListener('change', gRender);
+}
+
+function gSuggest() {
+  var q = $('gSearch').value.trim().toLowerCase();
+  var box = $('gPick');
+  if (q.length < 2) { box.hidden = true; return; }
+  var hits = universe.funds.filter(function (f) {
+    return SERIES[f.symbol] && (f.name || '').toLowerCase().indexOf(q) >= 0;
+  }).slice(0, 40);
+  box.innerHTML = hits.map(function (f) {
+    return '<div data-sym="' + esc(f.symbol) + '">' + esc(f.name || f.symbol) +
+      ' <span class="meta">' + esc(f.symbol) + '</span></div>';
+  }).join('') || '<div class="meta" style="padding:8px">No fund with price history matches.</div>';
+  box.hidden = false;
+  box.querySelectorAll('[data-sym]').forEach(function (el) {
+    el.onclick = function () {
+      if (gSel.indexOf(el.dataset.sym) < 0) gSel.push(el.dataset.sym);
+      $('gSearch').value = '';
+      box.hidden = true;
+      gRender();
+    };
+  });
+}
+
+function gChips() {
+  $('gChips').innerHTML = gSel.map(function (sym) {
+    var f = universe.funds.find(function (x) { return x.symbol === sym; }) || { name: sym };
+    return '<span class="chip">' + esc(f.name || sym) +
+      '<button data-x="' + esc(sym) + '">&times;</button></span>';
+  }).join('');
+  $('gChips').querySelectorAll('[data-x]').forEach(function (b) {
+    b.onclick = function () {
+      gSel = gSel.filter(function (s) { return s !== b.dataset.x; });
+      gRender();
+    };
+  });
+}
+
+function gRender() {
+  gChips();
+  var amt = parseFloat($('gAmount').value) || 0;
+  var yrs = parseFloat($('gYears').value);
+  if (!gSel.length || !amt) {
+    $('gTotals').innerHTML = ''; $('gTable').innerHTML = ''; $('gWarn').innerHTML = '';
+    return;
+  }
+
+  var each = amt / gSel.length;
+  var now = Math.floor(Date.now() / 1000);
+  var wantFrom;
+  if ($('gYears').value === 'date') {
+    wantFrom = Math.floor(new Date($('gFrom').value + 'T00:00:00Z').getTime() / 1000) || 0;
+  } else {
+    wantFrom = yrs ? now - yrs * 365.25 * 86400 : 0;
+  }
+  var endTotal = 0, warn = [], rows = '';
+
+  gSel.forEach(function (sym) {
+    var s = SERIES[sym];
+    var f = universe.funds.find(function (x) { return x.symbol === sym; }) || { name: sym };
+    if (!s) return;
+    var i = 0;
+    while (i < s.t.length - 1 && s.t[i] < wantFrom) i++;
+    var startPx = s.c[i], endPx = s.c[s.c.length - 1], startTs = s.t[i];
+    var realYears = (s.t[s.t.length - 1] - startTs) / (365.25 * 86400);
+
+    // A fund cannot show a return for years before it existed. Say so rather than
+    // quietly reporting a short period as though it answered the question asked.
+    if ($('gYears').value !== 'date' && yrs && realYears < yrs - 0.25) {
+      warn.push(esc(f.name || sym) + ' has only ' + realYears.toFixed(1) + ' years');
+    }
+
+    var end = each * (endPx / startPx);
+    endTotal += end;
+    var grow = (endPx / startPx - 1) * 100;
+    // Only annualise a period of a year or more. Scaling up eight months of return implies
+    // the rest of the year repeats it, which is an extrapolation dressed as a measurement.
+    var cagr = realYears >= 1.0 ? (Math.pow(endPx / startPx, 1 / realYears) - 1) * 100 : null;
+    var d = new Date(startTs * 1000);
+
+    rows += '<div class="fundrow" style="grid-template-columns:1fr 100px 100px 84px 84px 72px">' +
+      '<div><div class="nm">' + esc(f.name || sym) + '</div><div class="meta">from ' +
+      d.toISOString().slice(0, 7) + ' &middot; ' + realYears.toFixed(1) + 'y</div></div>' +
+      '<div class="num">&pound;' + each.toFixed(2) + '</div>' +
+      '<div class="num">&pound;' + end.toFixed(2) + '</div>' +
+      '<div class="num">' + grow.toFixed(1) + '%</div>' +
+      '<div class="num">' + (cagr == null ? '&mdash;' : cagr.toFixed(1) + '%') + '</div>' +
+      '<div class="num">' + (f.volDaily == null ? '&mdash;' : f.volDaily.toFixed(1)) +
+      '</div></div>';
+  });
+
+  var gain = endTotal - amt;
+  var money = function (v) {
+    return v.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  var col = gain >= 0 ? 'var(--good)' : 'var(--bad)';
+  $('gTotals').innerHTML =
+    '<div><span>Invested</span><b>&pound;' + money(amt) + '</b></div>' +
+    '<div><span>Would be worth</span><b>&pound;' + money(endTotal) + '</b></div>' +
+    '<div><span>Gain</span><b style="color:' + col + '">' + (gain >= 0 ? '+' : '') +
+    '&pound;' + money(gain) + '</b></div>' +
+    '<div><span>Return</span><b style="color:' + col + '">' + (gain >= 0 ? '+' : '') +
+    (gain / amt * 100).toFixed(1) + '%</b></div>';
+
+  $('gWarn').innerHTML = warn.length
+    ? '<div class="warnline"><strong>Shorter history than you asked for.</strong> ' +
+      warn.join('; ') + '. The total mixes periods of different lengths, so it is not a ' +
+      'like-for-like comparison.</div>'
+    : '';
+
+  $('gTable').innerHTML =
+    '<div class="fhead" style="grid-template-columns:1fr 100px 100px 84px 84px 72px">' +
+    '<div>Fund</div><div class="num">In</div><div class="num">Out</div>' +
+    '<div class="num">Total</div><div class="num">Per year</div><div class="num">Vol %</div></div>' +
+    rows +
+    '<p class="sub" style="margin-top:12px">Split equally across the funds chosen and held ' +
+    'throughout, in sterling. Survivorship bias applies: only funds that still exist can be ' +
+    'shown, so any long-run figure here is flattering to the industry. Past performance is not ' +
+    'a guide to future returns, and nothing here is advice.</p>';
+}
+
 </script>
 </body>
 </html>

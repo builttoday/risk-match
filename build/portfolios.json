@@ -1,0 +1,997 @@
+{
+ "platformFee": 0.35,
+ "riskFree": 4.0,
+ "hold": 10,
+ "folds": 4,
+ "portfolios": [
+  {
+   "selection": "highest Sharpe",
+   "weighting": "equal",
+   "folds": [
+    {
+     "cagr": 2.02,
+     "vol": 21.08,
+     "maxDD": -21.6,
+     "sharpe": -0.09,
+     "sortino": -0.16,
+     "weeks": 65
+    },
+    {
+     "cagr": -0.61,
+     "vol": 9.95,
+     "maxDD": -10.8,
+     "sharpe": -0.46,
+     "sortino": -0.56,
+     "weeks": 65
+    },
+    {
+     "cagr": 6.25,
+     "vol": 18.74,
+     "maxDD": -22.3,
+     "sharpe": 0.12,
+     "sortino": 0.14,
+     "weeks": 65
+    },
+    {
+     "cagr": 44.34,
+     "vol": 12.52,
+     "maxDD": -7.2,
+     "sharpe": 3.22,
+     "sortino": 4.96,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 13.0,
+   "worstFold": -0.61,
+   "spread": 18.26,
+   "meanVol": 15.57,
+   "meanSharpe": 0.7,
+   "lastHoldings": [
+    "DXJ",
+    "SPMO",
+    "SMH",
+    "FSAEX",
+    "PGSYX",
+    "SGOL",
+    "FSELX",
+    "EPI",
+    "0P0000W36K.L",
+    "IAU"
+   ]
+  },
+  {
+   "selection": "highest Sharpe",
+   "weighting": "inverse vol",
+   "folds": [
+    {
+     "cagr": 5.6,
+     "vol": 14.64,
+     "maxDD": -14.8,
+     "sharpe": 0.11,
+     "sortino": 0.19,
+     "weeks": 65
+    },
+    {
+     "cagr": -2.12,
+     "vol": 8.33,
+     "maxDD": -8.3,
+     "sharpe": -0.74,
+     "sortino": -0.89,
+     "weeks": 65
+    },
+    {
+     "cagr": 6.78,
+     "vol": 16.41,
+     "maxDD": -20.1,
+     "sharpe": 0.17,
+     "sortino": 0.19,
+     "weeks": 65
+    },
+    {
+     "cagr": 38.63,
+     "vol": 11.15,
+     "maxDD": -7.5,
+     "sharpe": 3.11,
+     "sortino": 4.31,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 12.22,
+   "worstFold": -2.12,
+   "spread": 15.62,
+   "meanVol": 12.63,
+   "meanSharpe": 0.66,
+   "lastHoldings": [
+    "DXJ",
+    "SPMO",
+    "SMH",
+    "FSAEX",
+    "PGSYX",
+    "SGOL",
+    "FSELX",
+    "EPI",
+    "0P0000W36K.L",
+    "IAU"
+   ]
+  },
+  {
+   "selection": "highest Sharpe",
+   "weighting": "min variance (shrunk)",
+   "folds": [
+    {
+     "cagr": 5.65,
+     "vol": 11.22,
+     "maxDD": -10.6,
+     "sharpe": 0.15,
+     "sortino": 0.28,
+     "weeks": 65
+    },
+    {
+     "cagr": -5.43,
+     "vol": 7.7,
+     "maxDD": -10.0,
+     "sharpe": -1.22,
+     "sortino": -1.69,
+     "weeks": 65
+    },
+    {
+     "cagr": 6.67,
+     "vol": 12.97,
+     "maxDD": -16.4,
+     "sharpe": 0.21,
+     "sortino": 0.21,
+     "weeks": 65
+    },
+    {
+     "cagr": 27.55,
+     "vol": 12.18,
+     "maxDD": -11.7,
+     "sharpe": 1.93,
+     "sortino": 2.15,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 8.61,
+   "worstFold": -5.43,
+   "spread": 11.92,
+   "meanVol": 11.02,
+   "meanSharpe": 0.27,
+   "lastHoldings": [
+    "DXJ",
+    "SPMO",
+    "SMH",
+    "FSAEX",
+    "PGSYX",
+    "SGOL",
+    "FSELX",
+    "EPI",
+    "0P0000W36K.L",
+    "IAU"
+   ]
+  },
+  {
+   "selection": "highest Sortino",
+   "weighting": "equal",
+   "folds": [
+    {
+     "cagr": 7.91,
+     "vol": 15.96,
+     "maxDD": -17.0,
+     "sharpe": 0.25,
+     "sortino": 0.43,
+     "weeks": 65
+    },
+    {
+     "cagr": 2.47,
+     "vol": 9.51,
+     "maxDD": -9.7,
+     "sharpe": -0.16,
+     "sortino": -0.21,
+     "weeks": 65
+    },
+    {
+     "cagr": 6.28,
+     "vol": 19.18,
+     "maxDD": -22.6,
+     "sharpe": 0.12,
+     "sortino": 0.14,
+     "weeks": 65
+    },
+    {
+     "cagr": 46.64,
+     "vol": 13.21,
+     "maxDD": -7.4,
+     "sharpe": 3.23,
+     "sortino": 4.89,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 15.82,
+   "worstFold": 2.47,
+   "spread": 17.9,
+   "meanVol": 14.46,
+   "meanSharpe": 0.86,
+   "lastHoldings": [
+    "GLD",
+    "SPMO",
+    "SGOL",
+    "SMH",
+    "DXJ",
+    "IAU",
+    "FSELX",
+    "FSAEX",
+    "KTCSX",
+    "BIAFX"
+   ]
+  },
+  {
+   "selection": "highest Sortino",
+   "weighting": "inverse vol",
+   "folds": [
+    {
+     "cagr": 7.45,
+     "vol": 13.59,
+     "maxDD": -14.2,
+     "sharpe": 0.25,
+     "sortino": 0.46,
+     "weeks": 65
+    },
+    {
+     "cagr": 0.5,
+     "vol": 7.69,
+     "maxDD": -8.2,
+     "sharpe": -0.45,
+     "sortino": -0.57,
+     "weeks": 65
+    },
+    {
+     "cagr": 6.82,
+     "vol": 16.81,
+     "maxDD": -20.4,
+     "sharpe": 0.17,
+     "sortino": 0.19,
+     "weeks": 65
+    },
+    {
+     "cagr": 40.2,
+     "vol": 11.84,
+     "maxDD": -7.3,
+     "sharpe": 3.06,
+     "sortino": 4.15,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 13.74,
+   "worstFold": 0.5,
+   "spread": 15.52,
+   "meanVol": 12.48,
+   "meanSharpe": 0.76,
+   "lastHoldings": [
+    "GLD",
+    "SPMO",
+    "SGOL",
+    "SMH",
+    "DXJ",
+    "IAU",
+    "FSELX",
+    "FSAEX",
+    "KTCSX",
+    "BIAFX"
+   ]
+  },
+  {
+   "selection": "highest Sortino",
+   "weighting": "min variance (shrunk)",
+   "folds": [
+    {
+     "cagr": 13.13,
+     "vol": 10.84,
+     "maxDD": -8.6,
+     "sharpe": 0.84,
+     "sortino": 1.48,
+     "weeks": 65
+    },
+    {
+     "cagr": -3.43,
+     "vol": 7.35,
+     "maxDD": -9.3,
+     "sharpe": -1.01,
+     "sortino": -1.4,
+     "weeks": 65
+    },
+    {
+     "cagr": 6.15,
+     "vol": 12.94,
+     "maxDD": -16.7,
+     "sharpe": 0.17,
+     "sortino": 0.18,
+     "weeks": 65
+    },
+    {
+     "cagr": 29.01,
+     "vol": 11.45,
+     "maxDD": -8.8,
+     "sharpe": 2.18,
+     "sortino": 2.35,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 11.21,
+   "worstFold": -3.43,
+   "spread": 11.84,
+   "meanVol": 10.64,
+   "meanSharpe": 0.55,
+   "lastHoldings": [
+    "GLD",
+    "SPMO",
+    "SGOL",
+    "SMH",
+    "DXJ",
+    "IAU",
+    "FSELX",
+    "FSAEX",
+    "KTCSX",
+    "BIAFX"
+   ]
+  },
+  {
+   "selection": "shallowest drawdown",
+   "weighting": "equal",
+   "folds": [
+    {
+     "cagr": 0.75,
+     "vol": 2.85,
+     "maxDD": -3.5,
+     "sharpe": -1.14,
+     "sortino": -2.12,
+     "weeks": 65
+    },
+    {
+     "cagr": 1.53,
+     "vol": 4.01,
+     "maxDD": -4.4,
+     "sharpe": -0.62,
+     "sortino": -0.89,
+     "weeks": 65
+    },
+    {
+     "cagr": 6.05,
+     "vol": 3.75,
+     "maxDD": -4.2,
+     "sharpe": 0.55,
+     "sortino": 0.69,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.54,
+     "vol": 1.47,
+     "maxDD": -0.9,
+     "sharpe": 0.37,
+     "sortino": 0.65,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 3.22,
+   "worstFold": 0.75,
+   "spread": 2.16,
+   "meanVol": 3.02,
+   "meanSharpe": -0.21,
+   "lastHoldings": [
+    "0P0000144G.L",
+    "0P0001HHNX.L",
+    "0P00000RA9.L",
+    "0P0000UAHH.L",
+    "0P00015BBV.L",
+    "0P0000Y526",
+    "0P0000X4CF.L",
+    "MSDIX",
+    "0P0001ISKL.L",
+    "0P00008F8R.L"
+   ]
+  },
+  {
+   "selection": "shallowest drawdown",
+   "weighting": "inverse vol",
+   "folds": [
+    {
+     "cagr": -0.06,
+     "vol": 0.14,
+     "maxDD": -0.3,
+     "sharpe": -28.98,
+     "sortino": -45.32,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.03,
+     "vol": 0.26,
+     "maxDD": -0.0,
+     "sharpe": 0.13,
+     "sortino": null,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.85,
+     "vol": 0.35,
+     "maxDD": -0.1,
+     "sharpe": 2.46,
+     "sortino": null,
+     "weeks": 65
+    },
+    {
+     "cagr": 3.88,
+     "vol": 0.33,
+     "maxDD": -0.1,
+     "sharpe": -0.37,
+     "sortino": null,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 3.17,
+   "worstFold": -0.06,
+   "spread": 1.9,
+   "meanVol": 0.27,
+   "meanSharpe": -6.69,
+   "lastHoldings": [
+    "0P0000144G.L",
+    "0P0001HHNX.L",
+    "0P00000RA9.L",
+    "0P0000UAHH.L",
+    "0P00015BBV.L",
+    "0P0000Y526",
+    "0P0000X4CF.L",
+    "MSDIX",
+    "0P0001ISKL.L",
+    "0P00008F8R.L"
+   ]
+  },
+  {
+   "selection": "shallowest drawdown",
+   "weighting": "min variance (shrunk)",
+   "folds": [
+    {
+     "cagr": -0.05,
+     "vol": 0.1,
+     "maxDD": -0.3,
+     "sharpe": -39.1,
+     "sortino": -71.04,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.07,
+     "vol": 0.18,
+     "maxDD": 0.0,
+     "sharpe": 0.39,
+     "sortino": null,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.73,
+     "vol": 0.18,
+     "maxDD": 0.0,
+     "sharpe": 4.08,
+     "sortino": null,
+     "weeks": 65
+    },
+    {
+     "cagr": 3.68,
+     "vol": 0.17,
+     "maxDD": 0.0,
+     "sharpe": -1.92,
+     "sortino": null,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 3.11,
+   "worstFold": -0.05,
+   "spread": 1.86,
+   "meanVol": 0.16,
+   "meanSharpe": -9.14,
+   "lastHoldings": [
+    "0P0000144G.L",
+    "0P0001HHNX.L",
+    "0P00000RA9.L",
+    "0P0000UAHH.L",
+    "0P00015BBV.L",
+    "0P0000Y526",
+    "0P0000X4CF.L",
+    "MSDIX",
+    "0P0001ISKL.L",
+    "0P00008F8R.L"
+   ]
+  },
+  {
+   "selection": "least correlated",
+   "weighting": "equal",
+   "folds": [
+    {
+     "cagr": 0.25,
+     "vol": 5.8,
+     "maxDD": -5.2,
+     "sharpe": -0.65,
+     "sortino": -1.1,
+     "weeks": 65
+    },
+    {
+     "cagr": 3.77,
+     "vol": 4.24,
+     "maxDD": -2.6,
+     "sharpe": -0.05,
+     "sortino": -0.1,
+     "weeks": 65
+    },
+    {
+     "cagr": -0.82,
+     "vol": 4.65,
+     "maxDD": -4.0,
+     "sharpe": -1.04,
+     "sortino": -2.1,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.12,
+     "vol": 4.74,
+     "maxDD": -5.4,
+     "sharpe": 0.02,
+     "sortino": 0.04,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 1.83,
+   "worstFold": -0.82,
+   "spread": 2.15,
+   "meanVol": 4.86,
+   "meanSharpe": -0.43,
+   "lastHoldings": [
+    "0P0000144G.L",
+    "REMX",
+    "3UKS.L",
+    "0P00000MDV.L",
+    "SUK2.L",
+    "LUK2.L",
+    "VCSH",
+    "DS2P.L",
+    "DL2P.L",
+    "0P0000L12P.L"
+   ]
+  },
+  {
+   "selection": "least correlated",
+   "weighting": "inverse vol",
+   "folds": [
+    {
+     "cagr": 0.17,
+     "vol": 0.13,
+     "maxDD": -0.2,
+     "sharpe": -28.92,
+     "sortino": -62.62,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.43,
+     "vol": 0.24,
+     "maxDD": -0.0,
+     "sharpe": 1.78,
+     "sortino": null,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.49,
+     "vol": 0.52,
+     "maxDD": -0.1,
+     "sharpe": 0.93,
+     "sortino": 2.49,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.29,
+     "vol": 0.56,
+     "maxDD": -0.1,
+     "sharpe": 0.52,
+     "sortino": 1.21,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 3.34,
+   "worstFold": 0.17,
+   "spread": 1.83,
+   "meanVol": 0.36,
+   "meanSharpe": -6.42,
+   "lastHoldings": [
+    "0P0000144G.L",
+    "REMX",
+    "3UKS.L",
+    "0P00000MDV.L",
+    "SUK2.L",
+    "LUK2.L",
+    "VCSH",
+    "DS2P.L",
+    "DL2P.L",
+    "0P0000L12P.L"
+   ]
+  },
+  {
+   "selection": "least correlated",
+   "weighting": "min variance (shrunk)",
+   "folds": [
+    {
+     "cagr": -0.42,
+     "vol": 1.0,
+     "maxDD": -1.3,
+     "sharpe": -4.41,
+     "sortino": -6.99,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.51,
+     "vol": 0.35,
+     "maxDD": -0.1,
+     "sharpe": 1.43,
+     "sortino": null,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.52,
+     "vol": 0.55,
+     "maxDD": -0.1,
+     "sharpe": 0.96,
+     "sortino": 3.08,
+     "weeks": 65
+    },
+    {
+     "cagr": 4.23,
+     "vol": 0.53,
+     "maxDD": -0.1,
+     "sharpe": 0.43,
+     "sortino": 0.96,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 3.21,
+   "worstFold": -0.42,
+   "spread": 2.1,
+   "meanVol": 0.61,
+   "meanSharpe": -0.4,
+   "lastHoldings": [
+    "0P0000144G.L",
+    "REMX",
+    "3UKS.L",
+    "0P00000MDV.L",
+    "SUK2.L",
+    "LUK2.L",
+    "VCSH",
+    "DS2P.L",
+    "DL2P.L",
+    "0P0000L12P.L"
+   ]
+  },
+  {
+   "selection": "best past return",
+   "weighting": "equal",
+   "folds": [
+    {
+     "cagr": 2.12,
+     "vol": 25.92,
+     "maxDD": -26.5,
+     "sharpe": -0.07,
+     "sortino": -0.11,
+     "weeks": 65
+    },
+    {
+     "cagr": -6.17,
+     "vol": 15.86,
+     "maxDD": -15.6,
+     "sharpe": -0.64,
+     "sortino": -1.05,
+     "weeks": 65
+    },
+    {
+     "cagr": 6.53,
+     "vol": 20.87,
+     "maxDD": -22.2,
+     "sharpe": 0.12,
+     "sortino": 0.14,
+     "weeks": 65
+    },
+    {
+     "cagr": 60.29,
+     "vol": 16.85,
+     "maxDD": -8.1,
+     "sharpe": 3.34,
+     "sortino": 5.32,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 15.69,
+   "worstFold": -6.17,
+   "spread": 26.15,
+   "meanVol": 19.88,
+   "meanSharpe": 0.69,
+   "lastHoldings": [
+    "FSELX",
+    "SMH",
+    "URA",
+    "DXJ",
+    "COPX",
+    "DL2P.L",
+    "0L4Q.L",
+    "0L4T.L",
+    "XLK",
+    "CIBR"
+   ]
+  },
+  {
+   "selection": "best past return",
+   "weighting": "inverse vol",
+   "folds": [
+    {
+     "cagr": 1.89,
+     "vol": 23.35,
+     "maxDD": -25.1,
+     "sharpe": -0.09,
+     "sortino": -0.14,
+     "weeks": 65
+    },
+    {
+     "cagr": -6.85,
+     "vol": 12.86,
+     "maxDD": -13.0,
+     "sharpe": -0.84,
+     "sortino": -1.21,
+     "weeks": 65
+    },
+    {
+     "cagr": 7.22,
+     "vol": 20.62,
+     "maxDD": -22.2,
+     "sharpe": 0.16,
+     "sortino": 0.18,
+     "weeks": 65
+    },
+    {
+     "cagr": 58.65,
+     "vol": 15.72,
+     "maxDD": -6.8,
+     "sharpe": 3.48,
+     "sortino": 5.87,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 15.23,
+   "worstFold": -6.85,
+   "spread": 25.57,
+   "meanVol": 18.14,
+   "meanSharpe": 0.68,
+   "lastHoldings": [
+    "FSELX",
+    "SMH",
+    "URA",
+    "DXJ",
+    "COPX",
+    "DL2P.L",
+    "0L4Q.L",
+    "0L4T.L",
+    "XLK",
+    "CIBR"
+   ]
+  },
+  {
+   "selection": "best past return",
+   "weighting": "min variance (shrunk)",
+   "folds": [
+    {
+     "cagr": -7.23,
+     "vol": 21.05,
+     "maxDD": -29.2,
+     "sharpe": -0.53,
+     "sortino": -0.8,
+     "weeks": 65
+    },
+    {
+     "cagr": -8.36,
+     "vol": 12.02,
+     "maxDD": -12.7,
+     "sharpe": -1.03,
+     "sortino": -1.19,
+     "weeks": 65
+    },
+    {
+     "cagr": 9.57,
+     "vol": 17.46,
+     "maxDD": -18.2,
+     "sharpe": 0.32,
+     "sortino": 0.36,
+     "weeks": 65
+    },
+    {
+     "cagr": 43.0,
+     "vol": 11.57,
+     "maxDD": -3.8,
+     "sharpe": 3.37,
+     "sortino": 6.43,
+     "weeks": 66
+    }
+   ],
+   "meanCagr": 9.25,
+   "worstFold": -8.36,
+   "spread": 20.74,
+   "meanVol": 15.53,
+   "meanSharpe": 0.53,
+   "lastHoldings": [
+    "FSELX",
+    "SMH",
+    "URA",
+    "DXJ",
+    "COPX",
+    "DL2P.L",
+    "0L4Q.L",
+    "0L4T.L",
+    "XLK",
+    "CIBR"
+   ]
+  }
+ ],
+ "benchmarks": {
+  "VWRP.L": {
+   "meanCagr": 12.64,
+   "worstFold": -0.46,
+   "meanVol": 12.87,
+   "folds": [
+    {
+     "cagr": -0.46,
+     "vol": 15.56,
+     "maxDD": -12.8,
+     "sharpe": -0.29,
+     "sortino": -0.43,
+     "weeks": 65
+    },
+    {
+     "cagr": 11.47,
+     "vol": 11.53,
+     "maxDD": -5.6,
+     "sharpe": 0.65,
+     "sortino": 1.01,
+     "weeks": 65
+    },
+    {
+     "cagr": 9.48,
+     "vol": 13.62,
+     "maxDD": -17.2,
+     "sharpe": 0.4,
+     "sortino": 0.39,
+     "weeks": 65
+    },
+    {
+     "cagr": 30.07,
+     "vol": 10.78,
+     "maxDD": -6.4,
+     "sharpe": 2.42,
+     "sortino": 3.86,
+     "weeks": 66
+    }
+   ]
+  },
+  "VUKE.L": {
+   "meanCagr": 12.5,
+   "worstFold": 1.75,
+   "meanVol": 12.9,
+   "folds": [
+    {
+     "cagr": 1.75,
+     "vol": 14.23,
+     "maxDD": -7.9,
+     "sharpe": -0.16,
+     "sortino": -0.18,
+     "weeks": 65
+    },
+    {
+     "cagr": 8.29,
+     "vol": 12.26,
+     "maxDD": -7.3,
+     "sharpe": 0.35,
+     "sortino": 0.45,
+     "weeks": 65
+    },
+    {
+     "cagr": 16.2,
+     "vol": 15.44,
+     "maxDD": -11.9,
+     "sharpe": 0.79,
+     "sortino": 0.85,
+     "weeks": 65
+    },
+    {
+     "cagr": 23.75,
+     "vol": 9.69,
+     "maxDD": -6.3,
+     "sharpe": 2.04,
+     "sortino": 2.71,
+     "weeks": 66
+    }
+   ]
+  },
+  "IWDG.L": {
+   "meanCagr": 11.53,
+   "worstFold": -12.63,
+   "meanVol": 13.88,
+   "folds": [
+    {
+     "cagr": -12.63,
+     "vol": 17.42,
+     "maxDD": -22.6,
+     "sharpe": -0.95,
+     "sortino": -1.14,
+     "weeks": 65
+    },
+    {
+     "cagr": 19.72,
+     "vol": 12.76,
+     "maxDD": -8.3,
+     "sharpe": 1.23,
+     "sortino": 1.93,
+     "weeks": 65
+    },
+    {
+     "cagr": 12.48,
+     "vol": 14.32,
+     "maxDD": -14.2,
+     "sharpe": 0.59,
+     "sortino": 0.68,
+     "weeks": 65
+    },
+    {
+     "cagr": 26.53,
+     "vol": 11.01,
+     "maxDD": -5.1,
+     "sharpe": 2.05,
+     "sortino": 3.76,
+     "weeks": 66
+    }
+   ]
+  },
+  "^FTSE": {
+   "meanCagr": 9.01,
+   "worstFold": -1.59,
+   "meanVol": 12.66,
+   "folds": [
+    {
+     "cagr": -1.59,
+     "vol": 13.97,
+     "maxDD": -10.1,
+     "sharpe": -0.4,
+     "sortino": -0.54,
+     "weeks": 65
+    },
+    {
+     "cagr": 5.81,
+     "vol": 12.16,
+     "maxDD": -9.3,
+     "sharpe": 0.15,
+     "sortino": 0.19,
+     "weeks": 65
+    },
+    {
+     "cagr": 10.73,
+     "vol": 14.53,
+     "maxDD": -13.2,
+     "sharpe": 0.46,
+     "sortino": 0.47,
+     "weeks": 65
+    },
+    {
+     "cagr": 21.09,
+     "vol": 9.96,
+     "maxDD": -8.1,
+     "sharpe": 1.72,
+     "sortino": 2.64,
+     "weeks": 66
+    }
+   ]
+  }
+ },
+ "caveats": [
+  "survivorship bias: universe is funds alive today",
+  "walk-forward: each fold built only on prior data",
+  "backtest only -- not advice, not a recommendation",
+  "platform fee applied; rebalancing costs not modelled"
+ ]
+}

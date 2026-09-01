@@ -1,0 +1,21 @@
+# Personal holdings -- this repository is public. Never publish what the author owns.
+build/holdings*.json
+# holdings.py has the author's own fund names hardcoded in it
+build/holdings.py
+
+# Large intermediate build data. The published site needs only funds.json and series.json;
+# these are the working files that produced them and would bloat the repo for no benefit.
+build/candidates.json
+build/funds_v2.json
+build/funds_v3.json
+build/series_gbp.json
+build/beeton_index.json
+build/*.log
+data/
+
+__pycache__/
+*.pyc
+
+# Screenshots and scratch
+_shot_*.png
+*.bak
