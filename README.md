@@ -15,7 +15,7 @@ suitability, or recommend anything — suitability remains the adviser's judgeme
 Set your own volatility bands in "Set what each risk level means for your firm". The defaults
 are starting points, not anyone's house view.
 
-## The three views
+## The views
 
 **Match by risk** — funds whose measured volatility sits inside your band for a risk level.
 
@@ -26,6 +26,19 @@ sortable by volatility, five-year return, Sharpe or drawdown.
 date, and see what it would have become. Computed in the browser from the price series, so any
 figure can be traced back to a price history. A scenario is linkable:
 `?g=SYM,SYM&amt=1000&from=2026-01-01#growth`.
+
+**My Choice** — star any fund to build a personal shortlist, and enter the units you hold to
+value it. Stored in `localStorage` on your own device: nothing is sent anywhere and nothing is
+committed to this repository, because the site is public and what someone holds is not.
+
+**Factsheet** — a printable analysis of the holdings you entered: valuation, measured
+volatility and drawdown, growth of the mix, allocation by sector and by manager, and an
+automatic warning when one holding dominates.
+
+Portfolio volatility is **computed from the combined weighted series, not averaged across
+holdings**. A weighted average always overstates risk because it assumes everything moves
+together; the factsheet shows both figures so the diversification actually delivered is
+visible.
 
 ## The numbers
 
@@ -52,6 +65,11 @@ to GBP with a matching daily FX series **before** any statistic is computed, bec
 investor the volatility that matters includes the currency move, not the local-currency figure
 on the factsheet. Funds that required conversion are marked, since their sterling volatility
 carries currency risk a hedged share class would not.
+
+London quotes most instruments in **pence**, which Yahoo reports as currency `GBp`. Note that
+`"GBp".upper() == "GBP"`, so any code that uppercases before testing will silently price 108
+LSE instruments a hundred times too high — and because volatility and returns are ratios, the
+error stays invisible until a holding is valued.
 
 ## Coverage
 

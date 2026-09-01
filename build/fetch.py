@@ -106,13 +106,21 @@ def fx_to_gbp(s, cur):
 
 
 def to_gbp(s, px):
-    """Return (closes_in_gbp, converted_flag). Handles pence and foreign currency."""
-    cur = (px["cur"] or "").upper()
+    """Return (closes_in_gbp, converted_flag). Handles pence and foreign currency.
+
+    THE PENCE TEST MUST COME FIRST AND MUST NOT UPPERCASE. Yahoo reports pence as "GBp", and
+    "GBp".upper() == "GBP" -- so testing the uppercased value made the pence branch
+    unreachable and left 108 LSE instruments priced a hundred times too high. Volatility and
+    returns are ratios so they were unaffected, which is exactly why it survived unnoticed
+    until a holding was valued.
+    """
+    raw = px["cur"] or ""
     c = px["c"]
+    if raw in ("GBp", "GBX", "gbx"):
+        return [x / 100.0 for x in c], False        # pence -> pounds, not a conversion
+    cur = raw.upper()
     if cur in ("GBP", ""):
         return c, False
-    if cur == "GBX" or px["cur"] == "GBp":
-        return [x / 100.0 for x in c], False        # pence -> pounds, not a conversion
     fx = fx_to_gbp(s, cur)
     if not fx:
         return None, False

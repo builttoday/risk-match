@@ -208,14 +208,14 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 .azletter { position:sticky; top:56px; background:var(--surface-2); padding:5px 12px;
             font-weight:600; font-size:.8rem; letter-spacing:.1em; color:var(--muted);
             border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-.fundrow { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px;
+.fundrow { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px 40px;
            gap:10px; padding:8px 12px; border-bottom:1px solid var(--line);
            align-items:center; font-size:.88rem; }
 .fundrow:hover { background:var(--surface-2); }
 .fundrow .nm { font-weight:500; }
 .fundrow .meta { color:var(--muted); font-size:.78rem; }
 .fundrow .num { text-align:right; font-family:"IBM Plex Mono",monospace; font-size:.82rem; }
-.fhead { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px; gap:10px;
+.fhead { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px 40px; gap:10px;
          padding:8px 12px; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em;
          color:var(--muted); border-bottom:2px solid var(--line); position:sticky; top:0;
          background:var(--surface); }
@@ -236,6 +236,42 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 .gtot div b { font-family:"Newsreader",Georgia,serif; font-size:1.6rem; font-weight:600; }
 .warnline { background:var(--warn-bg); border:1px solid var(--warn-edge); color:var(--warn);
         padding:9px 12px; border-radius:8px; font-size:.85rem; margin:10px 0; }
+
+.star { border:none; background:none; cursor:pointer; font-size:1.15rem; line-height:1;
+        color:var(--line); padding:2px 4px; }
+.star:hover { color:var(--navy); }
+.star.on { color:#D9A400; }
+.btnrow { display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 4px; }
+.btnrow button { padding:8px 14px; border:1px solid var(--line); border-radius:8px;
+        background:var(--surface); color:var(--ink); cursor:pointer; font-size:.88rem; }
+.btnrow button.primary { background:var(--navy); color:#fff; border-color:var(--navy); }
+.uin { width:100%; padding:4px 6px; border:1px solid var(--line);
+       border-radius:6px; background:var(--surface); color:var(--ink);
+       font-size:.82rem; text-align:right; }
+
+.fstop { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+.fsprint { padding:8px 14px; border:1px solid var(--navy); border-radius:8px;
+           background:var(--navy); color:#fff; cursor:pointer; font-size:.88rem; }
+.fshead { display:flex; gap:30px; flex-wrap:wrap; margin:16px 0 10px; }
+.fshead div span { display:block; font-size:.7rem; text-transform:uppercase;
+           letter-spacing:.08em; color:var(--muted); }
+.fshead div b { font-family:"Newsreader",Georgia,serif; font-size:1.55rem; font-weight:600; }
+.fsh { font-size:1.02rem; margin:26px 0 8px; }
+.fscols { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:26px; }
+.fsbar { display:grid; grid-template-columns:1fr 100px 48px; gap:10px; align-items:center;
+         font-size:.84rem; padding:3px 0; }
+.fsbar-t { background:var(--surface-2); height:8px; border-radius:4px; overflow:hidden; }
+.fsbar-t i { display:block; height:100%; background:var(--navy); }
+.fsbar-v { text-align:right; font-family:"IBM Plex Mono",monospace; font-size:.78rem; }
+.fsnote { font-size:.85rem; color:var(--muted); padding-left:18px; }
+.fsnote li { margin-bottom:5px; }
+@media print {
+  .topbar, .fsprint { display:none !important; }
+  .view { display:none !important; }
+  #factsheetView { display:block !important; }
+  body { background:#fff; }
+  .panel { box-shadow:none; border:none; }
+}
 </style>
 </head>
 <body>
@@ -245,7 +281,9 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
   <div class="nav">
     <a href="#" data-view="match" class="on">Match by risk</a>
     <a href="#" data-view="browse">Browse funds</a>
+    <a href="#" data-view="choice">My Choice</a>
     <a href="#" data-view="growth">Growth calculator</a>
+    <a href="#" data-view="factsheet">Factsheet</a>
   </div>
 </div>
 
@@ -364,13 +402,46 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
         </select></div>
       <div class="fld" style="flex:0 0 120px;"><label for="bqYears">Min years</label>
         <input id="bqYears" type="number" min="0" max="25" step="1" value="0"></div>
+      <div class="fld" style="flex:0 0 130px;"><label for="bqMine">Show</label>
+        <select id="bqMine"><option value="">All funds</option>
+          <option value="1">My Choice only</option></select></div>
     </div>
     <p class="sub" id="bCount"></p>
     <div class="fhead">
       <div>Fund</div><div>Manager</div><div>Sector</div>
-      <div class="num">Vol %</div><div class="num">5yr %</div><div class="num">Max DD</div>
+      <div class="num">Vol %</div><div class="num">5yr %</div><div class="num">Max DD</div><div></div>
     </div>
     <div id="bList"></div>
+  </div>
+</div>
+
+<div id="choiceView" class="view">
+  <div class="panel">
+    <h2>My Choice</h2>
+    <p class="sub">Your own shortlist. Star any fund in <strong>Browse funds</strong> to add it.
+    The list is stored in this browser only &mdash; it is never sent anywhere and never leaves
+    this device, which matters because this site is public.</p>
+    <div id="choiceStats" class="gtot"></div>
+    <div id="choiceActions" class="btnrow" hidden>
+      <button class="primary" id="choiceGrow">Open in the growth calculator</button>
+      <button id="choiceCopy">Copy list</button>
+      <button id="choiceClear">Clear all</button>
+    </div>
+    <div id="choiceList"></div>
+    <div id="choiceHoldings"></div>
+  </div>
+</div>
+
+<div id="factsheetView" class="view">
+  <div class="panel" id="fsPanel">
+    <div class="fstop">
+      <div>
+        <h2>Portfolio factsheet</h2>
+        <p class="sub" id="fsDate"></p>
+      </div>
+      <button id="fsPrint" class="fsprint">Print / save as PDF</button>
+    </div>
+    <div id="fsBody"></div>
   </div>
 </div>
 
@@ -825,14 +896,14 @@ function buildRecord(meta) {
 .azletter { position:sticky; top:56px; background:var(--surface-2); padding:5px 12px;
             font-weight:600; font-size:.8rem; letter-spacing:.1em; color:var(--muted);
             border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-.fundrow { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px;
+.fundrow { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px 40px;
            gap:10px; padding:8px 12px; border-bottom:1px solid var(--line);
            align-items:center; font-size:.88rem; }
 .fundrow:hover { background:var(--surface-2); }
 .fundrow .nm { font-weight:500; }
 .fundrow .meta { color:var(--muted); font-size:.78rem; }
 .fundrow .num { text-align:right; font-family:"IBM Plex Mono",monospace; font-size:.82rem; }
-.fhead { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px; gap:10px;
+.fhead { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px 40px; gap:10px;
          padding:8px 12px; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em;
          color:var(--muted); border-bottom:2px solid var(--line); position:sticky; top:0;
          background:var(--surface); }
@@ -853,6 +924,42 @@ function buildRecord(meta) {
 .gtot div b { font-family:"Newsreader",Georgia,serif; font-size:1.6rem; font-weight:600; }
 .warnline { background:var(--warn-bg); border:1px solid var(--warn-edge); color:var(--warn);
         padding:9px 12px; border-radius:8px; font-size:.85rem; margin:10px 0; }
+
+.star { border:none; background:none; cursor:pointer; font-size:1.15rem; line-height:1;
+        color:var(--line); padding:2px 4px; }
+.star:hover { color:var(--navy); }
+.star.on { color:#D9A400; }
+.btnrow { display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 4px; }
+.btnrow button { padding:8px 14px; border:1px solid var(--line); border-radius:8px;
+        background:var(--surface); color:var(--ink); cursor:pointer; font-size:.88rem; }
+.btnrow button.primary { background:var(--navy); color:#fff; border-color:var(--navy); }
+.uin { width:100%; padding:4px 6px; border:1px solid var(--line);
+       border-radius:6px; background:var(--surface); color:var(--ink);
+       font-size:.82rem; text-align:right; }
+
+.fstop { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+.fsprint { padding:8px 14px; border:1px solid var(--navy); border-radius:8px;
+           background:var(--navy); color:#fff; cursor:pointer; font-size:.88rem; }
+.fshead { display:flex; gap:30px; flex-wrap:wrap; margin:16px 0 10px; }
+.fshead div span { display:block; font-size:.7rem; text-transform:uppercase;
+           letter-spacing:.08em; color:var(--muted); }
+.fshead div b { font-family:"Newsreader",Georgia,serif; font-size:1.55rem; font-weight:600; }
+.fsh { font-size:1.02rem; margin:26px 0 8px; }
+.fscols { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:26px; }
+.fsbar { display:grid; grid-template-columns:1fr 100px 48px; gap:10px; align-items:center;
+         font-size:.84rem; padding:3px 0; }
+.fsbar-t { background:var(--surface-2); height:8px; border-radius:4px; overflow:hidden; }
+.fsbar-t i { display:block; height:100%; background:var(--navy); }
+.fsbar-v { text-align:right; font-family:"IBM Plex Mono",monospace; font-size:.78rem; }
+.fsnote { font-size:.85rem; color:var(--muted); padding-left:18px; }
+.fsnote li { margin-bottom:5px; }
+@media print {
+  .topbar, .fsprint { display:none !important; }
+  .view { display:none !important; }
+  #factsheetView { display:block !important; }
+  body { background:#fff; }
+  .panel { box-shadow:none; border:none; }
+}
 </style></head><body>
 <header>
   <div class="firm">${esc(meta.firm || "")}</div>
@@ -982,6 +1089,12 @@ document.querySelectorAll('.nav a').forEach(function (a) {
     $(v + 'View').classList.add('on');
     if (v === 'browse') initBrowse();
     if (v === 'growth') initGrowth();
+    if (v === 'choice') { initGrowth(); renderChoice(); }
+    if (v === 'factsheet') {
+      $('fsDate').textContent = 'Prepared ' + new Date().toLocaleDateString('en-GB',
+        { day: 'numeric', month: 'long', year: 'numeric' }) + ' — figures in sterling';
+      initGrowth().then(renderFactsheet);
+    }
     history.replaceState(null, '', v === 'match' ? '#' : '#' + v);
   });
 });
@@ -1019,7 +1132,7 @@ async function openFromQuery() {
 
 function openFromHash() {
   var v = (location.hash || '').replace('#', '');
-  if (['browse', 'growth'].indexOf(v) < 0) return;
+  if (['browse', 'growth', 'choice', 'factsheet'].indexOf(v) < 0) return;
   var a = document.querySelector('.nav a[data-view="' + v + '"]');
   if (a) a.click();
 }
@@ -1037,7 +1150,7 @@ function initBrowse() {
     .filter(Boolean))).sort();
   houses.forEach(function (h) { $('bqHouse').add(new Option(h, h)); });
   sectors.forEach(function (x) { $('bqSector').add(new Option(x, x)); });
-  ['bqName', 'bqHouse', 'bqSector', 'bqSort', 'bqYears'].forEach(function (id) {
+  ['bqName', 'bqHouse', 'bqSector', 'bqSort', 'bqYears', 'bqMine'].forEach(function (id) {
     $(id).addEventListener('input', renderBrowse);
   });
   renderBrowse();
@@ -1052,7 +1165,8 @@ function renderBrowse() {
 
   var rows = universe.funds.filter(function (f) {
     return (!q || (f.name || '').toLowerCase().indexOf(q) >= 0) &&
-      (!h || f.house === h) && (!sec || f.sector === sec) && ((f.years || 0) >= minY);
+      (!h || f.house === h) && (!sec || f.sector === sec) && ((f.years || 0) >= minY) &&
+      (!$('bqMine').value || inChoice(f.symbol));
   });
 
   var desc = sort.charAt(0) === '-';
@@ -1084,10 +1198,12 @@ function renderBrowse() {
       '<div class="meta">' + esc(f.sector || '') + '</div>' +
       '<div class="num">' + num(f.volDaily) + '</div>' +
       '<div class="num">' + num(f.r5) + '</div>' +
-      '<div class="num">' + num(f.maxDD) + '</div></div>';
+      '<div class="num">' + num(f.maxDD) + '</div>' +
+      '<div>' + choiceStar(f.symbol) + '</div></div>';
   });
   $('bList').innerHTML = html ||
     '<p class="sub" style="padding:14px">Nothing matches those filters.</p>';
+  wireStars($('bList'));
 }
 
 /* ---------------------------------------------------------------- growth */
@@ -1229,6 +1345,544 @@ function gRender() {
     'a guide to future returns, and nothing here is advice.</p>';
 }
 
+
+/* ============================================================================
+   My Choice -- a personal shortlist of funds.
+
+   Stored in localStorage, on this device only. Nothing is sent anywhere and
+   nothing is committed to the repository: the site is public, and what someone
+   holds or is considering is not.
+   ========================================================================== */
+const LS_CHOICE = 'riskmatch.mychoice';
+
+function choiceLoad() {
+  try {
+    var v = JSON.parse(localStorage.getItem(LS_CHOICE) || '[]');
+    return Array.isArray(v) ? v : [];
+  } catch (e) { return []; }
+}
+
+function choiceSave(list) {
+  try { localStorage.setItem(LS_CHOICE, JSON.stringify(list)); } catch (e) {}
+}
+
+let myChoice = choiceLoad();
+
+function inChoice(sym) { return myChoice.indexOf(sym) >= 0; }
+
+function toggleChoice(sym) {
+  if (inChoice(sym)) myChoice = myChoice.filter(function (s) { return s !== sym; });
+  else myChoice = myChoice.concat([sym]);
+  choiceSave(myChoice);
+  updateChoiceCount();
+  if (typeof renderBrowse === 'function' && $('browseView').classList.contains('on')) renderBrowse();
+  if ($('choiceView') && $('choiceView').classList.contains('on')) renderChoice();
+}
+
+function updateChoiceCount() {
+  var el = document.querySelector('.nav a[data-view="choice"]');
+  if (el) el.textContent = myChoice.length ? 'My Choice (' + myChoice.length + ')' : 'My Choice';
+}
+
+function choiceStar(sym) {
+  return '<button class="star' + (inChoice(sym) ? ' on' : '') + '" data-star="' + esc(sym) +
+    '" title="' + (inChoice(sym) ? 'Remove from My Choice' : 'Add to My Choice') + '">' +
+    (inChoice(sym) ? '&#9733;' : '&#9734;') + '</button>';
+}
+
+function wireStars(root) {
+  (root || document).querySelectorAll('[data-star]').forEach(function (b) {
+    b.onclick = function (ev) { ev.stopPropagation(); toggleChoice(b.dataset.star); };
+  });
+}
+
+/* ------------------------------------------------------------------ view */
+function renderChoice() {
+  var wrap = $('choiceList');
+  var funds = myChoice.map(function (s) {
+    return universe.funds.find(function (f) { return f.symbol === s; });
+  }).filter(Boolean);
+
+  if (!funds.length) {
+    wrap.innerHTML = '<p class="sub" style="padding:18px 0">Nothing saved yet. Open ' +
+      '<strong>Browse funds</strong> and use the star beside any fund to add it here. ' +
+      'The list is kept in this browser only.</p>';
+    $('choiceActions').hidden = true;
+    $('choiceStats').innerHTML = '';
+    return;
+  }
+  $('choiceActions').hidden = false;
+
+  // A shortlist is worth summarising: the spread of volatility across it says more about
+  // what has been assembled than any single fund's number does.
+  var vols = funds.map(function (f) { return f.volDaily; }).filter(function (v) { return v != null; });
+  var avg = vols.length ? vols.reduce(function (a, b) { return a + b; }, 0) / vols.length : null;
+  var lo = vols.length ? Math.min.apply(null, vols) : null;
+  var hi = vols.length ? Math.max.apply(null, vols) : null;
+  var dds = funds.map(function (f) { return f.maxDD; }).filter(function (v) { return v != null; });
+  var worst = dds.length ? Math.min.apply(null, dds) : null;
+
+  $('choiceStats').innerHTML =
+    '<div><span>Funds</span><b>' + funds.length + '</b></div>' +
+    (avg == null ? '' :
+      '<div><span>Average volatility</span><b>' + avg.toFixed(1) + '%</b></div>' +
+      '<div><span>Range</span><b>' + lo.toFixed(1) + '&ndash;' + hi.toFixed(1) + '%</b></div>') +
+    (worst == null ? '' :
+      '<div><span>Worst drawdown held</span><b>' + worst.toFixed(1) + '%</b></div>');
+
+  function num(v, d) { return v == null ? '<span class="meta">&mdash;</span>' : v.toFixed(d || 1); }
+  wrap.innerHTML =
+    '<div class="fhead" style="grid-template-columns:1fr 120px 68px 68px 62px 96px 40px">' +
+    '<div>Fund</div><div>Manager</div>' +
+    '<div class="num">Vol %</div><div class="num">5yr %</div><div class="num">Max DD</div>' +
+    '<div class="num">Units held</div><div></div></div>' +
+    funds.map(function (f) {
+      return '<div class="fundrow" style="grid-template-columns:1fr 120px 68px 68px 62px 96px 40px">' +
+        '<div><div class="nm">' + esc(f.name || f.symbol) + '</div><div class="meta">' +
+        esc(f.symbol) + (f.years ? ' &middot; ' + f.years + 'y' : '') + '</div></div>' +
+        '<div class="meta">' + esc(f.house || '') + '</div>' +
+        '<div class="num">' + num(f.volDaily) + '</div>' +
+        '<div class="num">' + num(f.r5) + '</div>' +
+        '<div class="num">' + num(f.maxDD) + '</div>' +
+        '<div><input class="uin" type="number" min="0" step="any" data-units="' +
+          esc(f.symbol) + '" value="' + (myUnits[f.symbol] || '') + '" placeholder="0"></div>' +
+        '<div>' + choiceStar(f.symbol) + '</div></div>';
+    }).join('');
+  wireStars(wrap);
+  wrap.querySelectorAll('[data-units]').forEach(function (i) {
+    i.onchange = function () { setUnits(i.dataset.units, parseFloat(i.value)); };
+  });
+  if (typeof renderHoldings === 'function') renderHoldings();
+}
+
+function choiceToGrowth() {
+  var withSeries = myChoice.filter(function (s) { return !SERIES || SERIES[s]; });
+  document.querySelector('.nav a[data-view="growth"]').click();
+  initGrowth().then(function () {
+    var missing = myChoice.filter(function (s) { return !SERIES[s]; });
+    gSel = myChoice.filter(function (s) { return SERIES[s]; });
+    gRender();
+    if (missing.length) {
+      $('gWarn').innerHTML = '<div class="warnline"><strong>Not shown: ' +
+        missing.map(esc).join(', ') + '.</strong> Too little price history to chart. ' +
+        'They are excluded from the totals, so this is not your whole shortlist.</div>' +
+        $('gWarn').innerHTML;
+    }
+  });
+}
+
+function choiceClear() {
+  if (!myChoice.length) return;
+  if (!confirm('Remove all ' + myChoice.length + ' funds from My Choice?')) return;
+  myChoice = [];
+  choiceSave(myChoice);
+  updateChoiceCount();
+  renderChoice();
+}
+
+function choiceCopy() {
+  var txt = myChoice.map(function (s) {
+    var f = universe.funds.find(function (x) { return x.symbol === s; }) || {};
+    return (f.name || s) + '\t' + s;
+  }).join('\n');
+  navigator.clipboard.writeText(txt).then(function () {
+    var b = $('choiceCopy');
+    var t = b.textContent; b.textContent = 'Copied';
+    setTimeout(function () { b.textContent = t; }, 1400);
+  }, function () {});
+}
+
+/* ============================================================================
+   My Choice, with quantities -- a real holdings valuation.
+
+   Each entry may carry a number of units (shares for a listed instrument, units
+   for a fund). Value = units x the last sterling price, which is why every
+   series is converted to GBP at build time.
+
+   WHY THE PORTFOLIO VOLATILITY IS COMPUTED, NOT AVERAGED
+   A weighted average of each fund's volatility is always too high, because it
+   assumes every holding moves together. The real figure comes from building the
+   weighted return series and measuring that, which captures the diversification
+   the holdings actually gave you. The gap between the two is worth seeing, so
+   both are shown.
+   ========================================================================== */
+
+const LS_UNITS = 'riskmatch.units';
+
+function unitsLoad() {
+  try {
+    var v = JSON.parse(localStorage.getItem(LS_UNITS) || '{}');
+    return (v && typeof v === 'object') ? v : {};
+  } catch (e) { return {}; }
+}
+function unitsSave(u) {
+  try { localStorage.setItem(LS_UNITS, JSON.stringify(u)); } catch (e) {}
+}
+let myUnits = unitsLoad();
+
+function setUnits(sym, n) {
+  if (!n || n <= 0) delete myUnits[sym]; else myUnits[sym] = n;
+  unitsSave(myUnits);
+  renderChoice();
+}
+
+function fundBy(sym) {
+  return universe.funds.find(function (f) { return f.symbol === sym; }) || null;
+}
+
+function holdingValue(sym) {
+  var f = fundBy(sym);
+  if (!f || f.last == null || !myUnits[sym]) return null;
+  return myUnits[sym] * f.last;
+}
+
+/* Portfolio statistics from the actual weighted series, over a chosen window. */
+function portfolioStats(symsWithWeights, years) {
+  if (!SERIES) return null;
+  var syms = Object.keys(symsWithWeights).filter(function (s) { return SERIES[s]; });
+  if (!syms.length) return null;
+
+  // Common monthly axis: latest start, earliest end, so every holding is present throughout.
+  var start = -Infinity, end = Infinity;
+  syms.forEach(function (s) {
+    var t = SERIES[s].t;
+    start = Math.max(start, t[0]);
+    end = Math.min(end, t[t.length - 1]);
+  });
+  if (years) start = Math.max(start, end - years * 365.25 * 86400);
+  if (!(end > start)) return null;
+
+  var axis = SERIES[syms[0]].t.filter(function (t) { return t >= start && t <= end; });
+  if (axis.length < 8) return null;
+
+  var series = {};
+  syms.forEach(function (s) {
+    var S = SERIES[s], j = 0, last = null, px = [];
+    for (var i = 0; i < axis.length; i++) {
+      while (j < S.t.length && S.t[j] <= axis[i]) { last = S.c[j]; j++; }
+      if (last == null) return;
+      px.push(last);
+    }
+    if (px.length === axis.length) series[s] = px;
+  });
+  var use = Object.keys(series);
+  if (!use.length) return null;
+
+  var wTot = use.reduce(function (a, s) { return a + symsWithWeights[s]; }, 0);
+  if (!wTot) return null;
+
+  var rets = [], growth = 1, peak = 1, mdd = 0;
+  for (var i = 1; i < axis.length; i++) {
+    var r = 0;
+    use.forEach(function (s) {
+      r += (symsWithWeights[s] / wTot) * (series[s][i] / series[s][i - 1] - 1);
+    });
+    rets.push(r);
+    growth *= (1 + r);
+    peak = Math.max(peak, growth);
+    mdd = Math.min(mdd, growth / peak - 1);
+  }
+  var n = rets.length;
+  var mean = rets.reduce(function (a, b) { return a + b; }, 0) / n;
+  var sd = Math.sqrt(rets.reduce(function (a, b) { return a + (b - mean) * (b - mean); }, 0) / (n - 1));
+  var yrs = n / 12;
+
+  // The naive figure, shown alongside so the diversification benefit is visible.
+  var naive = 0;
+  use.forEach(function (s) {
+    var f = fundBy(s);
+    if (f && f.volDaily != null) naive += (symsWithWeights[s] / wTot) * f.volDaily;
+  });
+
+  return {
+    vol: sd * Math.sqrt(12) * 100,
+    naiveVol: naive,
+    maxDD: mdd * 100,
+    growth: (growth - 1) * 100,
+    cagr: yrs >= 1 ? (Math.pow(growth, 1 / yrs) - 1) * 100 : null,
+    years: yrs,
+    used: use.length,
+    from: axis[0]
+  };
+}
+
+function renderHoldings() {
+  var box = $('choiceHoldings');
+  if (!box) return;
+  var held = myChoice.filter(function (s) { return myUnits[s] > 0; });
+  if (!held.length) {
+    box.innerHTML = '<p class="sub">Enter a number of units or shares against any fund above ' +
+      'to value the holding and measure the portfolio properly.</p>';
+    return;
+  }
+  var weights = {}, total = 0;
+  held.forEach(function (s) {
+    var v = holdingValue(s);
+    if (v != null) { weights[s] = v; total += v; }
+  });
+  var st = portfolioStats(weights, null);
+
+  var rows = held.map(function (s) {
+    var f = fundBy(s), v = holdingValue(s);
+    return '<div class="fundrow" style="grid-template-columns:1fr 110px 110px 90px 70px">' +
+      '<div><div class="nm">' + esc(f ? (f.name || s) : s) + '</div>' +
+      '<div class="meta">' + esc(s) + '</div></div>' +
+      '<div class="num">' + (myUnits[s]).toLocaleString('en-GB') + '</div>' +
+      '<div class="num">' + (f && f.last != null ? '&pound;' + f.last.toFixed(4) : '&mdash;') + '</div>' +
+      '<div class="num">' + (v == null ? '&mdash;' : '&pound;' + v.toFixed(2)) + '</div>' +
+      '<div class="num">' + (total && v != null ? (v / total * 100).toFixed(1) + '%' : '&mdash;') +
+      '</div></div>';
+  }).join('');
+
+  box.innerHTML =
+    '<h3 style="margin:22px 0 8px;font-size:1.05rem">Holdings</h3>' +
+    '<div class="gtot">' +
+      '<div><span>Total value</span><b>&pound;' + total.toLocaleString('en-GB',
+        { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</b></div>' +
+      (st ? '<div><span>Portfolio volatility</span><b>' + st.vol.toFixed(1) + '%</b></div>' +
+            '<div><span>If they moved together</span><b>' + st.naiveVol.toFixed(1) + '%</b></div>' +
+            '<div><span>Worst fall</span><b>' + st.maxDD.toFixed(1) + '%</b></div>' : '') +
+    '</div>' +
+    '<div class="fhead" style="grid-template-columns:1fr 110px 110px 90px 70px">' +
+    '<div>Holding</div><div class="num">Units</div><div class="num">Price</div>' +
+    '<div class="num">Value</div><div class="num">Weight</div></div>' + rows +
+    (st ? '<p class="sub" style="margin-top:12px">Measured over ' + st.years.toFixed(1) +
+      ' years, the longest window in which all ' + st.used + ' priced holdings existed. ' +
+      'Portfolio volatility is computed from the combined series, not averaged &mdash; the ' +
+      'gap between it and the "moved together" figure is the diversification your mix ' +
+      'actually delivered. Not advice.</p>' : '');
+}
+
+/* ---- My Choice wiring ---- */
+if ($('choiceGrow')) $('choiceGrow').onclick = choiceToGrowth;
+if ($('choiceCopy')) $('choiceCopy').onclick = choiceCopy;
+if ($('choiceClear')) $('choiceClear').onclick = choiceClear;
+updateChoiceCount();
+
+/* ============================================================================
+   Portfolio factsheet.
+
+   Builds a printable analysis of the holdings in My Choice: valuation, measured
+   risk, allocation, concentration and growth. Everything is computed in the
+   browser from the sterling price series, so every figure traces back to a
+   price history rather than a stored result.
+
+   It deliberately reads like a factsheet and deliberately does not rate,
+   score or recommend the portfolio. It reports what the mix did.
+   ========================================================================== */
+
+function fsWindowSeries(weights) {
+  /* Weighted monthly series over the longest window in which every priced
+     holding existed. Returns {axis, values, used, missing}. */
+  var syms = Object.keys(weights).filter(function (s) { return SERIES && SERIES[s]; });
+  var missing = Object.keys(weights).filter(function (s) { return !SERIES || !SERIES[s]; });
+  if (!syms.length) return null;
+
+  var start = -Infinity, end = Infinity;
+  syms.forEach(function (s) {
+    var t = SERIES[s].t;
+    start = Math.max(start, t[0]);
+    end = Math.min(end, t[t.length - 1]);
+  });
+  if (!(end > start)) return null;
+
+  var axis = SERIES[syms[0]].t.filter(function (t) { return t >= start && t <= end; });
+  if (axis.length < 6) return null;
+
+  var px = {};
+  syms.forEach(function (s) {
+    var S = SERIES[s], j = 0, last = null, arr = [];
+    for (var i = 0; i < axis.length; i++) {
+      while (j < S.t.length && S.t[j] <= axis[i]) { last = S.c[j]; j++; }
+      if (last == null) return;
+      arr.push(last);
+    }
+    if (arr.length === axis.length) px[s] = arr;
+  });
+  var use = Object.keys(px);
+  if (!use.length) return null;
+
+  var wTot = use.reduce(function (a, s) { return a + weights[s]; }, 0);
+  var vals = [1];
+  for (var i = 1; i < axis.length; i++) {
+    var r = 0;
+    use.forEach(function (s) { r += (weights[s] / wTot) * (px[s][i] / px[s][i - 1] - 1); });
+    vals.push(vals[vals.length - 1] * (1 + r));
+  }
+  return { axis: axis, values: vals, used: use, missing: missing };
+}
+
+function fsSparkline(axis, values, w, h) {
+  var lo = Math.min.apply(null, values), hi = Math.max.apply(null, values);
+  var pad = (hi - lo) * 0.08 || 0.01;
+  lo -= pad; hi += pad;
+  var pts = values.map(function (v, i) {
+    var x = (i / (values.length - 1)) * (w - 44) + 38;
+    var y = h - 18 - ((v - lo) / (hi - lo)) * (h - 34);
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  });
+  var d0 = new Date(axis[0] * 1000).toISOString().slice(0, 7);
+  var d1 = new Date(axis[axis.length - 1] * 1000).toISOString().slice(0, 7);
+  var base = (h - 18 - ((1 - lo) / (hi - lo)) * (h - 34)).toFixed(1);
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="' + h + '" role="img" ' +
+    'aria-label="Growth of the portfolio">' +
+    '<line x1="38" y1="' + base + '" x2="' + (w - 6) + '" y2="' + base +
+      '" stroke="var(--line)" stroke-dasharray="3 3"/>' +
+    '<polyline fill="none" stroke="var(--navy)" stroke-width="2" points="' + pts.join(' ') + '"/>' +
+    '<text x="0" y="12" font-size="10" fill="var(--muted)">' + hi.toFixed(2) + '&times;</text>' +
+    '<text x="0" y="' + (h - 4) + '" font-size="10" fill="var(--muted)">' + lo.toFixed(2) + '&times;</text>' +
+    '<text x="38" y="' + (h - 4) + '" font-size="10" fill="var(--muted)">' + d0 + '</text>' +
+    '<text x="' + (w - 6) + '" y="' + (h - 4) + '" font-size="10" text-anchor="end" ' +
+      'fill="var(--muted)">' + d1 + '</text>' +
+    '</svg>';
+}
+
+function fsBars(rows, total) {
+  return rows.map(function (r) {
+    var pc = total ? (r[1] / total * 100) : 0;
+    return '<div class="fsbar"><div class="fsbar-l">' + esc(r[0]) + '</div>' +
+      '<div class="fsbar-t"><i style="width:' + pc.toFixed(1) + '%"></i></div>' +
+      '<div class="fsbar-v">' + pc.toFixed(1) + '%</div></div>';
+  }).join('');
+}
+
+function renderFactsheet() {
+  var box = $('fsBody');
+  var held = myChoice.filter(function (s) { return myUnits[s] > 0; });
+  if (!held.length) {
+    box.innerHTML = '<p class="sub">No holdings yet. Star funds in <strong>Browse funds</strong>, ' +
+      'then enter the units you hold in <strong>My Choice</strong>.</p>';
+    return;
+  }
+
+  var weights = {}, total = 0, rows = [];
+  held.forEach(function (s) {
+    var f = fundBy(s);
+    var v = (f && f.last != null) ? myUnits[s] * f.last : null;
+    if (v != null) { weights[s] = v; total += v; }
+    rows.push({ f: f, sym: s, units: myUnits[s], value: v });
+  });
+  rows.sort(function (a, b) { return (b.value || 0) - (a.value || 0); });
+
+  var ser = fsWindowSeries(weights);
+  var stats = null;
+  if (ser) {
+    var vals = ser.values;
+    var rets = [];
+    for (var i = 1; i < vals.length; i++) rets.push(vals[i] / vals[i - 1] - 1);
+    var n = rets.length;
+    var mean = rets.reduce(function (a, b) { return a + b; }, 0) / n;
+    var sd = Math.sqrt(rets.reduce(function (a, b) { return a + (b - mean) * (b - mean); }, 0) / (n - 1));
+    var peak = 1, mdd = 0;
+    vals.forEach(function (v) { peak = Math.max(peak, v); mdd = Math.min(mdd, v / peak - 1); });
+    var yrs = n / 12;
+    stats = {
+      vol: sd * Math.sqrt(12) * 100,
+      maxDD: mdd * 100,
+      growth: (vals[vals.length - 1] - 1) * 100,
+      cagr: yrs >= 1 ? (Math.pow(vals[vals.length - 1], 1 / yrs) - 1) * 100 : null,
+      years: yrs
+    };
+    // The comparison that matters: what a weighted average would have claimed.
+    var naive = 0;
+    Object.keys(weights).forEach(function (s) {
+      var f = fundBy(s);
+      if (f && f.volDaily != null) naive += (weights[s] / total) * f.volDaily;
+    });
+    stats.naive = naive;
+  }
+
+  var bySector = {}, byHouse = {};
+  rows.forEach(function (r) {
+    if (r.value == null || !r.f) return;
+    var sec = r.f.sector || 'Unclassified', h = r.f.house || 'Unknown';
+    bySector[sec] = (bySector[sec] || 0) + r.value;
+    byHouse[h] = (byHouse[h] || 0) + r.value;
+  });
+  var secRows = Object.keys(bySector).map(function (k) { return [k, bySector[k]]; })
+    .sort(function (a, b) { return b[1] - a[1]; });
+  var houseRows = Object.keys(byHouse).map(function (k) { return [k, byHouse[k]]; })
+    .sort(function (a, b) { return b[1] - a[1]; }).slice(0, 8);
+
+  var biggest = rows[0];
+  var conc = (biggest && biggest.value != null && total) ? biggest.value / total * 100 : 0;
+
+  var money = function (v) {
+    return v.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  box.innerHTML =
+    '<div class="fshead">' +
+      '<div><span>Total value</span><b>&pound;' + money(total) + '</b></div>' +
+      '<div><span>Holdings</span><b>' + rows.length + '</b></div>' +
+      (stats ? '<div><span>Volatility</span><b>' + stats.vol.toFixed(1) + '%</b></div>' +
+               '<div><span>Worst fall</span><b>' + stats.maxDD.toFixed(1) + '%</b></div>' +
+               (stats.cagr != null ? '<div><span>Return a year</span><b>' +
+                  stats.cagr.toFixed(1) + '%</b></div>' : '') : '') +
+    '</div>' +
+
+    (conc > 25 ? '<div class="warnline"><strong>Concentrated.</strong> ' +
+      esc(biggest.f ? (biggest.f.name || biggest.sym) : biggest.sym) + ' is ' +
+      conc.toFixed(0) + '% of the portfolio. The measured risk below is largely that ' +
+      'one holding&rsquo;s risk.</div>' : '') +
+
+    (ser ? '<h3 class="fsh">Growth of the mix</h3>' +
+      '<p class="sub">Rebased to 1.00 at the start of the longest window in which every ' +
+      'priced holding existed (' + stats.years.toFixed(1) + ' years). Total ' +
+      (stats.growth >= 0 ? '+' : '') + stats.growth.toFixed(1) + '%.</p>' +
+      fsSparkline(ser.axis, ser.values, 760, 150) : '') +
+
+    '<h3 class="fsh">Holdings</h3>' +
+    '<div class="fhead" style="grid-template-columns:1fr 90px 90px 100px 70px 64px 66px">' +
+    '<div>Holding</div><div class="num">Units</div><div class="num">Price</div>' +
+    '<div class="num">Value</div><div class="num">Weight</div><div class="num">Vol %</div>' +
+    '<div class="num">Max DD</div></div>' +
+    rows.map(function (r) {
+      var f = r.f || {};
+      return '<div class="fundrow" style="grid-template-columns:1fr 90px 90px 100px 70px 64px 66px">' +
+        '<div><div class="nm">' + esc(f.name || r.sym) + '</div><div class="meta">' +
+        esc(r.sym) + (f.sector ? ' &middot; ' + esc(f.sector) : '') + '</div></div>' +
+        '<div class="num">' + r.units.toLocaleString('en-GB') + '</div>' +
+        '<div class="num">' + (f.last != null ? '&pound;' + f.last.toFixed(4) : '&mdash;') + '</div>' +
+        '<div class="num">' + (r.value == null ? '&mdash;' : '&pound;' + money(r.value)) + '</div>' +
+        '<div class="num">' + (r.value != null && total ? (r.value / total * 100).toFixed(1) + '%' : '&mdash;') + '</div>' +
+        '<div class="num">' + (f.volDaily != null ? f.volDaily.toFixed(1) : '&mdash;') + '</div>' +
+        '<div class="num">' + (f.maxDD != null ? f.maxDD.toFixed(1) : '&mdash;') + '</div></div>';
+    }).join('') +
+
+    '<div class="fscols">' +
+      '<div><h3 class="fsh">By sector</h3>' + fsBars(secRows, total) + '</div>' +
+      '<div><h3 class="fsh">By manager</h3>' + fsBars(houseRows, total) + '</div>' +
+    '</div>' +
+
+    (stats ? '<h3 class="fsh">What the diversification was worth</h3>' +
+      '<p class="sub">A weighted average of the holdings&rsquo; own volatilities would put this ' +
+      'portfolio at <strong>' + stats.naive.toFixed(1) + '%</strong>. Measured from the ' +
+      'combined series it is <strong>' + stats.vol.toFixed(1) + '%</strong>. ' +
+      (stats.naive > stats.vol
+        ? 'The difference is the diversification the mix actually delivered &mdash; the holdings ' +
+          'did not all move together.'
+        : 'There is no benefit visible here, which happens when one holding dominates or the ' +
+          'holdings move closely together.') + '</p>' : '') +
+
+    '<h3 class="fsh">How these figures were produced</h3>' +
+    '<ul class="fsnote">' +
+      '<li>Every price series is converted to sterling before measurement, so currency ' +
+      'movement is included where a holding is priced abroad.</li>' +
+      '<li>Volatility and drawdown are computed from the combined monthly series over the ' +
+      'window shown, not averaged across holdings.</li>' +
+      '<li>Values use the latest available price and the units entered. Nothing is verified ' +
+      'against a custodian or platform statement.</li>' +
+      (ser && ser.missing.length ? '<li><strong>Excluded for want of price history: ' +
+        ser.missing.map(esc).join(', ') + '.</strong> The figures above are not the whole ' +
+        'portfolio.</li>' : '') +
+      '<li>Past performance is not a guide to future returns.</li>' +
+      '<li>This is a measurement of a portfolio you entered. It is not advice, not a ' +
+      'recommendation, and not a suitability assessment.</li>' +
+    '</ul>';
+}
+
+if ($('fsPrint')) $('fsPrint').onclick = function () { window.print(); };
 </script>
 </body>
 </html>
