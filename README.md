@@ -19,8 +19,12 @@ are starting points, not anyone's house view.
 
 **Match by risk** — funds whose measured volatility sits inside your band for a risk level.
 
-**Browse funds** — all 982, A–Z, filtered by fund manager, sector, minimum history, and
-sortable by volatility, five-year return, Sharpe or drawdown.
+**Browse funds** — all 974, A–Z, filtered by fund manager, sector, minimum history, and
+sorted by clicking any column header. Volatility, five-year return, drawdown, Sharpe, Sortino,
+beta and worst twelve months are shown by default; **Show all figures** adds weekly volatility,
+one- and three-year returns, correlation and CAGR. Select rows to send them straight to the
+growth calculator or My Choice, and each row links to a factsheet search and its price
+history.
 
 **Growth calculator** — pick funds, set an amount, choose a rolling period or a specific start
 date, and see what it would have become. Computed in the browser from the price series, so any
@@ -54,6 +58,18 @@ Also computed: maximum drawdown, CAGR, Sharpe and Sortino (against a stated 4% r
 because neither means anything without one), beta and correlation to a global GBP benchmark,
 worst rolling twelve months, and 1/3/5-year returns.
 
+**Beta and correlation use the same 60 monthly returns for every fund**, against VWRP.L. That
+is the factsheet convention, and a single shared window is what makes two funds' betas
+comparable — a fund measured over its own longest history is not being measured against the
+same market. A fund without 36 months inside that window shows a dash rather than a figure
+nobody else's is comparable to. The benchmark's own beta and correlation come out at exactly
+1.00, which is the check that the calculation is wired up correctly.
+
+Pairing a fund with the benchmark by *exact timestamp* does not work: Yahoo stamps an
+LSE-listed ETF and an OEIC share class at different times of day, so the intersection is
+usually empty. That silently left 63% of the universe with no beta at all — and a missing beta
+looks exactly like a fund with too little history. Match on calendar month instead.
+
 This is **realised** risk, looking backwards. Risk-profiling services publish forward-looking
 expected volatility from a capital markets model — a different measure that will not agree with
 these figures. Past volatility is not a promise about future volatility.
@@ -73,8 +89,8 @@ error stays invisible until a holding is valued.
 
 ## Coverage
 
-982 share classes and instruments, up to 25 years of history — median 8.7 years, with 460 funds
-having ten years or more and 220 having twenty. Not the whole market: there is no free way to
+974 share classes and instruments, up to 25 years of history — median 8.7 years, with 456 funds
+having ten years or more and 219 having twenty. Not the whole market: there is no free way to
 enumerate every UK fund. The FCA Register API returns at most 20 rows per search with no working
 pagination, and its bulk extract is a paid service.
 
@@ -85,7 +101,15 @@ under any of three ISINs and five name forms. Full coverage needs a commercial d
 **Searching by ISIN works far better than by name.** A fund that returns nothing for nine name
 variations resolves immediately from its ISIN.
 
-Price data is from public sources and is suitable for research, not as a licensed feed.
+Price data is from public sources and is suitable for research, not as a licensed feed. Some
+of it is simply wrong: fourteen instruments arrived with volatilities between 126% and
+1,958,187% a year, which is not a risky fund but a broken history. `build/repair.py` finds
+them and separates the two causes — a *denomination flip*, where a stretch of the history is
+reported in a different unit and the two breaks invert each other (GR8.L fell 99.0% in one
+month and rose 10,057% the next: a divide by 103 then a multiply by 101), and an *unreversed
+level break*, where the early history belongs to a different instrument and can only be cut
+away (FRAS.L steps 43× in February 2007 and never returns). Six were recovered, eight were
+dropped. A wrong number on a risk tool is worse than a missing one.
 
 ## Fund manager and sector are derived
 
@@ -122,6 +146,8 @@ build/discover.py   find candidate funds (Yahoo search, fund houses + FTSE 100 +
 build/fetch.py      price them, convert to GBP, compute statistics and weekly series
 build/names.py      backfill full names from chart metadata
 build/classify.py   derive manager and sector, normalise names for FCA matching
+build/repair.py     re-measure instruments whose price series is visibly broken
 build/pack.py       write funds.json and series.json for the site
+build/beta.py       recompute beta and correlation on a shared monthly window
 build/portfolio.py  walk-forward portfolio test
 ```

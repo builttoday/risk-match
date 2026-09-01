@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
+:root { --bgrid: 30px 1fr 118px 130px 62px 62px 62px 58px 58px 52px 58px 40px;
   --paper: #F8FAFC; --surface: #FFFFFF; --surface-2: #F1F5F9;
   --ink: #121821; --muted: #5A6675; --line: #DDE4EC;
   --navy: #1B3A6B; --navy-soft: #E7EDF7;
@@ -41,6 +41,9 @@
 }
 
 * { box-sizing: border-box; }
+/* The hidden attribute loses to any explicit display rule, which silently broke a panel
+   twice in this file (the selection bar and the growth date field). Make it win everywhere. */
+[hidden] { display: none !important; }
 html, body { margin: 0; padding: 0; }
 body {
   background: var(--paper); color: var(--ink);
@@ -208,14 +211,14 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 .azletter { position:sticky; top:56px; background:var(--surface-2); padding:5px 12px;
             font-weight:600; font-size:.8rem; letter-spacing:.1em; color:var(--muted);
             border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-.fundrow { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px 40px;
+.fundrow { display:grid; grid-template-columns:var(--bgrid);
            gap:10px; padding:8px 12px; border-bottom:1px solid var(--line);
            align-items:center; font-size:.88rem; }
 .fundrow:hover { background:var(--surface-2); }
 .fundrow .nm { font-weight:500; }
 .fundrow .meta { color:var(--muted); font-size:.78rem; }
 .fundrow .num { text-align:right; font-family:"IBM Plex Mono",monospace; font-size:.82rem; }
-.fhead { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px 40px; gap:10px;
+.fhead { display:grid; grid-template-columns:var(--bgrid); gap:10px;
          padding:8px 12px; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em;
          color:var(--muted); border-bottom:2px solid var(--line); position:sticky; top:0;
          background:var(--surface); }
@@ -272,6 +275,47 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
   body { background:#fff; }
   .panel { box-shadow:none; border:none; }
 }
+
+.selbar { position:sticky; bottom:12px; z-index:5; position:sticky; bottom:0; z-index:8; display:flex; gap:10px; align-items:center;
+          flex-wrap:wrap; background:var(--navy-soft); border:1px solid var(--line);
+          border-radius:10px; padding:10px 14px; margin:10px 0; }
+.selbar span { font-size:.88rem; font-weight:600; color:var(--navy); margin-right:auto; }
+.selbar button { padding:7px 12px; border:1px solid var(--line); border-radius:8px;
+          background:var(--surface); color:var(--ink); cursor:pointer; font-size:.85rem; }
+.selbar button.primary { background:var(--navy); color:#fff; border-color:var(--navy); }
+.fundrow input[type=checkbox] { width:15px; height:15px; cursor:pointer; }
+
+.fundrow.inchoice { background:var(--navy-soft); box-shadow:inset 3px 0 0 var(--navy); }
+.mine { display:inline-block; margin-left:8px; font-size:.64rem; font-weight:600;
+        letter-spacing:.08em; text-transform:uppercase; color:var(--navy);
+        border:1px solid var(--navy); border-radius:20px; padding:1px 7px;
+        vertical-align:middle; }
+.fundrow .meta a { color:var(--muted); text-decoration:underline; text-underline-offset:2px; }
+.fundrow .meta a:hover { color:var(--navy); }
+.toast { position:fixed; left:50%; bottom:26px; transform:translateX(-50%);
+         background:var(--navy); color:#fff; padding:11px 20px; border-radius:24px;
+         font-size:.9rem; box-shadow:var(--shadow); z-index:60; }
+
+.fhead .sortable { cursor:pointer; user-select:none; }
+.fhead .sortable:hover { color:var(--navy); }
+.fhead .sortable i { font-style:normal; opacity:0; margin-left:4px; }
+.fhead .sortable.on i { opacity:1; }
+.fhead .sortable.on { color:var(--navy); }
+
+.tscroll { overflow-x: auto; }
+#bTable { --bgrid: 30px minmax(230px,1fr) 116px 126px 62px 62px 62px 58px 58px 52px 80px 40px; min-width: 1120px; }
+#bTable.wide { --bgrid: 30px minmax(180px,1fr) 100px 112px 58px 58px 58px 58px 58px 60px 58px 58px 48px 78px 50px 56px 34px; min-width: 1500px; }
+.tinner { min-width: 1120px; }
+.fhead .sortable[title] { cursor:help; }
+/* A wrapped column label reads as two columns; the table scrolls instead. */
+#bTable .fhead > div { white-space: nowrap; }
+
+/* The extra measures are off by default: eleven numeric columns is a spreadsheet, not a
+   list. The toggle shows them and widens the grid; the table scrolls rather than squashes. */
+#bTable:not(.wide) .xf { display: none; }
+.figtog { display:inline-flex; align-items:center; gap:7px; font-size:.82rem; color:var(--muted);
+          cursor:pointer; user-select:none; white-space:nowrap; }
+.figtog input { margin:0; }
 </style>
 </head>
 <body>
@@ -399,6 +443,9 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
           <option value="-r5">5-year return, highest first</option>
           <option value="-sharpe">Sharpe, highest first</option>
           <option value="maxDD">Drawdown, shallowest first</option>
+          <option value="-sortino">Sortino, highest first</option>
+          <option value="beta">Beta, lowest first</option>
+          <option value="-worst12m">Worst 12 months, least bad first</option>
         </select></div>
       <div class="fld" style="flex:0 0 120px;"><label for="bqYears">Min years</label>
         <input id="bqYears" type="number" min="0" max="25" step="1" value="0"></div>
@@ -407,11 +454,37 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
           <option value="1">My Choice only</option></select></div>
     </div>
     <p class="sub" id="bCount"></p>
+    <label class="figtog"><input type="checkbox" id="bAllFigs"> Show all figures
+      <span class="meta">(weekly vol, 1yr, 3yr, correlation, CAGR)</span></label>
+    <div class="tscroll"><div class="tinner" id="bTable">
     <div class="fhead">
-      <div>Fund</div><div>Manager</div><div>Sector</div>
-      <div class="num">Vol %</div><div class="num">5yr %</div><div class="num">Max DD</div><div></div>
+      <div><input type="checkbox" id="bAll" title="Select all shown"></div>
+      <div class="sortable" data-sk="name">Fund<i></i></div>
+      <div class="sortable" data-sk="house">Manager<i></i></div>
+      <div class="sortable" data-sk="sector">Sector<i></i></div>
+      <div class="num sortable" data-sk="volDaily" title="Standard deviation of daily returns, annualised">Vol %<i></i></div>
+      <div class="num sortable xf" data-sk="volWeekly" title="Weekly volatility annualised &mdash; the SRRI convention used on UCITS KIIDs">Vol wk<i></i></div>
+      <div class="num sortable xf" data-sk="r1">1yr %<i></i></div>
+      <div class="num sortable xf" data-sk="r3">3yr %<i></i></div>
+      <div class="num sortable" data-sk="r5">5yr %<i></i></div>
+      <div class="num sortable" data-sk="maxDD">Max DD<i></i></div>
+      <div class="num sortable" data-sk="sharpe" title="Excess return per unit of volatility, against a 4% risk-free rate">Sharpe<i></i></div>
+      <div class="num sortable" data-sk="sortino" title="Like Sharpe, but only counts downside volatility">Sortino<i></i></div>
+      <div class="num sortable" data-sk="beta" title="Sensitivity to a global GBP equity benchmark">Beta<i></i></div>
+      <div class="num sortable" data-sk="worst12m" title="Worst rolling twelve months">Worst 12m<i></i></div>
+      <div class="num sortable xf" data-sk="corr" title="Correlation with a global GBP equity benchmark">Corr<i></i></div>
+      <div class="num sortable xf" data-sk="cagr" title="Compound annual growth over the whole history held">CAGR<i></i></div>
+      <div></div>
     </div>
-    <div id="bList"></div>
+      <div id="bList"></div>
+    </div></div>
+    <p class="sub" id="bFoot" style="margin-top:14px"></p>
+    <div id="bBar" class="selbar" hidden>
+      <span id="bSelCount"></span>
+      <button id="bToChoice">Add to My Choice</button>
+      <button id="bToGrowth" class="primary">Open in growth calculator</button>
+      <button id="bSelClear">Clear</button>
+    </div>
   </div>
 </div>
 
@@ -896,14 +969,14 @@ function buildRecord(meta) {
 .azletter { position:sticky; top:56px; background:var(--surface-2); padding:5px 12px;
             font-weight:600; font-size:.8rem; letter-spacing:.1em; color:var(--muted);
             border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-.fundrow { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px 40px;
+.fundrow { display:grid; grid-template-columns:var(--bgrid);
            gap:10px; padding:8px 12px; border-bottom:1px solid var(--line);
            align-items:center; font-size:.88rem; }
 .fundrow:hover { background:var(--surface-2); }
 .fundrow .nm { font-weight:500; }
 .fundrow .meta { color:var(--muted); font-size:.78rem; }
 .fundrow .num { text-align:right; font-family:"IBM Plex Mono",monospace; font-size:.82rem; }
-.fhead { display:grid; grid-template-columns:1fr 130px 150px 68px 68px 62px 40px; gap:10px;
+.fhead { display:grid; grid-template-columns:var(--bgrid); gap:10px;
          padding:8px 12px; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em;
          color:var(--muted); border-bottom:2px solid var(--line); position:sticky; top:0;
          background:var(--surface); }
@@ -960,6 +1033,47 @@ function buildRecord(meta) {
   body { background:#fff; }
   .panel { box-shadow:none; border:none; }
 }
+
+.selbar { position:sticky; bottom:0; z-index:8; display:flex; gap:10px; align-items:center;
+          flex-wrap:wrap; background:var(--navy-soft); border:1px solid var(--line);
+          border-radius:10px; padding:10px 14px; margin:10px 0; }
+.selbar span { font-size:.88rem; font-weight:600; color:var(--navy); margin-right:auto; }
+.selbar button { padding:7px 12px; border:1px solid var(--line); border-radius:8px;
+          background:var(--surface); color:var(--ink); cursor:pointer; font-size:.85rem; }
+.selbar button.primary { background:var(--navy); color:#fff; border-color:var(--navy); }
+.fundrow input[type=checkbox] { width:15px; height:15px; cursor:pointer; }
+
+.fundrow.inchoice { background:var(--navy-soft); box-shadow:inset 3px 0 0 var(--navy); }
+.mine { display:inline-block; margin-left:8px; font-size:.64rem; font-weight:600;
+        letter-spacing:.08em; text-transform:uppercase; color:var(--navy);
+        border:1px solid var(--navy); border-radius:20px; padding:1px 7px;
+        vertical-align:middle; }
+.fundrow .meta a { color:var(--muted); text-decoration:underline; text-underline-offset:2px; }
+.fundrow .meta a:hover { color:var(--navy); }
+.toast { position:fixed; left:50%; bottom:26px; transform:translateX(-50%);
+         background:var(--navy); color:#fff; padding:11px 20px; border-radius:24px;
+         font-size:.9rem; box-shadow:var(--shadow); z-index:60; }
+
+.fhead .sortable { cursor:pointer; user-select:none; }
+.fhead .sortable:hover { color:var(--navy); }
+.fhead .sortable i { font-style:normal; opacity:0; margin-left:4px; }
+.fhead .sortable.on i { opacity:1; }
+.fhead .sortable.on { color:var(--navy); }
+
+.tscroll { overflow-x: auto; }
+#bTable { --bgrid: 30px minmax(230px,1fr) 116px 126px 62px 62px 62px 58px 58px 52px 80px 40px; min-width: 1120px; }
+#bTable.wide { --bgrid: 30px minmax(180px,1fr) 100px 112px 58px 58px 58px 58px 58px 60px 58px 58px 48px 78px 50px 56px 34px; min-width: 1500px; }
+.tinner { min-width: 1120px; }
+.fhead .sortable[title] { cursor:help; }
+/* A wrapped column label reads as two columns; the table scrolls instead. */
+#bTable .fhead > div { white-space: nowrap; }
+
+/* The extra measures are off by default: eleven numeric columns is a spreadsheet, not a
+   list. The toggle shows them and widens the grid; the table scrolls rather than squashes. */
+#bTable:not(.wide) .xf { display: none; }
+.figtog { display:inline-flex; align-items:center; gap:7px; font-size:.82rem; color:var(--muted);
+          cursor:pointer; user-select:none; white-space:nowrap; }
+.figtog input { margin:0; }
 </style></head><body>
 <header>
   <div class="firm">${esc(meta.firm || "")}</div>
@@ -1079,6 +1193,38 @@ checkRebuildable()
 let SERIES = null;
 let gSel = [];
 
+/* Column headers double as sort controls. Kept at top level: nesting this inside the
+   nav click handler once put it out of reach of initBrowse and the browse list came up
+   empty with no error in the console, because the reference failed inside a promise. */
+function bApplySortUI() {
+  document.querySelectorAll('#browseView .fhead .sortable').forEach(function (h) {
+    var on = h.dataset.sk === bSortKey;
+    h.classList.toggle('on', on);
+    var i = h.querySelector('i');
+    if (i) i.textContent = on ? (bSortDir < 0 ? '▼' : '▲') : '';
+  });
+  var sel = $('bqSort');
+  if (!sel) return;
+  // Sorting by a column the dropdown has no option for used to blank the select, which
+  // read as "no sort applied" at the exact moment a sort was applied. Carry a spare
+  // option and label it with the column instead.
+  var want = (bSortDir < 0 ? '-' : '') + bSortKey;
+  var has = [].some.call(sel.options, function (o) { return o.value === want && o.value !== '__col'; });
+  var spare = sel.querySelector('option[value="__col"]');
+  if (has) { if (spare) spare.remove(); sel.value = want; }
+  else {
+    if (!spare) {
+      spare = document.createElement('option');
+      spare.value = '__col';
+      sel.appendChild(spare);
+    }
+    var h = document.querySelector('#browseView .fhead .sortable[data-sk="' + bSortKey + '"]');
+    spare.textContent = (h ? h.textContent.replace(/[▲▼]/g, '').trim() : bSortKey) +
+      (bSortDir < 0 ? ', highest first' : ', lowest first');
+    sel.value = '__col';
+  }
+}
+
 document.querySelectorAll('.nav a').forEach(function (a) {
   a.addEventListener('click', function (ev) {
     ev.preventDefault();
@@ -1140,6 +1286,20 @@ window.addEventListener('hashchange', openFromHash);
 
 /* ---------------------------------------------------------------- browse */
 let browseReady = false;
+// Selection is deliberately NOT persisted: it is a working set for "do something with these
+// now", whereas My Choice is the list you keep.
+let bSel = new Set();
+// Text sorts ascending by default; a number the reader cares about (return, Sharpe) sorts
+// best-first, and risk measures sort least-first. Guessing this per column saves a click.
+var bSortKey = 'name', bSortDir = 1;
+var BSORT_DEFAULT_DESC = { r5: true, r1: true, r3: true, sharpe: true, sortino: true,
+                           cagr: true, worst12m: true, maxDD: true };
+
+function bSelUpdate() {
+  var n = bSel.size;
+  $('bBar').hidden = n === 0;
+  if (n) $('bSelCount').textContent = n + (n === 1 ? ' fund selected' : ' funds selected');
+}
 
 function initBrowse() {
   if (browseReady) return;
@@ -1150,9 +1310,40 @@ function initBrowse() {
     .filter(Boolean))).sort();
   houses.forEach(function (h) { $('bqHouse').add(new Option(h, h)); });
   sectors.forEach(function (x) { $('bqSector').add(new Option(x, x)); });
-  ['bqName', 'bqHouse', 'bqSector', 'bqSort', 'bqYears', 'bqMine'].forEach(function (id) {
+  ['bqName', 'bqHouse', 'bqSector', 'bqYears', 'bqMine'].forEach(function (id) {
     $(id).addEventListener('input', renderBrowse);
   });
+  $('bqSort').addEventListener('input', function () {
+    var v = $('bqSort').value;
+    if (v === '__col') return;
+    bSortDir = v.charAt(0) === '-' ? -1 : 1;
+    bSortKey = v.charAt(0) === '-' ? v.slice(1) : v;
+    bApplySortUI(); renderBrowse();
+  });
+  document.querySelectorAll('#browseView .fhead .sortable').forEach(function (h) {
+    h.addEventListener('click', function () {
+      var k = h.dataset.sk;
+      if (bSortKey === k) bSortDir = -bSortDir;
+      else { bSortKey = k; bSortDir = BSORT_DEFAULT_DESC[k] ? -1 : 1; }
+      bApplySortUI(); renderBrowse();
+    });
+  });
+  var af = $('bAllFigs');
+  if (af) af.addEventListener('change', function () {
+    $('bTable').classList.toggle('wide', af.checked);
+  });
+  var foot = $('bFoot');
+  if (foot) {
+    foot.innerHTML = 'Beta and correlation are measured against <strong>' +
+      esc(universe.benchmark || 'a global GBP equity benchmark') + '</strong> over the same ' +
+      (universe.betaWindowMonths || 60) + ' monthly returns for every fund (' +
+      esc(universe.betaFrom || '') + ' to ' + esc(universe.betaTo || '') + '), so they can be ' +
+      'read against each other; a fund with less history than that shows a dash rather than a ' +
+      'figure computed over a window nobody else was measured on. Sharpe and Sortino use a ' +
+      'stated ' + (universe.riskFree != null ? universe.riskFree : 4) + '% risk-free rate. ' +
+      'All figures are realised and in sterling. This is measurement, not advice.';
+  }
+  bApplySortUI();
   renderBrowse();
 }
 
@@ -1161,7 +1352,7 @@ function renderBrowse() {
   var h = $('bqHouse').value;
   var sec = $('bqSector').value;
   var minY = parseFloat($('bqYears').value) || 0;
-  var sort = $('bqSort').value;
+  var key = bSortKey, desc = bSortDir < 0;
 
   var rows = universe.funds.filter(function (f) {
     return (!q || (f.name || '').toLowerCase().indexOf(q) >= 0) &&
@@ -1169,10 +1360,11 @@ function renderBrowse() {
       (!$('bqMine').value || inChoice(f.symbol));
   });
 
-  var desc = sort.charAt(0) === '-';
-  var key = desc ? sort.slice(1) : sort;
   rows.sort(function (a, b) {
-    if (key === 'name') return (a.name || '').localeCompare(b.name || '');
+    if (key === 'name' || key === 'house' || key === 'sector') {
+      var av0 = (a[key] || ''), bv0 = (b[key] || '');
+      return desc ? bv0.localeCompare(av0) : av0.localeCompare(bv0);
+    }
     var av = a[key], bv = b[key];
     if (av == null) return 1;      // missing data sinks; it must never top a sorted list
     if (bv == null) return -1;
@@ -1186,24 +1378,48 @@ function renderBrowse() {
 
   var html = '', letter = '';
   rows.forEach(function (f) {
-    if (key === 'name') {
+    if (key === 'name' && !desc) {
       var L = (f.name || '?').charAt(0).toUpperCase();
       if (L !== letter) { letter = L; html += '<div class="azletter">' + esc(L) + '</div>'; }
     }
-    html += '<div class="fundrow">' +
-      '<div><div class="nm">' + esc(f.name || f.symbol) + '</div><div class="meta">' +
-      esc(f.symbol) + (f.years ? ' &middot; ' + f.years + 'y' : '') +
-      (f.gbpConverted ? ' &middot; converted to GBP' : '') + '</div></div>' +
+    html += '<div class="fundrow' + (inChoice(f.symbol) ? ' inchoice' : '') + '">' +
+      '<div><input type="checkbox" data-pick="' + esc(f.symbol) + '"' +
+        (bSel.has(f.symbol) ? ' checked' : '') + '></div>' +
+      '<div><div class="nm">' + esc(f.name || f.symbol) +
+        (inChoice(f.symbol) ? '<span class="mine">In My Choice</span>' : '') + '</div>' +
+      '<div class="meta">' + esc(f.symbol) +
+        (f.years ? ' &middot; ' + f.years + 'y' : '') +
+        (f.gbpConverted ? ' &middot; GBP' : '') +
+        ' &middot; <a href="' + factsheetSearchUrl(f) + '" target="_blank" rel="noopener">' +
+        'factsheet</a>' +
+        ' &middot; <a href="' + dataUrl(f) + '" target="_blank" rel="noopener">prices</a>' +
+        '</div></div>' +
       '<div class="meta">' + esc(f.house || '') + '</div>' +
       '<div class="meta">' + esc(f.sector || '') + '</div>' +
       '<div class="num">' + num(f.volDaily) + '</div>' +
+      '<div class="num xf">' + num(f.volWeekly) + '</div>' +
+      '<div class="num xf">' + num(f.r1) + '</div>' +
+      '<div class="num xf">' + num(f.r3) + '</div>' +
       '<div class="num">' + num(f.r5) + '</div>' +
       '<div class="num">' + num(f.maxDD) + '</div>' +
+      '<div class="num">' + num(f.sharpe, 2) + '</div>' +
+      '<div class="num">' + num(f.sortino, 2) + '</div>' +
+      '<div class="num">' + num(f.beta, 2) + '</div>' +
+      '<div class="num">' + num(f.worst12m) + '</div>' +
+      '<div class="num xf">' + num(f.corr, 2) + '</div>' +
+      '<div class="num xf">' + num(f.cagr) + '</div>' +
       '<div>' + choiceStar(f.symbol) + '</div></div>';
   });
   $('bList').innerHTML = html ||
     '<p class="sub" style="padding:14px">Nothing matches those filters.</p>';
   wireStars($('bList'));
+  $('bList').querySelectorAll('[data-pick]').forEach(function (c) {
+    c.onchange = function () {
+      if (c.checked) bSel.add(c.dataset.pick); else bSel.delete(c.dataset.pick);
+      bSelUpdate();
+    };
+  });
+  bSelUpdate();
 }
 
 /* ---------------------------------------------------------------- growth */
@@ -1375,6 +1591,11 @@ function toggleChoice(sym) {
   else myChoice = myChoice.concat([sym]);
   choiceSave(myChoice);
   updateChoiceCount();
+  if (typeof toast === 'function') {
+    var f = universe.funds.find(function (x) { return x.symbol === sym; });
+    var nm = f ? (f.name || sym) : sym;
+    toast(inChoice(sym) ? 'Added to My Choice: ' + nm : 'Removed: ' + nm);
+  }
   if (typeof renderBrowse === 'function' && $('browseView').classList.contains('on')) renderBrowse();
   if ($('choiceView') && $('choiceView').classList.contains('on')) renderChoice();
 }
@@ -1442,6 +1663,7 @@ function renderChoice() {
         esc(f.symbol) + (f.years ? ' &middot; ' + f.years + 'y' : '') + '</div></div>' +
         '<div class="meta">' + esc(f.house || '') + '</div>' +
         '<div class="num">' + num(f.volDaily) + '</div>' +
+      '<div class="num xf">' + num(f.volWeekly) + '</div>' +
         '<div class="num">' + num(f.r5) + '</div>' +
         '<div class="num">' + num(f.maxDD) + '</div>' +
         '<div><input class="uin" type="number" min="0" step="any" data-units="' +
@@ -1652,6 +1874,49 @@ function renderHoldings() {
       'gap between it and the "moved together" figure is the diversification your mix ' +
       'actually delivered. Not advice.</p>' : '');
 }
+
+function toast(msg) {
+  var el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function () { el.remove(); }, 2200);
+}
+
+/* ---- Browse selection wiring ---- */
+if ($('bAll')) $('bAll').onchange = function () {
+  document.querySelectorAll('#bList [data-pick]').forEach(function (c) {
+    c.checked = $('bAll').checked;
+    if (c.checked) bSel.add(c.dataset.pick); else bSel.delete(c.dataset.pick);
+  });
+  bSelUpdate();
+};
+if ($('bSelClear')) $('bSelClear').onclick = function () {
+  bSel.clear(); if ($('bAll')) $('bAll').checked = false; renderBrowse();
+};
+if ($('bToChoice')) $('bToChoice').onclick = function () {
+  var added = 0;
+  bSel.forEach(function (s) { if (!inChoice(s)) { myChoice.push(s); added++; } });
+  choiceSave(myChoice); updateChoiceCount();
+  renderBrowse();
+  toast(added
+    ? added + (added === 1 ? ' fund added to My Choice' : ' funds added to My Choice')
+    : 'Already in My Choice');
+};
+if ($('bToGrowth')) $('bToGrowth').onclick = function () {
+  var picked = Array.from(bSel);
+  document.querySelector('.nav a[data-view="growth"]').click();
+  initGrowth().then(function () {
+    var missing = picked.filter(function (s) { return !SERIES[s]; });
+    gSel = picked.filter(function (s) { return SERIES[s]; });
+    gRender();
+    if (missing.length) {
+      $('gWarn').innerHTML = '<div class="warnline"><strong>Not shown: ' +
+        missing.map(esc).join(', ') + '.</strong> Too little price history to chart.</div>' +
+        $('gWarn').innerHTML;
+    }
+  });
+};
 
 /* ---- My Choice wiring ---- */
 if ($('choiceGrow')) $('choiceGrow').onclick = choiceToGrowth;
