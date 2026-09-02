@@ -77,6 +77,37 @@ function check(label, ok, detail) {
     check('risk ' + lvl, rows > 0, rows + ' funds');
   }
 
+  // On a phone every column heading is display:none, so the dropdown is the only way to
+  // reorder these results. It has to actually reorder them.
+  doc.getElementById('riskInput').value = '5';
+  fire(doc.getElementById('riskInput'), 'input');
+  click(doc.getElementById('matchBtn'));
+  await wait(250);
+  const nth = (i, label) => {
+    const row = doc.querySelectorAll('#results tbody tr')[i];
+    const cell = Array.from(row.querySelectorAll('td'))
+                      .find(td => (td.getAttribute('data-label') || '') === label);
+    return parseFloat((cell ? cell.textContent : '').replace(/[^0-9.\-]/g, ''));
+  };
+  const sortEl = doc.getElementById('matchSort');
+  sortEl.value = '-r5'; fire(sortEl, 'change');
+  await wait(300);
+  const a5 = nth(0, '5yr total'), b5 = nth(1, '5yr total');
+  check('Order = 5-year return actually reorders', !(a5 < b5), a5 + ' then ' + b5);
+  sortEl.value = 'volDaily'; fire(sortEl, 'change');
+  await wait(300);
+  const av = nth(0, 'Volatility'), bv = nth(1, 'Volatility');
+  check('Order = volatility actually reorders', !(av > bv), av + ' then ' + bv);
+  const th = Array.from(doc.querySelectorAll('#results thead th'))
+                  .find(x => x.dataset.key === 'r5');
+  click(th);
+  await wait(250);
+  // Ascending 5yr is not one of the offered orders, so the control must stop claiming the
+  // previous one rather than silently misreport what the table is showing.
+  check('the dropdown never misreports the order',
+        sortEl.value === 'r5' || sortEl.value === '-r5' || sortEl.value === '',
+        '"' + sortEl.value + '"');
+
   console.log('\nBROWSE');
   click(doc.querySelector('.nav a[data-view="browse"]'));
   await wait(600);
@@ -176,6 +207,33 @@ function check(label, ok, detail) {
   check('the risk level carries into Match by risk',
         doc.getElementById('matchView').classList.contains('on') &&
         doc.getElementById('riskInput').value === '5');
+
+  console.log('\nSHARES');
+  click(doc.querySelector('.nav a[data-view="shares"]'));
+  await wait(600);
+  // A share mistyped as a fund disappears from this view and gets its sector guessed from
+  // its name -- Anglo American filed under North America. The count is the tell.
+  const shares = funds.funds.filter(f => f.type === 'EQUITY' && f.index);
+  check('every FTSE 100 constituent held is typed as a share', shares.length >= 92,
+        shares.length + ' shares');
+  check('none of them was sector-guessed like a fund',
+        shares.every(f => f.sector === 'UK Equity (single share)'));
+
+  console.log('\nGROWTH CALCULATOR');
+  click(doc.querySelector('.nav a[data-view="growth"]'));
+  await wait(1200);
+  const gAll = doc.getElementById('gAll');
+  check('the full fund list is offered', n('#gAll option') > 900,
+        n('#gAll option') + ' options in ' + n('#gAll optgroup') + ' sectors');
+  const firstOpt = Array.from(gAll.options).find(o => o.value);
+  gAll.value = firstOpt.value; fire(gAll, 'change');
+  await wait(600);
+  check('picking from the list adds the fund', n('#gChips .chip') >= 1,
+        '"' + firstOpt.textContent.slice(0, 32) + '"');
+  fire(doc.getElementById('gSearch'), 'focus');
+  await wait(250);
+  check('an empty search box still lists funds', n('#gPick [data-sym]') > 0,
+        n('#gPick [data-sym]') + ' shown');
 
   console.log('\nANALYSIS -- every panel, then every control');
   click(doc.querySelector('.nav a[data-view="analysis"]'));

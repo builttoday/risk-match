@@ -24,10 +24,10 @@ SRC_FCA = os.path.join(HERE, "fca_cache.json")   # register matches, kept across
 OUT_FUNDS = os.path.join(ROOT, "funds.json")
 OUT_SERIES = os.path.join(ROOT, "series.json")
 
-KEEP = ("symbol", "name", "type", "house", "sector", "currency", "gbpConverted",
+KEEP = ("symbol", "isin", "name", "type", "house", "sector", "currency", "gbpConverted",
         "leveraged", "index", "years", "days", "volDaily", "volWeekly", "maxDD",
         "cagr", "sharpe", "sortino", "worst12m", "r1", "r3", "r5", "last",
-        "beta", "corr", "stem", "derived",
+        "beta", "corr", "stem", "derived", "lastDate",
         "industry", "industryAsAt", "subIndustry",
         "fcaPrn", "fcaStatus", "fcaName", "fcaUrl", "fcaScore")
 
@@ -71,16 +71,34 @@ def main():
         if s and len(s["c"]) > 12:
             rec["firstDate"] = datetime.fromtimestamp(
                 s["t"][0], tz=timezone.utc).strftime("%Y-%m")
-            rec["hasSeries"] = True
-        else:
-            rec["hasSeries"] = False
+            rec["lastDate"] = datetime.fromtimestamp(
+                s["t"][-1], tz=timezone.utc).strftime("%Y-%m")
         funds.append(rec)
 
-    series = {}
+    # A SERIES THAT STOPPED PRICING IS NOT A CURRENT MEASUREMENT. One fund last priced in May
+    # 2020 was still publishing a "1-year return" -- from 2019. Everything about it reads as
+    # though it were live. Anything more than a year behind the build is dropped.
+    stale_cut = time.time() - 365 * 86400
+    series, stale = {}, []
     for sym, s in sd.items():
         t, c = to_monthly(s["t"], s["c"])
-        if len(c) > 12:
-            series[sym] = {"t0": t[0], "t": t, "c": c}
+        if len(c) <= 12:
+            continue
+        if t[-1] < stale_cut:
+            stale.append((sym, datetime.fromtimestamp(t[-1], tz=timezone.utc).date()))
+            continue
+        series[sym] = {"t0": t[0], "t": t, "c": c}
+    if stale:
+        print(f"{len(stale)} dropped for not having been priced in a year: " +
+              ", ".join(f"{s} (last {d})" for s, d in stale))
+    stale_syms = {s for s, _ in stale}
+    funds = [f for f in funds if f["symbol"] not in stale_syms]
+
+    # hasSeries has to mean "a series was published for this", not "one existed upstream".
+    # It was set from the weekly working file while the site loads the monthly one, so two
+    # funds claimed a price history the site could not find.
+    for f in funds:
+        f["hasSeries"] = f["symbol"] in series
 
     json.dump({"builtAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                "count": len(funds),

@@ -190,7 +190,18 @@ the factsheet link is a site-scoped web search instead, which lands on the right
 in one hop.
 
 **Searching by ISIN works far better than by name.** A fund that returns nothing for nine name
-variations resolves immediately from its ISIN.
+variations resolves immediately from its ISIN — and when one is added that way the ISIN is now
+kept and shown beside the symbol, in Browse, in the selection dialog and in the CSV export. It
+is the only identifier that matches a factsheet exactly: names arrive Morningstar-abbreviated
+("Halifax Intl Gr C"), which is close enough to browse by and not close enough to file.
+
+Names are passed through untouched, because rewriting a share-class name makes it less accurate,
+not more — but the source occasionally returns one that is broken outright. One fund arrived as
+`TM Natixis Loomis Sayles US Eq Ldrs N/A` with an unreadable character on the end. A name nobody
+can match to a factsheet is worse than no name, so `build/names_manual.json` holds hand-checked
+corrections, applied last by `names.py`. Every entry records the name it replaced, where the
+correct one came from and when it was checked. It is a correction list, not a licence to restyle:
+an abbreviation the source chose is left alone.
 
 ### Adding a fund that the sweep missed
 
@@ -257,6 +268,16 @@ six months, and a fund claiming 12.6 years of history across a 2,814-day gap was
 arithmetic on two different periods pretending to be one. Six months is the threshold, which is
 generous on purpose — a suspended property fund stops pricing for weeks, not years.
 
+**A single bad print is too small to be a break and big enough to change the answer.** LVLG.L
+carried a +34% day immediately followed by a −25% day. The pair inverts to within 0.2%, so the
+fund never actually moved — but it published at **23.1% volatility against a true 9.6%**, which
+puts a fund three risk bands from where it belongs. Nothing caught it, because the step was far
+too small for a break detector tuned to spot a ÷100. What did catch it was comparing the two
+volatilities against each other: weekly and daily measure one thing at two sampling rates, and
+when they disagree by more than a factor, one of the series contains something the other
+sampled straight over. The repair pass now removes a one-day spike the next day reverses, and
+treats a daily/weekly disagreement as a reason to look.
+
 **What counts as "still broken" after a repair is mechanical, and deliberately so.** An earlier
 version of that guard dropped anything with a drawdown worse than −90% and threw away twenty
 real shares — Lloyds and NatWest really did fall that far through 2008–09 — plus Liontrust Russia
@@ -269,6 +290,27 @@ month and rose 10,057% the next: a divide by 103 then a multiply by 101), and an
 level break*, where the early history belongs to a different instrument and can only be cut
 away (FRAS.L steps 43× in February 2007 and never returns). Six were recovered, eight were
 dropped. A wrong number on a risk tool is worse than a missing one.
+
+## Auditing the published data
+
+`build/audit.py` reads `funds.json` and `series.json` — nothing else, no network — and checks
+them against what has to be true: an index constituent is typed as a share and never given a
+fund's sector; a Morningstar `0P` identifier is never typed as anything but a fund; the fields
+the front end needs are present; volatilities, returns, drawdowns, betas and correlations sit
+inside ranges the thing they describe can actually produce; Sharpe follows from the growth and
+volatility printed beside it, to within their own rounding; every series is free of holes,
+impossible steps and stale pricing; the stated age matches the series it came from; and the
+benchmark's own beta is 1.00. It exits non-zero on an error, so it can gate a deploy.
+
+Every check in it exists because something it would have caught reached the live site. The
+Match filter that returned nothing for weeks. Twenty-six funds at −99%. Eleven FTSE 100 shares
+typed as funds, which took Rolls-Royce out of the Shares view and put it top of the *fund*
+rankings at +1,186%. None of them failed loudly; each violated something obvious that nothing
+was checking.
+
+Warnings are kept separate from errors on purpose. Taylor Wimpey fell 79% in a month in 2008 and
+rose 151% two months later — for a single company that is the financial crisis, not a broken
+file, so it is worth seeing and not worth failing on.
 
 ## Fund manager and sector are derived
 
@@ -356,6 +398,7 @@ build/repair.py     re-measure instruments whose price series is visibly broken
 build/pack.py       write funds.json and series.json for the site
 build/beta.py       recompute beta and correlation on a shared monthly window
 build/correlate.py  does anything predict growth? (needs numpy)
+build/audit.py      check the published data against what must be true of it (exits 1 on error)
 build/smoke.js      click through every view in a DOM and check each one renders rows
                     (npm install jsdom; node build/smoke.js). Run it after every rebuild --
                     a dropped field breaks a view without anything failing loudly.

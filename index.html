@@ -429,10 +429,21 @@ th .info { vertical-align: baseline; }
   .panel { padding: 16px 14px; border-radius: 12px; margin-bottom: 14px; }
   h2 { font-size: 1.15rem; }
 
-  /* Header and tabs: every tab visible, none half off the edge. */
+  /* THE TOPBAR IS STICKY, so every row it wraps onto is a row of the phone screen lost for
+     the whole session. Eight tabs wrapped onto three lines and took about a third of it.
+     One scrollable strip instead: the bar stays about 44px whatever the tab count, the
+     current tab is scrolled into view on load, and switching views still needs no scrolling
+     back to the top. */
+  .topbar { padding: 7px 12px; gap: 10px; flex-wrap: nowrap; }
+  .topbar h1 { font-size: .95rem; white-space: nowrap; flex: 0 0 auto; }
   header .inner { flex-wrap: wrap; gap: 10px; }
-  .nav { margin-left: 0; width: 100%; flex-wrap: wrap; gap: 6px; }
-  .nav a { flex: 1 1 auto; text-align: center; padding: 8px 10px; font-size: .8rem;
+  .nav {
+    margin-left: auto; width: auto; flex-wrap: nowrap; gap: 6px;
+    overflow-x: auto; overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a { flex: 0 0 auto; text-align: center; padding: 7px 11px; font-size: .8rem;
            white-space: nowrap; }
 
   /* Filters stack, and every control is thumb-sized. */
@@ -662,6 +673,22 @@ th .info { vertical-align: baseline; }
           <option value="3">3 years</option>
           <option value="5">5 years</option>
           <option value="1">1 year</option>
+        </select>
+      </div>
+      <div class="fld" style="flex:0 0 220px;">
+        <label for="matchSort">Order</label>
+        <select id="matchSort">
+          <option value="" hidden>Sorted by a column heading</option>
+          <option value="volDaily">Volatility, lowest first</option>
+          <option value="-r5">5-year return, highest first</option>
+          <option value="-r3">3-year return, highest first</option>
+          <option value="-r1">1-year return, highest first</option>
+          <option value="-sharpe">Sharpe, highest first</option>
+          <option value="-worst12m">Worst year, least bad first</option>
+          <option value="maxDD">Max fall, shallowest first</option>
+          <option value="beta">Beta, lowest first</option>
+          <option value="-years">Longest history first</option>
+          <option value="name">Name A&ndash;Z</option>
         </select>
       </div>
       <button class="btn" id="matchBtn">Show matches</button>
@@ -1025,8 +1052,10 @@ th .info { vertical-align: baseline; }
     <p class="sub">Pick funds, set an amount, choose how far back. The figures are computed in
     your browser from the sterling price history &mdash; past performance, not a forecast.</p>
     <div class="ctrls">
-      <div class="fld" style="flex:2 1 320px;"><label for="gSearch">Add a fund</label>
-        <input id="gSearch" type="text" placeholder="Type a fund name"></div>
+      <div class="fld" style="flex:2 1 300px;"><label for="gSearch">Search for a fund</label>
+        <input id="gSearch" type="text" placeholder="Type part of a name"></div>
+      <div class="fld" style="flex:2 1 300px;"><label for="gAll">Or pick from the full list</label>
+        <select id="gAll"><option value="">Loading&hellip;</option></select></div>
       <div class="fld" style="flex:0 0 150px;"><label for="gAmount">Amount (&pound;)</label>
         <input id="gAmount" type="number" min="1" step="100" value="1000"></div>
       <div class="fld" style="flex:0 0 180px;"><label for="gYears">Period</label>
@@ -2129,6 +2158,7 @@ function renderTable(band, lvl) {
   document.querySelectorAll("thead th").forEach(th => th.addEventListener("click", () => {
     const k = th.dataset.key;
     if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = k === "name" ? 1 : 1; }
+    syncMatchSort();
     sortRows();
     renderTable(band, lvl);
   }));
@@ -2459,9 +2489,9 @@ function buildRecord(meta) {
 /* CSV rather than a print view: it lands in the adviser's own suitability file, which is
    where this evidence has to end up. */
 function exportCsv() {
-  const rows = [["Fund", "Type", "Symbol", "Volatility %", "Max drawdown %", "1yr pa %", "3yr pa %", "5yr pa %", "Years of history", "FCA status", "FCA reference", "FCA registered name", "Prices page", "Factsheet search"]];
+  const rows = [["Fund", "ISIN", "Type", "Symbol", "Volatility %", "Max drawdown %", "1yr pa %", "3yr pa %", "5yr pa %", "Years of history", "FCA status", "FCA reference", "FCA registered name", "Prices page", "Factsheet search"]];
   for (const f of shown) {
-    rows.push([f.name, f.type, f.symbol, f.volDaily, f.maxDD, f.r1 ?? "", f.r3 ?? "", f.r5 ?? "", f.years,
+    rows.push([f.name, f.isin ?? "", f.type, f.symbol, f.volDaily, f.maxDD, f.r1 ?? "", f.r3 ?? "", f.r5 ?? "", f.years,
                f.fcaStatus ?? "", f.fcaPrn ?? "", f.fcaName ?? "",
                dataUrl(f), factsheetSearchUrl(f)]);
   }
@@ -2479,6 +2509,30 @@ function exportCsv() {
 
 /* ---------- Init ---------- */
 $("matchBtn").addEventListener("click", runMatch);
+
+/* SORTING HAS TO WORK WITHOUT COLUMN HEADINGS. On a phone the table becomes a stack of cards
+   and every heading is display:none, which on this view left no way to reorder the results at
+   all -- clicking a heading was the only control it had. The dropdown is the same state by
+   another route, and it is not mobile-only: reading "5-year return, highest first" is clearer
+   than inferring it from an arrow on a column. */
+function matchSortValue() {
+  return (sortDir < 0 ? "-" : "") + sortKey;
+}
+function syncMatchSort() {
+  const el = $("matchSort");
+  if (!el) return;
+  const v = matchSortValue();
+  // A heading click can produce an order the dropdown does not offer -- five-year return
+  // ASCENDING, say. Leaving the old selection showing would make the control lie about what
+  // the table is doing, so it falls back to a hidden placeholder instead.
+  el.value = Array.from(el.options).some(o => o.value === v) ? v : "";
+}
+if ($("matchSort")) $("matchSort").addEventListener("change", () => {
+  const v = $("matchSort").value;
+  sortDir = v.startsWith("-") ? -1 : 1;
+  sortKey = v.replace(/^-/, "");
+  runMatch();
+});
 $("typeFilter").addEventListener("change", runMatch);
 $("minYears").addEventListener("change", runMatch);
 $("showLeveraged").addEventListener("change", runMatch);
@@ -2546,6 +2600,8 @@ document.querySelectorAll('.nav a').forEach(function (a) {
     var v = a.dataset.view;
     document.querySelectorAll('.view').forEach(function (x) { x.classList.remove('on'); });
     $(v + 'View').classList.add('on');
+    // In the scrolling tab strip on a phone, the tab just tapped can sit half off the edge.
+    if (a.scrollIntoView) a.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     if (v === 'client') initClient();
     if (v === 'browse') initBrowse();
     if (v === 'shares') initShares();
@@ -2708,6 +2764,7 @@ function renderBrowse() {
       '<div><div class="nm">' + esc(f.name || f.symbol) +
         (inChoice(f.symbol) ? '<span class="mine">In My Choice</span>' : '') + '</div>' +
       '<div class="meta">' + esc(f.symbol) +
+        (f.isin ? ' &middot; ' + esc(f.isin) : '') +
         (f.years ? ' &middot; ' + f.years + 'y' : '') +
         (f.gbpConverted ? ' &middot; GBP' : '') +
         ' &middot; <a href="' + factsheetSearchUrl(f) + '" target="_blank" rel="noopener">' +
@@ -2757,7 +2814,38 @@ async function initGrowth() {
     SERIES = {};
   }
   $('gTotals').innerHTML = '';
+
+  /* THE SEARCH BOX ALONE WAS NOT A FUND PICKER. It needed two characters before it showed
+     anything, so the only way to find a fund was to already know its name -- and on a phone,
+     where this view gets used one-handed, that is the whole interaction. A native select is
+     the right control for "give me the list": the phone renders its own scrollable picker,
+     it types-to-jump, and it needs no custom scrolling code. Both routes add to the same
+     selection. Only funds with a price series appear, because the rest cannot be charted. */
+  const withSeries = universe.funds
+    .filter(function (f) { return SERIES[f.symbol]; })
+    .sort(function (a, b) { return (a.name || '').localeCompare(b.name || ''); });
+  const bySector = {};
+  withSeries.forEach(function (f) {
+    var k = f.sector || 'Unclassified';
+    (bySector[k] = bySector[k] || []).push(f);
+  });
+  $('gAll').innerHTML =
+    '<option value="">' + withSeries.length + ' funds \u2014 choose one\u2026</option>' +
+    Object.keys(bySector).sort().map(function (sec) {
+      return '<optgroup label="' + esc(sec) + '">' + bySector[sec].map(function (f) {
+        return '<option value="' + esc(f.symbol) + '">' + esc(f.name || f.symbol) + '</option>';
+      }).join('') + '</optgroup>';
+    }).join('');
+  $('gAll').addEventListener('change', function () {
+    var sym = $('gAll').value;
+    if (sym && gSel.indexOf(sym) < 0) gSel.push(sym);
+    $('gAll').value = '';
+    gRender();
+  });
+
   $('gSearch').addEventListener('input', gSuggest);
+  // An empty box on focus shows the start of the list rather than nothing at all.
+  $('gSearch').addEventListener('focus', gSuggest);
   $('gAmount').addEventListener('input', gRender);
   $('gYears').addEventListener('change', function () {
     $('gFromWrap').hidden = ($('gYears').value !== 'date');
@@ -2769,10 +2857,16 @@ async function initGrowth() {
 function gSuggest() {
   var q = $('gSearch').value.trim().toLowerCase();
   var box = $('gPick');
-  if (q.length < 2) { box.hidden = true; return; }
+  if (q.length === 1) { box.hidden = true; return; }
+  // An empty query lists the first funds alphabetically instead of showing nothing: a picker
+  // that requires you to guess a name first is not a picker.
   var hits = universe.funds.filter(function (f) {
-    return SERIES[f.symbol] && (f.name || '').toLowerCase().indexOf(q) >= 0;
-  }).slice(0, 40);
+    return SERIES[f.symbol] && (!q || (f.name || '').toLowerCase().indexOf(q) >= 0);
+  });
+  if (!q) hits = hits.slice().sort(function (a, b) {
+    return (a.name || '').localeCompare(b.name || '');
+  });
+  hits = hits.slice(0, 40);
   box.innerHTML = hits.map(function (f) {
     return '<div data-sym="' + esc(f.symbol) + '">' + esc(f.name || f.symbol) +
       ' <span class="meta">' + esc(f.symbol) + '</span></div>';
@@ -3441,7 +3535,9 @@ function openFundModal(sym) {
   fmPrevFocus = document.activeElement;
 
   $('fmTitle').textContent = f.name || f.symbol;
-  $('fmMeta').innerHTML = esc(f.symbol) + (f.house ? ' &middot; ' + esc(f.house) : '') +
+  $('fmMeta').innerHTML = esc(f.symbol) +
+    (f.isin ? ' &middot; <strong>' + esc(f.isin) + '</strong>' : '') +
+    (f.house ? ' &middot; ' + esc(f.house) : '') +
     (f.sector ? ' &middot; ' + esc(f.sector) : '') +
     (f.years ? ' &middot; ' + f.years + ' years of history' : '') +
     (f.gbpConverted ? ' &middot; converted to sterling' : '');

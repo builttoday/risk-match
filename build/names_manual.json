@@ -1,0 +1,12 @@
+{
+  "_why": "Hand-checked names for funds whose public name is unusable. Yahoo's longName is Morningstar-sourced and is normally the closest free match to the official share-class name, so it is passed through untouched -- but it is occasionally broken outright, and a name nobody can match to a factsheet is worse than no name. Every entry here must record where the correct name came from and when it was checked. Nothing is 'tidied': an abbreviation Morningstar chose is left alone, because rewriting it would make the name less accurate, not more.",
+  "_checked": "2026-09-02",
+  "names": {
+    "0P0000YVCG.L": {
+      "name": "TM Natixis Loomis Sayles US Equity Leaders Accumulation (GBP)",
+      "isin": "GB00B8L3WZ29",
+      "was": "TM Natixis Loomis Sayles US Eq Ldrs N/A�",
+      "source": "ISIN supplied by the adviser, 2026-09-02"
+    }
+  }
+}

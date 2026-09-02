@@ -35,7 +35,7 @@ Only symbols that already look impossible are touched, and any that still look i
 after repair are dropped rather than published -- a wrong number on a risk tool is worse
 than a missing one.
 """
-import json, os, sys, time
+import json, math, os, sys, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -81,6 +81,30 @@ def redenomination(k, dt_days=0.0):
     return None
 
 
+# A single bad print, corrected the next day, is too small to be a "break" and big enough to
+# wreck a volatility. LVLG.L carried a +34% day followed by a -25% day -- the pair inverts to
+# within 0.2%, so the fund never moved -- and it published at 23.1% volatility against a true
+# 9.6%, which is a fund shown in the wrong risk band. That is the one thing this tool must not
+# do, so a paired spike is removed rather than measured.
+SPIKE_MIN = 0.15         # a day this large, immediately undone, is a print not a market
+SPIKE_TOL = 0.05         # how exactly the pair has to invert
+
+
+def despike(c, t):
+    """Replace a one-day spike that the next day exactly reverses."""
+    c, notes, n = list(c), [], 0
+    for i in range(1, len(c) - 1):
+        if c[i - 1] <= 0 or c[i] <= 0:
+            continue
+        up, down = c[i] / c[i - 1] - 1, c[i + 1] / c[i] - 1
+        if abs(up) > SPIKE_MIN and abs((1 + up) * (1 + down) - 1) < SPIKE_TOL:
+            c[i] = math.sqrt(c[i - 1] * c[i + 1])      # sit it between its neighbours
+            n += 1
+    if n:
+        notes.append(f"removed {n} one-day spike{'s' if n > 1 else ''} the next day reversed")
+    return c, notes
+
+
 def cut_gap(c, t):
     """Keep only the most recent stretch of continuous data."""
     for i in range(len(t) - 1, 0, -1):
@@ -104,6 +128,8 @@ def repair(c, t):
     # every later test would misread it.
     c, t, gap_notes = cut_gap(c, t)
     notes += gap_notes
+    c, spike_notes = despike(c, t)
+    notes += spike_notes
 
     # Pass 1: paired flips. Walk forward so a repair is visible to the next comparison.
     guard = 0
@@ -187,10 +213,18 @@ def main():
         t = ser["t"]
         return any((t[i] - t[i - 1]) / 86400.0 > MAX_GAP_DAYS for i in range(1, len(t)))
 
+    # Weekly and daily volatility measure one thing at two sampling rates. They differ, but
+    # not by multiples -- when they do, one of the two series carries something the other
+    # skipped over, which is exactly what a one-day spike looks like.
+    def vols_disagree(f):
+        d, w = f.get("volDaily"), f.get("volWeekly")
+        return bool(d and w) and not (0.4 <= w / d <= 2.5)
+
     suspect = [f for f in U["funds"]
                if (f.get("volDaily") or 0) > VOL_LIMIT
                or has_gap(f["symbol"])
-               or (is_fund(f) and (impossible(f) or has_break(f["symbol"])))]
+               or (is_fund(f) and (impossible(f) or has_break(f["symbol"])
+                                   or vols_disagree(f)))]
     print(f"{len(suspect)} instruments look broken "
           f"(a price-series break, or a figure no fund produces)")
     if not suspect:

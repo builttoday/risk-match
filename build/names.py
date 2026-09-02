@@ -36,5 +36,21 @@ for i, f in enumerate(funds, 1):
     if i % 100 == 0:
         print(f"  {i}/{len(funds)}  fixed {fixed}  unchanged {miss}", flush=True)
     time.sleep(0.3)
+# A hand-checked override list, for the names the public source gets wrong outright. It is
+# applied LAST so it wins, and it is deliberately tiny: this is a correction mechanism, not a
+# licence to restyle names. See names_manual.json for the rules it holds itself to.
+MANUAL = os.path.join(HERE, "names_manual.json")
+if os.path.exists(MANUAL):
+    man = json.load(open(MANUAL, encoding="utf-8")).get("names", {})
+    fixed = 0
+    for f in d["funds"]:
+        m = man.get(f["symbol"])
+        if m and m.get("name"):
+            f["name"] = m["name"]
+            if m.get("isin"):
+                f["isin"] = m["isin"]
+            fixed += 1
+    print(f"{fixed} names corrected by hand from names_manual.json")
+
 json.dump(d, open(os.path.join(HERE, "funds_v2.json"), "w"), indent=1)
 print(f"\n{fixed} names repaired, {miss} unchanged")

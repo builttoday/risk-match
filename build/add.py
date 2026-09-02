@@ -24,7 +24,7 @@ USAGE
 Then re-run the rest of the chain, which is cheap and offline apart from the register lookup:
     python classify.py && python fca.py && python pack.py && python beta.py
 """
-import json, os, sys, time
+import json, os, re, sys, time
 
 import fetch          # session/chart/to_gbp/stats, so the maths is shared, not copied
 
@@ -35,9 +35,28 @@ SERIES = os.path.join(HERE, "series_gbp.json")
 
 
 def resolve(s, q):
-    """ISIN or name -> (symbol, quoteType, exchange). A Yahoo symbol is returned unchanged."""
-    if q.endswith(".L") or q.startswith("0P") or ("." in q and len(q) < 12):
-        return q, "MUTUALFUND", ""
+    """ISIN or name -> (symbol, quoteType, exchange). A Yahoo symbol keeps its own symbol but
+    still has its TYPE looked up.
+
+    NEVER GUESS THE TYPE FROM THE SYMBOL. An earlier version returned "MUTUALFUND" for
+    anything ending in .L, which is most of the London market -- so eleven FTSE 100 shares
+    re-added by symbol came back typed as funds. classify.py then took the fund branch and
+    sector-guessed them from their names: Anglo American was filed under North America, and
+    Lloyds under Unclassified. They also vanished from the Shares view, which selects on
+    type === "EQUITY". The type drives four downstream decisions and is not worth guessing.
+    """
+    if q.startswith("0P") or q.endswith(".L") or ("." in q and len(q) < 12):
+        r = s.get("https://query2.finance.yahoo.com/v1/finance/search", timeout=30,
+                  params={"q": q, "quotesCount": 10, "newsCount": 0, "listsCount": 0,
+                          "enableFuzzyQuery": "false"})
+        if r.status_code == 200:
+            for x in r.json().get("quotes", []):
+                if x.get("symbol") == q and x.get("quoteType"):
+                    return q, x["quoteType"], x.get("exchange") or ""
+        # Search can miss a symbol it will happily price. A 0P identifier is Morningstar's
+        # and is always a fund; anything else listed is left as EQUITY, the safer default,
+        # because a share mislabelled as a fund gets a guessed sector and a guessed manager.
+        return q, ("MUTUALFUND" if q.startswith("0P") else "EQUITY"), ""
     r = s.get("https://query2.finance.yahoo.com/v1/finance/search", timeout=30,
               params={"q": q, "quotesCount": 10, "newsCount": 0, "listsCount": 0,
                       "enableFuzzyQuery": "false"})
@@ -100,6 +119,10 @@ def main(args):
 
         rec = {"symbol": sym, "type": qt, "name": px.get("longName") or sym,
                "exch": exch}
+        # An ISIN identifies a share class exactly, where a name has to be matched by eye
+        # against whatever abbreviation the data source chose. If one was typed, keep it.
+        if re.fullmatch(r"[A-Z]{2}[A-Z0-9]{9}[0-9]", q.strip().upper()):
+            rec["isin"] = q.strip().upper()
         rec.update(st)
         rec["currency"] = px["cur"]
         rec["gbpConverted"] = converted
