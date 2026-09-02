@@ -1,0 +1,355 @@
+{
+ "checkedAt": "2026-08-29T22:40:06.389Z",
+ "matches": {
+  "0P0000UAHH.L": {
+   "fcaPrn": "1030743",
+   "fcaName": "Aegon Absolute Return Bond Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1030743&type=Companies"
+  },
+  "0P000183Q4.L": {
+   "fcaPrn": "645821",
+   "fcaName": "Royal London Short Term Fixed Income Fund",
+   "fcaScore": 0.83,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=645821&type=Companies"
+  },
+  "0P00008F8R.L": {
+   "fcaPrn": "436754",
+   "fcaName": "abrdn Global Real Estate Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=436754&type=Companies"
+  },
+  "0P00000VFL.L": {
+   "fcaPrn": "641757",
+   "fcaName": "AVIVA INVESTORS BALANCED MANAGED FUND",
+   "fcaScore": 0.75,
+   "fcaStatus": "Terminated",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=641757&type=Companies"
+  },
+  "0P0001HORT.L": {
+   "fcaPrn": "843522",
+   "fcaName": "Quilter Investors Monthly Income Portfolio",
+   "fcaScore": 0.6,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=843522&type=Companies"
+  },
+  "0P0000WO05.L": {
+   "fcaPrn": "642109",
+   "fcaName": "Liontrust MA Explorer 35 Fund",
+   "fcaScore": 0.75,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=642109&type=Companies"
+  },
+  "0P0001D2M8.L": {
+   "fcaPrn": "196624",
+   "fcaName": "RATHBONE ETHICAL BOND FUND",
+   "fcaScore": 1,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=196624&type=Companies"
+  },
+  "0P0000J18E.L": {
+   "fcaPrn": "646097",
+   "fcaName": "MI Sinfonia Cautious Managed Portfolio",
+   "fcaScore": 0.8,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=646097&type=Companies"
+  },
+  "0P00015BC0.L": {
+   "fcaPrn": "637901",
+   "fcaName": "PREMIER MITON MULTI-ASSET DISTRIBUTION FUND",
+   "fcaScore": 0.67,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=637901&type=Companies"
+  },
+  "0P0000J18C.L": {
+   "fcaPrn": "646097",
+   "fcaName": "MI Sinfonia Cautious Managed Portfolio",
+   "fcaScore": 0.8,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=646097&type=Companies"
+  },
+  "0P00011WR1.L": {
+   "fcaPrn": "639365",
+   "fcaName": "Liontrust MA Blended Moderate Fund",
+   "fcaScore": 0.75,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=639365&type=Companies"
+  },
+  "0P0001M7GW.L": {
+   "fcaPrn": "458945",
+   "fcaName": "Premier Miton Multi-Asset Fund 2",
+   "fcaScore": 1,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=458945&type=Companies"
+  },
+  "0P0001RA1A.L": {
+   "fcaPrn": "186260",
+   "fcaName": "JUPITER CORPORATE BOND FUND",
+   "fcaScore": 1,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=186260&type=Companies"
+  },
+  "0P0001RTZG.L": {
+   "fcaPrn": "640183",
+   "fcaName": "Man Balanced Managed Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=640183&type=Companies"
+  },
+  "0P0001DFC7.L": {
+   "fcaPrn": "645333",
+   "fcaName": "CG Aegon Strategic Bond Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=645333&type=Companies"
+  },
+  "0P0001EHSB.L": {
+   "fcaPrn": "645822",
+   "fcaName": "Royal London International Government Bond Fund",
+   "fcaScore": 0.8,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=645822&type=Companies"
+  },
+  "0P0001HH9E.L": {
+   "fcaPrn": "638317",
+   "fcaName": "Sarasin Responsible Strategic Bond",
+   "fcaScore": 1,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=638317&type=Companies"
+  },
+  "0P0000W4FU.L": {
+   "fcaPrn": "574567",
+   "fcaName": "Artemis Monthly Distribution Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=574567&type=Companies"
+  },
+  "0P0000XXV6.L": {
+   "fcaPrn": "640121",
+   "fcaName": "VT GREYSTONE BALANCED MANAGED FUND",
+   "fcaScore": 1,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=640121&type=Companies"
+  },
+  "0P0000GGPZ.L": {
+   "fcaPrn": "640293",
+   "fcaName": "WS Resilient MM Balanced Managed Fund",
+   "fcaScore": 0.8,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=640293&type=Companies"
+  },
+  "0P00000DY5.L": {
+   "fcaPrn": "154007",
+   "fcaName": "JUPITER MERLIN INCOME PORTFOLIO",
+   "fcaScore": 0.75,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=154007&type=Companies"
+  },
+  "0P0001CUIS.L": {
+   "fcaPrn": "737109",
+   "fcaName": "Royal London GMAP Adventurous Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=737109&type=Companies"
+  },
+  "0P0000251B.L": {
+   "fcaPrn": "645667",
+   "fcaName": "BLACKROCK BALANCED MANAGED FUND",
+   "fcaScore": 1,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=645667&type=Companies"
+  },
+  "0P00000RFO.L": {
+   "fcaPrn": "635987",
+   "fcaName": "M&G GILT & FIXED INTEREST INCOME FUND",
+   "fcaScore": 0.75,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=635987&type=Companies"
+  },
+  "0P00016NZ4.L": {
+   "fcaPrn": "974767",
+   "fcaName": "Royal London Sustainable Growth Fund",
+   "fcaScore": 0.75,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=974767&type=Companies"
+  },
+  "0P0001LZV3.L": {
+   "fcaPrn": "1031617",
+   "fcaName": "Waverton Multi-Asset Growth Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1031617&type=Companies"
+  },
+  "VGVA.L": {
+   "fcaPrn": "1059387",
+   "fcaName": "Vanguard U.K. Gilt UCITS ETF",
+   "fcaScore": 0.75,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1059387&type=Companies"
+  },
+  "0P0000HGIN.L": {
+   "fcaPrn": "645185",
+   "fcaName": "UNICORN OUTSTANDING BRITISH COMPANIES FUND",
+   "fcaScore": 0.75,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=645185&type=Companies"
+  },
+  "0P0000W9SK.L": {
+   "fcaPrn": "636367",
+   "fcaName": "FTF ClearBridge UK Equity Income Fund",
+   "fcaScore": 0.6,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=636367&type=Companies"
+  },
+  "0P00000TB8.L": {
+   "fcaPrn": "188296",
+   "fcaName": "PREMIER MITON FUNDS",
+   "fcaScore": 0.67,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=188296&type=Companies"
+  },
+  "0P0000W9SJ.L": {
+   "fcaPrn": "636367",
+   "fcaName": "FTF ClearBridge UK Equity Income Fund",
+   "fcaScore": 0.6,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=636367&type=Companies"
+  },
+  "0P0000JAQC.L": {
+   "fcaPrn": "107360",
+   "fcaName": "AXA FRAMLINGTON EQUITY INCOME FUND",
+   "fcaScore": 0.75,
+   "fcaStatus": "Terminated",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=107360&type=Companies"
+  },
+  "0P0000XYWQ.L": {
+   "fcaPrn": "499277",
+   "fcaName": "ROYAL LONDON SUSTAINABLE WORLD TRUST",
+   "fcaScore": 0.8,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=499277&type=Companies"
+  },
+  "0P0001FG94.L": {
+   "fcaPrn": "1031616",
+   "fcaName": "Waverton European Dividend Growth Fund",
+   "fcaScore": 0.75,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1031616&type=Companies"
+  },
+  "0P0001FG93.L": {
+   "fcaPrn": "1031616",
+   "fcaName": "Waverton European Dividend Growth Fund",
+   "fcaScore": 0.75,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1031616&type=Companies"
+  },
+  "0P0000J4YI.L": {
+   "fcaPrn": "632560",
+   "fcaName": "PREMIER MITON OPTIMUM INCOME FUND",
+   "fcaScore": 0.75,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=632560&type=Companies"
+  },
+  "0P0001261W.L": {
+   "fcaPrn": "452633",
+   "fcaName": "WS Lindsell Train UK Equity Fund",
+   "fcaScore": 0.8,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=452633&type=Companies"
+  },
+  "0P0001FG8R.L": {
+   "fcaPrn": "1031615",
+   "fcaName": "Waverton European Capital Growth Fund",
+   "fcaScore": 0.75,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1031615&type=Companies"
+  },
+  "0P0001FG8T.L": {
+   "fcaPrn": "1031615",
+   "fcaName": "Waverton European Capital Growth Fund",
+   "fcaScore": 0.75,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1031615&type=Companies"
+  },
+  "0P0000UB29.L": {
+   "fcaPrn": "1059901",
+   "fcaName": "Lindsell Train Japanese Equity Fund",
+   "fcaScore": 0.75,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1059901&type=Companies"
+  },
+  "0P0001LCE7.L": {
+   "fcaPrn": "938874",
+   "fcaName": "Schroder Global Sustainable Growth Fund",
+   "fcaScore": 0.75,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=938874&type=Companies"
+  },
+  "0P0001824G.L": {
+   "fcaPrn": "529093",
+   "fcaName": "Fundsmith Equity Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=529093&type=Companies"
+  },
+  "0P0001O82D.L": {
+   "fcaPrn": "632566",
+   "fcaName": "Premier Miton Global Leaders Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=632566&type=Companies"
+  },
+  "0P0000RU81.L": {
+   "fcaPrn": "529093",
+   "fcaName": "Fundsmith Equity Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=529093&type=Companies"
+  },
+  "0P0001D7IS.L": {
+   "fcaPrn": "807290",
+   "fcaName": "Jupiter UK Alpha Fund",
+   "fcaScore": 0.67,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=807290&type=Companies"
+  },
+  "0P00008VOP.L": {
+   "fcaPrn": "1031623",
+   "fcaName": "Waverton Asia Pacific Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1031623&type=Companies"
+  },
+  "0P0000WN3Q.L": {
+   "fcaPrn": "635982",
+   "fcaName": "M&G INDEX-LINKED BOND FUND",
+   "fcaScore": 1,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=635982&type=Companies"
+  },
+  "0P0000XNBU.L": {
+   "fcaPrn": "107372",
+   "fcaName": "AXA FRAMLINGTON JAPAN FUND",
+   "fcaScore": 1,
+   "fcaStatus": "Authorised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=107372&type=Companies"
+  },
+  "0P0001CO2M.L": {
+   "fcaPrn": "799372",
+   "fcaName": "Allianz Index-Linked Gilt Fund",
+   "fcaScore": 1,
+   "fcaStatus": "Approved",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=799372&type=Companies"
+  },
+  "INXG.L": {
+   "fcaPrn": "1026962",
+   "fcaName": "iShares \u00a3 Index-Linked Gilts UCITS ETF",
+   "fcaScore": 0.83,
+   "fcaStatus": "Recognised",
+   "fcaUrl": "https://register.fca.org.uk/s/search?q=1026962&type=Companies"
+  }
+ }
+}

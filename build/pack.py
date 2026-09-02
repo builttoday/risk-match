@@ -20,6 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 SRC_FUNDS = os.path.join(HERE, "funds_v3.json")
 SRC_SERIES = os.path.join(HERE, "series_gbp.json")
+SRC_FCA = os.path.join(HERE, "fca_cache.json")   # register matches, kept across rebuilds
 OUT_FUNDS = os.path.join(ROOT, "funds.json")
 OUT_SERIES = os.path.join(ROOT, "series.json")
 
@@ -53,10 +54,18 @@ def to_monthly(t, c):
 def main():
     fd = json.load(open(SRC_FUNDS, encoding="utf-8"))
     sd = json.load(open(SRC_SERIES, encoding="utf-8"))["series"]
+    # The register matches live in their own cache so a rebuild of the universe carries them
+    # forward. When they were held only on the fund record, growing the universe from 190 to
+    # 982 wiped the whole FCA column without anything failing.
+    fca, fca_at = {}, None
+    if os.path.exists(SRC_FCA):
+        _f = json.load(open(SRC_FCA, encoding="utf-8"))
+        fca, fca_at = _f.get("matches", {}), _f.get("checkedAt")
 
     funds = []
     for f in fd["funds"]:
         rec = {k: f[k] for k in KEEP if k in f}
+        rec.update(fca.get(f["symbol"], {}))
         s = sd.get(f["symbol"])
         if s and len(s["c"]) > 12:
             rec["firstDate"] = datetime.fromtimestamp(
@@ -76,6 +85,7 @@ def main():
                "count": len(funds),
                "riskFree": fd.get("riskFree"), "benchmark": fd.get("benchmark"),
                "houses": fd.get("houses"), "sectors": fd.get("sectors"),
+               "fcaCheckedAt": fca_at, "fcaMatched": sum(1 for r in funds if r.get("fcaPrn")),
                "funds": funds}, open(OUT_FUNDS, "w"), indent=1)
     json.dump({"builtAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                "interval": "monthly", "currency": "GBP", "series": series},

@@ -18,6 +18,8 @@ are starting points, not anyone's house view.
 ## The views
 
 **Match by risk** — funds whose measured volatility sits inside your band for a risk level.
+Leveraged and inverse products are excluded unless you ask for them: their volatility is a
+real figure, but it describes a daily-rebalancing trading instrument rather than a holding.
 
 **Browse funds** — all 974, A–Z, filtered by fund manager, sector, minimum history, and
 sorted by clicking any column header. Volatility, five-year return, drawdown, Sharpe, Sortino,
@@ -124,6 +126,13 @@ entry. A dash means no confident name match was found — not that the fund is u
 status followed by "?" means the match was loose and may be the wrong fund. Click through before
 putting a reference number in a client file.
 
+**Only 50 of the 974 are currently matched.** The matches live in `build/fca_cache.json`, keyed
+by symbol, precisely so a rebuild of the universe carries them forward — when they were held
+only on the fund record, growing the universe from 190 funds to 982 wiped the entire FCA column
+and nothing failed loudly enough to notice. Filling in the rest means running `build/fca.py`
+with a register API key (free, from https://register.fca.org.uk/Developer/s/) in `FCA_EMAIL`
+and `FCA_KEY`; without them the script carries the cache forward and matches nothing new.
+
 ## The portfolio backtest
 
 `build/portfolio.py` tests mechanical fund-of-funds construction rules walk-forward: each
@@ -145,7 +154,8 @@ It is a backtest, not advice, and not a recommendation.
 build/discover.py   find candidate funds (Yahoo search, fund houses + FTSE 100 + benchmarks)
 build/fetch.py      price them, convert to GBP, compute statistics and weekly series
 build/names.py      backfill full names from chart metadata
-build/classify.py   derive manager and sector, normalise names for FCA matching
+build/classify.py   derive manager, sector and the leveraged/inverse flag
+build/fca.py        match to the FCA register, cached across rebuilds
 build/repair.py     re-measure instruments whose price series is visibly broken
 build/pack.py       write funds.json and series.json for the site
 build/beta.py       recompute beta and correlation on a shared monthly window

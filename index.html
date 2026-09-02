@@ -137,7 +137,8 @@ details.bands[open] > summary::before { content: "▾ "; }
 .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 table { width: 100%; border-collapse: collapse; font-size: .88rem; }
 th, td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
-th:first-child, td:first-child { text-align: left; white-space: normal; min-width: 240px; }
+th.pick + th, td.pick + td { text-align: left; white-space: normal;
+                             min-width: 240px; max-width: 420px; }
 thead th {
   font-family: "IBM Plex Mono", monospace; font-size: .64rem; letter-spacing: .08em;
   text-transform: uppercase; color: var(--muted); cursor: pointer; user-select: none;
@@ -248,7 +249,7 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 .btnrow button { padding:8px 14px; border:1px solid var(--line); border-radius:8px;
         background:var(--surface); color:var(--ink); cursor:pointer; font-size:.88rem; }
 .btnrow button.primary { background:var(--navy); color:#fff; border-color:var(--navy); }
-.uin { width:100%; padding:4px 6px; border:1px solid var(--line);
+.uin { width:100%; padding:6px 8px; border:1px solid var(--line);
        border-radius:6px; background:var(--surface); color:var(--ink);
        font-size:.82rem; text-align:right; }
 
@@ -567,7 +568,7 @@ const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
 let bands = loadBands();
 let universe = { builtAt: null, count: 0, funds: [] };
 let shown = [];
-let sortKey = "vol", sortDir = 1;
+let sortKey = "volDaily", sortDir = 1;
 /* Which funds the adviser has ticked for the record. Held by symbol so it survives re-sorting
    and re-filtering; cleared when the risk level changes, because a shortlist for risk 5 is not
    a shortlist for risk 6. */
@@ -724,7 +725,7 @@ function runMatch() {
   const withLeveraged = $("showLeveraged").checked;
 
   shown = universe.funds.filter(f =>
-    f.vol >= band[0] && f.vol <= band[1] &&
+    f.volDaily >= band[0] && f.volDaily <= band[1] &&
     (!type || f.type === type) &&
     f.years >= minYears &&
     (withLeveraged || !f.leveraged));
@@ -745,7 +746,7 @@ function sortRows() {
 
 const COLUMNS = [
   ["name", "Fund"],
-  ["vol", "Volatility"],
+  ["volDaily", "Volatility"],
   ["maxDD", "Max drawdown"],
   ["r1", "1yr p.a."],
   ["r3", "3yr p.a."],
@@ -803,7 +804,7 @@ function cellFor(f, key) {
   const v = f[key];
   if (v === null || v === undefined) return `<td class="num">—</td>`;
   if (key === "years") return `<td class="num">${v}y</td>`;
-  if (key === "vol") return `<td class="num">${v.toFixed(1)}%</td>`;
+  if (key === "volDaily") return `<td class="num">${v.toFixed(1)}%</td>`;
   const cls = key === "maxDD" ? "neg" : (v >= 0 ? "pos" : "neg");
   return `<td class="num ${cls}">${v > 0 && key !== "maxDD" ? "+" : ""}${v.toFixed(1)}%</td>`;
 }
@@ -906,7 +907,7 @@ function recordRow(f, chosen) {
   const n = (v, suffix) => (v === null || v === undefined ? "\u2014" : v.toFixed(1) + (suffix || ""));
   return `<tr class="${chosen ? "chosen" : ""}">
     <td>${chosen ? "\u25cf " : ""}${esc(f.name)}</td>
-    <td class="num">${n(f.vol, "%")}</td>
+    <td class="num">${n(f.volDaily, "%")}</td>
     <td class="num">${n(f.maxDD, "%")}</td>
     <td class="num">${n(f.r3, "%")}</td>
     <td class="num">${n(f.r5, "%")}</td>
@@ -1006,7 +1007,7 @@ function buildRecord(meta) {
 .btnrow button { padding:8px 14px; border:1px solid var(--line); border-radius:8px;
         background:var(--surface); color:var(--ink); cursor:pointer; font-size:.88rem; }
 .btnrow button.primary { background:var(--navy); color:#fff; border-color:var(--navy); }
-.uin { width:100%; padding:4px 6px; border:1px solid var(--line);
+.uin { width:100%; padding:6px 8px; border:1px solid var(--line);
        border-radius:6px; background:var(--surface); color:var(--ink);
        font-size:.82rem; text-align:right; }
 
@@ -1148,7 +1149,7 @@ function buildRecord(meta) {
 function exportCsv() {
   const rows = [["Fund", "Type", "Symbol", "Volatility %", "Max drawdown %", "1yr pa %", "3yr pa %", "5yr pa %", "Years of history", "FCA status", "FCA reference", "FCA registered name", "Prices page", "Factsheet search"]];
   for (const f of shown) {
-    rows.push([f.name, f.type, f.symbol, f.vol, f.maxDD, f.r1 ?? "", f.r3 ?? "", f.r5 ?? "", f.years,
+    rows.push([f.name, f.type, f.symbol, f.volDaily, f.maxDD, f.r1 ?? "", f.r3 ?? "", f.r5 ?? "", f.years,
                f.fcaStatus ?? "", f.fcaPrn ?? "", f.fcaName ?? "",
                dataUrl(f), factsheetSearchUrl(f)]);
   }
@@ -1653,17 +1654,16 @@ function renderChoice() {
 
   function num(v, d) { return v == null ? '<span class="meta">&mdash;</span>' : v.toFixed(d || 1); }
   wrap.innerHTML =
-    '<div class="fhead" style="grid-template-columns:1fr 120px 68px 68px 62px 96px 40px">' +
+    '<div class="fhead" style="grid-template-columns:1fr 120px 68px 68px 62px 120px 40px">' +
     '<div>Fund</div><div>Manager</div>' +
     '<div class="num">Vol %</div><div class="num">5yr %</div><div class="num">Max DD</div>' +
     '<div class="num">Units held</div><div></div></div>' +
     funds.map(function (f) {
-      return '<div class="fundrow" style="grid-template-columns:1fr 120px 68px 68px 62px 96px 40px">' +
+      return '<div class="fundrow" style="grid-template-columns:1fr 120px 68px 68px 62px 120px 40px">' +
         '<div><div class="nm">' + esc(f.name || f.symbol) + '</div><div class="meta">' +
         esc(f.symbol) + (f.years ? ' &middot; ' + f.years + 'y' : '') + '</div></div>' +
         '<div class="meta">' + esc(f.house || '') + '</div>' +
         '<div class="num">' + num(f.volDaily) + '</div>' +
-      '<div class="num xf">' + num(f.volWeekly) + '</div>' +
         '<div class="num">' + num(f.r5) + '</div>' +
         '<div class="num">' + num(f.maxDD) + '</div>' +
         '<div><input class="uin" type="number" min="0" step="any" data-units="' +

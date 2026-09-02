@@ -137,6 +137,25 @@ def stem(name):
     return re.sub(r"\s+", " ", s).strip()
 
 
+# A leveraged or inverse product's volatility is a real measurement, but it describes a
+# daily-rebalancing trading instrument rather than a holding. The match view hides them
+# unless asked for, so offering one as an ordinary match for a risk-profiled client is not
+# something the tool can do by accident. Detected from the name because there is no free
+# feed that flags them.
+LEV_RE = re.compile(
+    "|".join([
+        r"BSLASHb[23]x BSLASHb", r"BSLASHbx[23]BSLASHb", r"[23]x daily", r"daily [23]x",
+        r"BSLASHbleverag", r"BSLASHbinverseBSLASHb", r"BSLASHbultra ?short BSLASHb", r"BSLASHbultraproBSLASHb",
+        r"BSLASHbbearBSLASHb", r"BSLASHbshort daily", r"daily shortBSLASHb",
+        r"BSLASHb-1xBSLASHb", r"BSLASHb-[23]xBSLASHb", r"BSLASHbgeared BSLASHb",
+    ]).replace("BSLASH", chr(92)),
+    re.I)
+
+
+def leveraged(name):
+    return bool(LEV_RE.search(name or ""))
+
+
 def main():
     d = json.load(open(IN, encoding="utf-8"))
     funds = d["funds"]
@@ -155,6 +174,7 @@ def main():
         f["displayName"] = display_name(nm)
         f["stem"] = stem(nm)
         f["derived"] = True
+        f["leveraged"] = leveraged(nm)
         houses[f["house"]] = houses.get(f["house"], 0) + 1
         sectors[f["sector"]] = sectors.get(f["sector"], 0) + 1
 
