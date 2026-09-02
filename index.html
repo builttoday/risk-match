@@ -380,8 +380,13 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 
 .tscroll { overflow-x:auto; border:1px solid var(--line); border-radius:12px;
            background:var(--surface); }
-#bTable { --bgrid: 30px minmax(250px,1fr) 120px 132px 76px 74px 60px 54px 74px 40px; min-width: 960px; }
-#bTable.wide { --bgrid: 30px minmax(190px,1fr) 104px 116px 68px 66px 56px 50px 66px 66px 58px 60px 60px 56px 62px 68px 36px; min-width: 1520px; }
+/* EVERY TRACK HAS TO FIT ITS OWN HEADING. The headings do not wrap -- a label broken over two
+   lines reads as two columns -- so a track narrower than its label does not clip, it runs
+   over the next heading. Widened here to the longest label in each column, with the sort
+   arrow allowed for, and the heading type tightened a little so that costs less width. */
+#bTable { --bgrid: 30px minmax(230px,1fr) 116px 128px 92px 92px 72px 60px 96px 40px; min-width: 1070px; }
+#bTable.wide { --bgrid: 30px minmax(175px,1fr) 104px 116px 92px 92px 72px 60px 96px 96px 92px 92px 82px 78px 102px 112px 36px; min-width: 1700px; }
+#bTable .fhead > div { letter-spacing: .035em; font-size: .68rem; }
 .tinner { min-width: 960px; }
 .fhead .sortable[title] { cursor:help; }
 /* A wrapped column label reads as two columns; the table scrolls instead. */
@@ -2404,8 +2409,13 @@ function buildRecord(meta) {
 
 .tscroll { overflow-x:auto; border:1px solid var(--line); border-radius:12px;
            background:var(--surface); }
-#bTable { --bgrid: 30px minmax(250px,1fr) 120px 132px 76px 74px 60px 54px 74px 40px; min-width: 960px; }
-#bTable.wide { --bgrid: 30px minmax(190px,1fr) 104px 116px 68px 66px 56px 50px 66px 66px 58px 60px 60px 56px 62px 68px 36px; min-width: 1520px; }
+/* EVERY TRACK HAS TO FIT ITS OWN HEADING. The headings do not wrap -- a label broken over two
+   lines reads as two columns -- so a track narrower than its label does not clip, it runs
+   over the next heading. Widened here to the longest label in each column, with the sort
+   arrow allowed for, and the heading type tightened a little so that costs less width. */
+#bTable { --bgrid: 30px minmax(230px,1fr) 116px 128px 92px 92px 72px 60px 96px 40px; min-width: 1070px; }
+#bTable.wide { --bgrid: 30px minmax(175px,1fr) 104px 116px 92px 92px 72px 60px 96px 96px 92px 92px 82px 78px 102px 112px 36px; min-width: 1700px; }
+#bTable .fhead > div { letter-spacing: .035em; font-size: .68rem; }
 .tinner { min-width: 960px; }
 .fhead .sortable[title] { cursor:help; }
 /* A wrapped column label reads as two columns; the table scrolls instead. */
@@ -4079,14 +4089,29 @@ function fsSparkline(axis, values, w, h) {
   });
   var d0 = new Date(axis[0] * 1000).toISOString().slice(0, 7);
   var d1 = new Date(axis[axis.length - 1] * 1000).toISOString().slice(0, 7);
-  var base = (h - 18 - ((1 - lo) / (hi - lo)) * (h - 34)).toFixed(1);
+  var baseY = h - 18 - ((1 - lo) / (hi - lo)) * (h - 34);
+  var base = baseY.toFixed(1);
+  /* THE SCALE IS PERCENT, NOT MULTIPLES. The series is an index starting at 1, and labelling
+     the axis "1.34x" asks the reader to do the subtraction themselves -- on a document that
+     goes in a client file beside factsheets that all quote percentages. The dashed line is
+     the starting value, so it is labelled 0% rather than left to be inferred. */
+  var pc = function (v) {
+    var x = (v - 1) * 100;
+    return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(x >= 10 ? 0 : 1) + '%';
+  };
+  // Only label the baseline when it will not collide with the top or bottom figure.
+  var zero = (baseY > 22 && baseY < h - 14)
+    ? '<text x="0" y="' + (baseY + 3).toFixed(1) + '" font-size="10" ' +
+      'fill="var(--muted)">0%</text>' : '';
   return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="' + h + '" role="img" ' +
-    'aria-label="Growth of the portfolio">' +
+    'aria-label="Growth of the portfolio, ' + pc(values[values.length - 1]) +
+    ' from ' + d0 + ' to ' + d1 + '">' +
     '<line x1="38" y1="' + base + '" x2="' + (w - 6) + '" y2="' + base +
       '" stroke="var(--line)" stroke-dasharray="3 3"/>' +
     '<polyline fill="none" stroke="var(--navy)" stroke-width="2" points="' + pts.join(' ') + '"/>' +
-    '<text x="0" y="12" font-size="10" fill="var(--muted)">' + hi.toFixed(2) + '&times;</text>' +
-    '<text x="0" y="' + (h - 4) + '" font-size="10" fill="var(--muted)">' + lo.toFixed(2) + '&times;</text>' +
+    '<text x="0" y="12" font-size="10" fill="var(--muted)">' + pc(hi) + '</text>' +
+    '<text x="0" y="' + (h - 4) + '" font-size="10" fill="var(--muted)">' + pc(lo) + '</text>' +
+    zero +
     '<text x="38" y="' + (h - 4) + '" font-size="10" fill="var(--muted)">' + d0 + '</text>' +
     '<text x="' + (w - 6) + '" y="' + (h - 4) + '" font-size="10" text-anchor="end" ' +
       'fill="var(--muted)">' + d1 + '</text>' +

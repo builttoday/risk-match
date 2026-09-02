@@ -106,6 +106,11 @@ committed to this repository, because the site is public and what someone holds 
 volatility and drawdown, growth of the mix, allocation by sector and by manager, and an
 automatic warning when one holding dominates.
 
+The growth chart is scaled in **percent, not multiples**. The series is an index starting at
+1, and an axis reading "1.34x" asks the reader to do the subtraction on a document that sits in
+a client file beside factsheets quoting percentages throughout. The dashed line is the starting
+value and is labelled 0% rather than left to be inferred.
+
 Portfolio volatility is **computed from the combined weighted series, not averaged across
 holdings**. A weighted average always overstates risk because it assumes everything moves
 together; the factsheet shows both figures so the diversification actually delivered is

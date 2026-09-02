@@ -162,6 +162,24 @@ function check(label, ok, detail) {
         visible[0] === '5yr return' && visible[1] === 'Volatility', visible.join(' | '));
   check('Sortino is not in the default view', heads.some(h => h.t === 'Sortino' && h.xf));
   check('Max fall is not in the default view', heads.some(h => h.t === 'Max fall' && h.xf));
+  // jsdom does no layout, so overlap cannot be seen -- but it can be computed. The headings
+  // are white-space:nowrap, so a track narrower than its own label does not clip, it runs
+  // over the next heading. That shipped twice; this is the guard.
+  const css = Array.from(doc.querySelectorAll('style')).map(x => x.textContent).join('\n');
+  const grid = (css.match(/#bTable\s*\{[^}]*--bgrid:([^;]+);/) || [])[1];
+  if (grid) {
+    const tracks = grid.trim().split(/\s+/);
+    // The track list is: checkbox, name (minmax, not numeric), manager, sector, then the
+    // numeric columns, then the star. Line them up by position, not by size -- an earlier
+    // version filtered by width and compared "Worst year" against the Sharpe column.
+    const numeric = tracks.map(t => /^\d+px$/.test(t) ? parseInt(t, 10) : null);
+    const cols = numeric.slice(numeric.indexOf(null) + 1, -1).filter(x => x != null).slice(2);
+    const need = visible.map(l => l.length * (10.9 * 0.62 + 10.9 * 0.035) + 13);
+    const tight = visible.map((l, i) => cols[i] != null && cols[i] < need[i]
+      ? l + ' needs ' + Math.round(need[i]) + 'px, has ' + cols[i] : null).filter(Boolean);
+    check('every heading fits its column', tight.length === 0, tight.join('; '));
+  }
+
   const firstRow = doc.querySelector('#bList .fundrow');
   const cells = Array.from(firstRow.querySelectorAll('.num'))
                      .filter(c => !c.classList.contains('xf'));
@@ -234,6 +252,24 @@ function check(label, ok, detail) {
   await wait(250);
   check('an empty search box still lists funds', n('#gPick [data-sym]') > 0,
         n('#gPick [data-sym]') + ' shown');
+
+  console.log('\nFACTSHEET CHART');
+  // The My Choice source needs units entered as well as a star, so this reads the growth
+  // mix -- which the section above has just filled -- to get a chart on the page.
+  click(doc.querySelector('.nav a[data-view="factsheet"]'));
+  await wait(900);
+  const src = doc.querySelector('#factsheetView [data-fssrc="growth"]');
+  if (src) { click(src); await wait(900); }
+  const chart = doc.querySelector('#factsheetView svg');
+  if (!chart) {
+    check('a growth chart is drawn', false, 'no svg on the factsheet');
+  } else {
+    const labels = Array.from(chart.querySelectorAll('text')).map(t => t.textContent);
+    // The client file this goes into quotes percentages throughout; "1.34x" makes the reader
+    // do the subtraction.
+    check('the chart scale is in percent', labels.some(l => /%$/.test(l)), labels.join('  '));
+    check('no multiples left on the axis', !labels.some(l => /[x×]/i.test(l)));
+  }
 
   console.log('\nANALYSIS -- every panel, then every control');
   click(doc.querySelector('.nav a[data-view="analysis"]'));
