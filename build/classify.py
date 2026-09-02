@@ -48,7 +48,11 @@ SECTORS = [
     ("Gilts",                 ("gilt", "government bond", "treasury bond")),
     ("High Yield Bond",       ("high yield", "high income bond")),
     ("Corporate Bond",        ("corporate bond", "investment grade", "credit fund", " credit ")),
-    ("Strategic / Global Bond", ("bond", "fixed income", "fixed interest", "aggregate")),
+    # "loan" and "abs" sit here rather than under Europe: a European loan or asset-backed
+    # fund is credit, and letting the "european" keyword below claim it would file it beside
+    # equity funds, which is worse than leaving it unclassified.
+    ("Strategic / Global Bond", ("bond", "fixed income", "fixed interest", "aggregate",
+                                 "loan", "abs", "asset backed", "asset-backed")),
     ("UK Equity Income",      ("uk equity income", "uk income")),
     ("UK Smaller Companies",  ("uk smaller", "uk micro")),
     ("UK Equity",             ("uk equity", "uk all companies", "uk growth", "ftse 100",
@@ -57,9 +61,15 @@ SECTORS = [
     ("Emerging Markets",      ("emerging", "frontier", "china", "india", "brazil", "latin")),
     ("Asia Pacific",          ("asia", "pacific", "asean", "korea", "singapore")),
     ("Japan",                 ("japan", "nippon")),
+    # "index us" catches the house-branded US trackers -- "Fidelity Index US P Acc" says
+    # nothing else about where it invests, and fell through every rule to Unclassified.
     ("North America",         ("north america", "us equity", "usa", "s&p 500", "american",
-                               "nasdaq")),
-    ("Europe",                ("europe", "euro stoxx", "eurozone", "german", "french")),
+                               "nasdaq", "index us")),
+    # "european" is a separate keyword because keywords are matched with a word boundary
+    # on each side, so "europe" does not match "European" -- which left ten funds
+    # unclassified for no better reason than an adjective.
+    ("Europe",                ("europe", "european", "euro stoxx", "eurozone", "german",
+                               "french")),
     ("Technology",            ("technolog", "digital", "software", "semiconductor", "ai ")),
     ("Healthcare",            ("health", "biotech", "pharma", "medical")),
     ("Energy & Resources",    ("energy", "natural resources", "mining", "gold", "commodit",

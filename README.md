@@ -17,14 +17,32 @@ are starting points, not anyone's house view.
 
 ## The views
 
+**Client** — the fact find, and a risk-tolerance questionnaire. Term, objective, withdrawals,
+capacity for loss, knowledge, emergency fund, and the risk level your firm assessed. The
+questionnaire is **Grable & Lytton's 13-item Financial Risk Tolerance Scale**, published in
+*Financial Services Review* in 1999 and used in hundreds of studies since — reproduced
+verbatim, dollar amounts and all, because its score bands were calibrated on those exact
+questions and a reworded scale is no longer the scale that was validated. The licensed
+questionnaires advisers actually use (Defaqto's, Dynamic Planner's, FinaMetrica's) cannot be
+reproduced here, and inventing thirteen plausible-sounding questions instead would be worse
+than either: an unvalidated scale wearing a validated one's clothes.
+
+The score measures **willingness** to take risk. It says nothing about capacity, term, or what
+your firm's level 5 means, so the tool will not map it onto a 1–10 scale for you — the fact
+find asks for that level instead. What it does do is check what you recorded against what the
+fund data measures: how far funds in your band for that level have actually fallen, against the
+capacity for loss on file. Everything stays in `localStorage` on that device; nothing is
+transmitted, and nothing reaches this repository, which is public.
+
 **Match by risk** — funds whose measured volatility sits inside your band for a risk level.
 Leveraged and inverse products are excluded unless you ask for them: their volatility is a
 real figure, but it describes a daily-rebalancing trading instrument rather than a holding.
 
-**Browse funds** — all 976, A–Z, filtered by fund manager, sector, minimum history, and
-sorted by clicking any column header. Volatility, five-year return, drawdown, Sharpe, Sortino,
-beta and worst twelve months are shown by default; **Show all figures** adds weekly volatility,
-one- and three-year returns, correlation and CAGR. Select rows to send them straight to the
+**Browse funds** — all 986, A–Z, filtered by fund manager, sector, minimum history, and
+sorted by clicking any column header. **Five-year return comes first, then volatility**, with
+Sharpe, beta and the worst twelve months beside them; **Show all figures** adds weekly
+volatility, the one- and three-year returns, maximum fall, Sortino, correlation and growth a
+year. Six numbers read; twelve are a spreadsheet. Select rows to send them straight to the
 growth calculator or My Choice, and each row links to a factsheet search and its price
 history.
 
@@ -150,7 +168,7 @@ error stays invisible until a holding is valued.
 
 ## Coverage
 
-976 share classes and instruments, up to 25 years of history — median 8.7 years, with 456 funds
+986 share classes and instruments, up to 25 years of history — median 8.7 years, with 456 funds
 having ten years or more and 219 having twenty. Not the whole market: there is no free way to
 enumerate every UK fund. The FCA Register API returns at most 20 rows per search with no working
 pagination, and its bulk extract is a paid service.
@@ -215,7 +233,25 @@ tool never needs to restate anyone else's licensed number.
 
 Price data is from public sources and is suitable for research, not as a licensed feed. Some
 of it is simply wrong: fourteen instruments arrived with volatilities between 126% and
-1,958,187% a year, which is not a risky fund but a broken history. `build/repair.py` finds
+1,958,187% a year, which is not a risky fund but a broken history.
+
+**Volatility is the wrong trigger on its own, and that cost real accuracy.** `repair.py`
+originally looked only at funds above 100% volatility. That misses an entire fault: a unit-price
+restatement, pence to pounds, spliced onto the old series without adjustment. One ÷100 step in
+1,935 daily observations lifts annualised volatility to about 39% — an adventurous fund, not an
+obviously broken file — while the five-year return reads **−99%**. Twenty-six instruments
+carried one, and WS Lindsell Train UK Equity was live on the site at −99.08% over five years for
+exactly this reason. The trigger is now the *fault* rather than its effect: any single-step break
+in the price series, or any figure no fund produces. A break within 10% of a round unit factor is
+a redenomination and the earlier segment is **rescaled**, keeping the whole history; anything
+else is still truncated.
+
+**What counts as "still broken" after a repair is mechanical, and deliberately so.** An earlier
+version of that guard dropped anything with a drawdown worse than −90% and threw away twenty
+real shares — Lloyds and NatWest really did fall that far through 2008–09 — plus Liontrust Russia
+meeting a real 2022. Judging plausibility is how a tool starts quietly discarding the history it
+does not like. The guard now drops a series only if a break survives the repair, the volatility
+is still impossible, or too little history is left to measure. `build/repair.py` finds
 them and separates the two causes — a *denomination flip*, where a stretch of the history is
 reported in a different unit and the two breaks invert each other (GR8.L fell 99.0% in one
 month and rose 10,057% the next: a divide by 103 then a multiply by 101), and an *unreversed
@@ -236,7 +272,7 @@ entry. A dash means no confident name match was found — not that the fund is u
 status followed by "?" means the match was loose and may be the wrong fund. Click through before
 putting a reference number in a client file.
 
-**Only 50 of the 976 are currently matched.** The matches live in `build/fca_cache.json`, keyed
+**Only 50 of the 986 are currently matched.** The matches live in `build/fca_cache.json`, keyed
 by symbol, precisely so a rebuild of the universe carries them forward — when they were held
 only on the fund record, growing the universe from 190 funds to 982 wiped the entire FCA column
 and nothing failed loudly enough to notice. Filling in the rest means running `build/fca.py`

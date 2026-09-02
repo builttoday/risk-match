@@ -307,6 +307,35 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
         vertical-align:middle; }
 .fundrow .meta a { color:var(--muted); text-decoration:underline; text-underline-offset:2px; }
 .fundrow .meta a:hover { color:var(--navy); }
+/* --- the client fact find and questionnaire ---------------------------------------- */
+.cgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px 16px;
+         margin:6px 0 4px; }
+.cgrid .fld.wide { grid-column:1 / -1; }
+.cgrid textarea { width:100%; padding:8px 10px; border:1px solid var(--line);
+         border-radius:8px; background:var(--surface); color:var(--ink); font:inherit;
+         font-size:.92rem; resize:vertical; }
+.privacy { border:1px solid var(--warn-edge); background:var(--warn-bg); color:var(--warn);
+         border-radius:10px; padding:10px 14px; font-size:.86rem; margin:0 0 16px; }
+.q { border-bottom:1px solid var(--line); padding:14px 0; }
+.q:last-child { border-bottom:0; }
+.q > p { margin:0 0 9px; font-size:.94rem; font-weight:600; line-height:1.45; }
+.q > p b { font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--muted);
+         margin-right:8px; font-size:.85rem; }
+.q label { display:flex; gap:9px; align-items:flex-start; padding:6px 9px; border-radius:8px;
+         cursor:pointer; font-size:.9rem; line-height:1.45; }
+.q label:hover { background:var(--surface-2); }
+.q input[type=radio] { margin:3px 0 0; flex:0 0 auto; }
+.scorebox { display:flex; flex-wrap:wrap; gap:12px 26px; align-items:baseline;
+         background:var(--navy-soft); border:1px solid var(--line); border-radius:10px;
+         padding:14px 18px; margin:16px 0 4px; }
+.scorebox .big { font-size:1.9rem; font-weight:600; color:var(--navy);
+         font-family:"IBM Plex Mono",monospace; line-height:1; }
+.scorebox .lab { font-size:.68rem; text-transform:uppercase; letter-spacing:.09em;
+         color:var(--muted); display:block; margin-bottom:3px; }
+.flags { display:grid; gap:8px; margin-top:8px; }
+.flagline { border-left:3px solid var(--warn); background:var(--warn-bg); color:var(--ink);
+         border-radius:0 8px 8px 0; padding:9px 13px; font-size:.88rem; line-height:1.5; }
+.flagline.ok { border-left-color:var(--good); background:var(--good-bg); }
 /* --- the dialog that asks what a ticked fund is for -------------------------------- */
 .modal { position:fixed; inset:0; z-index:70; display:flex; align-items:center;
          justify-content:center; padding:18px; background:rgba(10,15,22,.55); }
@@ -351,9 +380,9 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 
 .tscroll { overflow-x:auto; border:1px solid var(--line); border-radius:12px;
            background:var(--surface); }
-#bTable { --bgrid: 30px minmax(230px,1fr) 116px 126px 62px 62px 62px 58px 58px 52px 80px 40px; min-width: 1120px; }
-#bTable.wide { --bgrid: 30px minmax(180px,1fr) 100px 112px 58px 58px 58px 58px 58px 60px 58px 58px 48px 78px 50px 56px 34px; min-width: 1500px; }
-.tinner { min-width: 1120px; }
+#bTable { --bgrid: 30px minmax(250px,1fr) 120px 132px 76px 74px 60px 54px 74px 40px; min-width: 960px; }
+#bTable.wide { --bgrid: 30px minmax(190px,1fr) 104px 116px 68px 66px 56px 50px 66px 66px 58px 60px 60px 56px 62px 68px 36px; min-width: 1520px; }
+.tinner { min-width: 960px; }
 .fhead .sortable[title] { cursor:help; }
 /* A wrapped column label reads as two columns; the table scrolls instead. */
 #bTable .fhead > div { white-space: nowrap; }
@@ -485,6 +514,7 @@ th .info { vertical-align: baseline; }
 <div class="topbar">
   <h1>Risk Match</h1>
   <div class="nav">
+    <a href="#" data-view="client">Client</a>
     <a href="#" data-view="match" class="on">Match by risk</a>
     <a href="#" data-view="browse">Browse funds</a>
     <a href="#" data-view="shares">Shares</a>
@@ -496,6 +526,117 @@ th .info { vertical-align: baseline; }
 </div>
 
 <div class="wrap">
+<div id="clientView" class="view">
+  <div class="panel">
+    <h2>Client</h2>
+    <p class="sub">What the money is for, and how much risk this client can take. Everything on
+    this page is <strong>the adviser&rsquo;s input</strong> &mdash; the tool records it, checks
+    it against what the fund data actually shows, and never turns it into a recommendation.</p>
+    <p class="privacy"><strong>Stored in this browser only.</strong> Nothing typed here is sent
+    anywhere, and nothing is committed to this repository, which is public. Use a client
+    reference rather than a name, and clear it when you are done.</p>
+
+    <h3 class="fsh">Fact find</h3>
+    <div class="cgrid">
+      <div class="fld"><label for="cRef">Client reference</label>
+        <input type="text" id="cRef" autocomplete="off" placeholder="e.g. Smith J / 10428"></div>
+      <div class="fld"><label for="cAdviser">Adviser</label>
+        <input type="text" id="cAdviser" autocomplete="off"></div>
+      <div class="fld"><label for="cFirm">Firm</label>
+        <input type="text" id="cFirm" autocomplete="off"></div>
+
+      <div class="fld"><label for="cAmount">Amount to invest (&pound;)</label>
+        <input type="number" id="cAmount" min="0" step="1000" placeholder="50000"></div>
+      <div class="fld"><label for="cMonthly">Regular contribution (&pound; a month)</label>
+        <input type="number" id="cMonthly" min="0" step="50" placeholder="0"></div>
+      <div class="fld"><label for="cExisting">Already invested (&pound;)</label>
+        <input type="number" id="cExisting" min="0" step="1000" placeholder="0"></div>
+
+      <div class="fld"><label for="cTerm">Term &mdash; years until needed</label>
+        <input type="number" id="cTerm" min="0" max="60" step="1" placeholder="10"></div>
+      <div class="fld"><label for="cObjective">Objective</label>
+        <select id="cObjective">
+          <option value="">Not recorded</option>
+          <option>Capital growth</option>
+          <option>Income</option>
+          <option>Growth and income</option>
+          <option>Capital preservation</option>
+          <option>A specific purchase</option>
+        </select></div>
+      <div class="fld"><label for="cPurpose">What the money is for</label>
+        <input type="text" id="cPurpose" autocomplete="off"
+               placeholder="e.g. retirement 2041, school fees from 2032"></div>
+
+      <div class="fld"><label for="cWithdrawals">Withdrawals during the term</label>
+        <select id="cWithdrawals">
+          <option value="">Not recorded</option>
+          <option>None planned</option>
+          <option>Regular income</option>
+          <option>Occasional lump sums</option>
+        </select></div>
+      <div class="fld"><label for="cWithdrawAmt">Withdrawal amount (&pound; a year)</label>
+        <input type="number" id="cWithdrawAmt" min="0" step="500" placeholder="0"></div>
+      <div class="fld"><label for="cEmergency">Emergency fund in place</label>
+        <select id="cEmergency">
+          <option value="">Not recorded</option>
+          <option>Yes</option>
+          <option>Partly</option>
+          <option>No</option>
+        </select></div>
+
+      <div class="fld"><label for="cCapacity">Capacity for loss &mdash; fall they could absorb (%)</label>
+        <input type="number" id="cCapacity" min="0" max="100" step="1" placeholder="20"></div>
+      <div class="fld"><label for="cKnowledge">Knowledge and experience</label>
+        <select id="cKnowledge">
+          <option value="">Not recorded</option>
+          <option>None</option>
+          <option>Some</option>
+          <option>Experienced</option>
+        </select></div>
+      <div class="fld"><label for="cEsg">Sustainability preference</label>
+        <select id="cEsg">
+          <option value="">Not recorded</option>
+          <option>No preference expressed</option>
+          <option>Prefers sustainable</option>
+          <option>Requires sustainable</option>
+        </select></div>
+
+      <div class="fld"><label for="cLevel">Risk level assessed &mdash; your firm&rsquo;s scale (1&ndash;10)</label>
+        <input type="number" id="cLevel" min="1" max="10" step="1" placeholder="5"></div>
+      <div class="fld wide"><label for="cNotes">Notes</label>
+        <textarea id="cNotes" rows="3" placeholder="Anything the numbers do not capture."></textarea></div>
+    </div>
+    <div class="btnrow">
+      <button class="primary" id="cToMatch">Use this risk level in Match by risk</button>
+      <button id="cClear">Clear this client</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 class="fsh">Risk tolerance questionnaire</h3>
+    <p class="sub" id="cQIntro"></p>
+    <div id="cQuestions"></div>
+    <div class="scorebox">
+      <div><span class="lab">Score</span><span class="big" id="cScore">&mdash;</span></div>
+      <div><span class="lab">Out of</span><span class="big">47</span></div>
+      <div style="flex:1 1 220px"><span class="lab">Published band</span>
+        <strong id="cBand">Answer the questions to score</strong></div>
+      <div><span class="lab">Answered</span><span class="big" id="cAnswered">0</span></div>
+    </div>
+    <p class="sub" id="cScoreNote"></p>
+    <div class="btnrow"><button id="cQReset">Clear the answers</button></div>
+  </div>
+
+  <div class="panel">
+    <h3 class="fsh">What this adds up to</h3>
+    <p class="sub">Checks, not conclusions. Each line below compares something you recorded
+    against something the fund data measures. None of them decides anything &mdash; suitability
+    is your judgement, and a flag here may be entirely justified by circumstances the tool
+    cannot see.</p>
+    <div class="flags" id="cFlags"></div>
+  </div>
+</div>
+
 <div id="matchView" class="view on">
 
   <div class="panel">
@@ -603,13 +744,13 @@ th .info { vertical-align: baseline; }
       <div class="fld"><label for="bqSort">Sort</label>
         <select id="bqSort">
           <option value="name">Name A&ndash;Z</option>
+          <option value="-r5">5-year return, highest first</option>
           <option value="volDaily">Volatility, lowest first</option>
-          <option value="-r5">5-year total return, highest first</option>
           <option value="-sharpe">Sharpe, highest first</option>
-          <option value="maxDD">Drawdown, shallowest first</option>
-          <option value="-sortino">Sortino, highest first</option>
           <option value="beta">Beta, lowest first</option>
-          <option value="-worst12m">Worst 12 months, least bad first</option>
+          <option value="-worst12m">Worst year, least bad first</option>
+          <option value="maxDD">Max fall, shallowest first</option>
+          <option value="-cagr">Growth a year, highest first</option>
         </select></div>
       <div class="fld" style="flex:0 0 120px;"><label for="bqYears">Min years</label>
         <input id="bqYears" type="number" min="0" max="25" step="1" value="0"></div>
@@ -626,18 +767,18 @@ th .info { vertical-align: baseline; }
       <div class="sortable" data-sk="name">Fund<i></i></div>
       <div class="sortable" data-sk="house">Manager<i></i></div>
       <div class="sortable" data-sk="sector">Sector<i></i></div>
-      <div class="num sortable" data-sk="volDaily" title="Standard deviation of daily returns, annualised">Vol %<i></i></div>
-      <div class="num sortable xf" data-sk="volWeekly" title="Weekly volatility annualised &mdash; the SRRI convention used on UCITS KIIDs">Vol wk<i></i></div>
-      <div class="num sortable xf" data-sk="r1">1yr<i></i></div>
-      <div class="num sortable xf" data-sk="r3">3yr tot<i></i></div>
-      <div class="num sortable" data-sk="r5">5yr tot<i></i></div>
-      <div class="num sortable" data-sk="maxDD">Max DD<i></i></div>
+      <div class="num sortable" data-sk="r5" title="Total return over five years, not per year">5yr return<i></i></div>
+      <div class="num sortable" data-sk="volDaily" title="Standard deviation of daily returns, annualised">Volatility<i></i></div>
       <div class="num sortable" data-sk="sharpe" title="Excess return per unit of volatility, against a 4% risk-free rate">Sharpe<i></i></div>
-      <div class="num sortable" data-sk="sortino" title="Like Sharpe, but only counts downside volatility">Sortino<i></i></div>
       <div class="num sortable" data-sk="beta" title="Sensitivity to a global GBP equity benchmark">Beta<i></i></div>
-      <div class="num sortable" data-sk="worst12m" title="Worst rolling twelve months">Worst 12m<i></i></div>
-      <div class="num sortable xf" data-sk="corr" title="Correlation with a global GBP equity benchmark">Corr<i></i></div>
-      <div class="num sortable xf" data-sk="cagr" title="Compound annual growth over the whole history held">CAGR<i></i></div>
+      <div class="num sortable" data-sk="worst12m" title="The worst any rolling twelve months has been">Worst year<i></i></div>
+      <div class="num sortable xf" data-sk="volWeekly" title="Weekly volatility annualised &mdash; the SRRI convention used on UCITS KIIDs">Weekly vol<i></i></div>
+      <div class="num sortable xf" data-sk="r1" title="Total return over one year">1yr return<i></i></div>
+      <div class="num sortable xf" data-sk="r3" title="Total return over three years, not per year">3yr return<i></i></div>
+      <div class="num sortable xf" data-sk="maxDD" title="Largest peak-to-trough fall over the history held">Max fall<i></i></div>
+      <div class="num sortable xf" data-sk="sortino" title="Like Sharpe, but only counts downside volatility">Sortino<i></i></div>
+      <div class="num sortable xf" data-sk="corr" title="Correlation with a global GBP equity benchmark">Correlation<i></i></div>
+      <div class="num sortable xf" data-sk="cagr" title="Compound annual growth over the whole history held">Growth a year<i></i></div>
       <div></div>
     </div>
       <div id="bList"></div>
@@ -2028,6 +2169,14 @@ function openRecord() {
     $("recAdviser").value = saved.adviser || "";
     $("recFirm").value = saved.firm || "";
   } catch (_) { /* nothing saved yet */ }
+  // Anything already recorded on the Client page fills itself in -- the same details typed
+  // twice are two chances to differ, and the record is the document that has to be right.
+  try {
+    const c = JSON.parse(localStorage.getItem(LS_CLIENT) || "{}");
+    if (c.cRef && !$("recClient").value) $("recClient").value = c.cRef;
+    if (c.cAdviser && !$("recAdviser").value) $("recAdviser").value = c.cAdviser;
+    if (c.cFirm && !$("recFirm").value) $("recFirm").value = c.cFirm;
+  } catch (_) {}
   $("recSummary").textContent =
     `${picked.size} fund${picked.size === 1 ? "" : "s"} selected from ${shown.length} that matched risk ${$("riskInput").value}.`;
   $("recordSheet").hidden = false;
@@ -2225,9 +2374,9 @@ function buildRecord(meta) {
 
 .tscroll { overflow-x:auto; border:1px solid var(--line); border-radius:12px;
            background:var(--surface); }
-#bTable { --bgrid: 30px minmax(230px,1fr) 116px 126px 62px 62px 62px 58px 58px 52px 80px 40px; min-width: 1120px; }
-#bTable.wide { --bgrid: 30px minmax(180px,1fr) 100px 112px 58px 58px 58px 58px 58px 60px 58px 58px 48px 78px 50px 56px 34px; min-width: 1500px; }
-.tinner { min-width: 1120px; }
+#bTable { --bgrid: 30px minmax(250px,1fr) 120px 132px 76px 74px 60px 54px 74px 40px; min-width: 960px; }
+#bTable.wide { --bgrid: 30px minmax(190px,1fr) 104px 116px 68px 66px 56px 50px 66px 66px 58px 60px 60px 56px 62px 68px 36px; min-width: 1520px; }
+.tinner { min-width: 960px; }
 .fhead .sortable[title] { cursor:help; }
 /* A wrapped column label reads as two columns; the table scrolls instead. */
 #bTable .fhead > div { white-space: nowrap; }
@@ -2397,6 +2546,7 @@ document.querySelectorAll('.nav a').forEach(function (a) {
     var v = a.dataset.view;
     document.querySelectorAll('.view').forEach(function (x) { x.classList.remove('on'); });
     $(v + 'View').classList.add('on');
+    if (v === 'client') initClient();
     if (v === 'browse') initBrowse();
     if (v === 'shares') initShares();
     if (v === 'analysis') initAnalysis();
@@ -2444,7 +2594,7 @@ async function openFromQuery() {
 
 function openFromHash() {
   var v = (location.hash || '').replace('#', '');
-  if (['browse', 'growth', 'choice', 'factsheet'].indexOf(v) < 0) return;
+  if (['client', 'browse', 'growth', 'choice', 'factsheet'].indexOf(v) < 0) return;
   var a = document.querySelector('.nav a[data-view="' + v + '"]');
   if (a) a.click();
 }
@@ -2566,18 +2716,18 @@ function renderBrowse() {
         '</div></div>' +
       '<div class="meta" data-l="Manager">' + esc(f.house || '') + '</div>' +
       '<div class="meta" data-l="Sector">' + esc(f.sector || '') + '</div>' +
-      '<div class="num" data-l="Vol %">' + num(f.volDaily) + '</div>' +
-      '<div class="num xf" data-l="Vol wk">' + num(f.volWeekly) + '</div>' +
-      '<div class="num xf" data-l="1yr">' + num(f.r1) + '</div>' +
-      '<div class="num xf" data-l="3yr total">' + num(f.r3) + '</div>' +
-      '<div class="num" data-l="5yr total">' + num(f.r5) + '</div>' +
-      '<div class="num" data-l="Max DD">' + num(f.maxDD) + '</div>' +
+      '<div class="num" data-l="5yr return">' + num(f.r5) + '</div>' +
+      '<div class="num" data-l="Volatility">' + num(f.volDaily) + '</div>' +
       '<div class="num" data-l="Sharpe">' + num(f.sharpe, 2) + '</div>' +
-      '<div class="num" data-l="Sortino">' + num(f.sortino, 2) + '</div>' +
       '<div class="num" data-l="Beta">' + num(f.beta, 2) + '</div>' +
-      '<div class="num" data-l="Worst 12m">' + num(f.worst12m) + '</div>' +
-      '<div class="num xf" data-l="Corr">' + num(f.corr, 2) + '</div>' +
-      '<div class="num xf" data-l="CAGR">' + num(f.cagr) + '</div>' +
+      '<div class="num" data-l="Worst year">' + num(f.worst12m) + '</div>' +
+      '<div class="num xf" data-l="Weekly vol">' + num(f.volWeekly) + '</div>' +
+      '<div class="num xf" data-l="1yr return">' + num(f.r1) + '</div>' +
+      '<div class="num xf" data-l="3yr return">' + num(f.r3) + '</div>' +
+      '<div class="num xf" data-l="Max fall">' + num(f.maxDD) + '</div>' +
+      '<div class="num xf" data-l="Sortino">' + num(f.sortino, 2) + '</div>' +
+      '<div class="num xf" data-l="Correlation">' + num(f.corr, 2) + '</div>' +
+      '<div class="num xf" data-l="Growth a year">' + num(f.cagr) + '</div>' +
       '<div>' + choiceStar(f.symbol) + '</div></div>';
   });
   $('bList').innerHTML = html ||
@@ -3391,6 +3541,341 @@ if ($('fundModal')) {
     items[next].focus();
     ev.preventDefault();
   });
+}
+
+/* ==========================================================================
+   Client: the fact find, and a risk-tolerance questionnaire.
+
+   WHY A PUBLISHED INSTRUMENT AND NOT A HOME-MADE ONE. The questionnaires advisers actually
+   use -- Defaqto's, Dynamic Planner's, FinaMetrica's -- are licensed products, and their
+   questions cannot be reproduced here. Writing thirteen plausible-sounding questions instead
+   would be worse than either: an unvalidated scale that looks like a validated one. So this
+   is Grable & Lytton's 13-item Financial Risk Tolerance Scale, published in Financial
+   Services Review in 1999, used in hundreds of studies since, and reproduced here verbatim
+   with its own scoring.
+
+   VERBATIM INCLUDES THE DOLLARS. The amounts are the published ones. Converting them to
+   sterling would change an instrument whose score bands were calibrated on those exact
+   numbers, and a re-worded scale is no longer the scale that was validated.
+
+   IT MEASURES TOLERANCE, NOT A RISK LEVEL. The score says how much risk this person is
+   willing to take. It says nothing about how much they can afford to take, how long they
+   have, or what the firm's level 5 means. The mapping from a tolerance score to a firm's
+   1-10 scale is the adviser's, which is why the fact find asks for that level rather than
+   deriving it.
+
+   NOTHING LEAVES THE BROWSER. localStorage only, on this device, never transmitted, never
+   committed -- this repository is public.
+   ========================================================================== */
+const LS_CLIENT = "riskmatch.client";
+
+/* Grable, J. E., & Lytton, R. H. (1999). Financial risk tolerance revisited: the development
+   of a risk assessment instrument. Financial Services Review, 8, 163-181.
+   Each entry is [question, [[option text, points], ...]]. Points are the published ones;
+   note item 1 scores in reverse (a gambler scores 4) and items 9 and 10 score 1 or 3. */
+const GL_ITEMS = [
+  ["In general, how would your best friend describe you as a risk taker?", [
+    ["A real gambler", 4],
+    ["Willing to take risks after completing adequate research", 3],
+    ["Cautious", 2],
+    ["A real risk avoider", 1]]],
+  ["You are on a TV game show and can choose one of the following; which would you take?", [
+    ["$1,000 in cash", 1],
+    ["A 50% chance at winning $5,000", 2],
+    ["A 25% chance at winning $10,000", 3],
+    ["A 5% chance at winning $100,000", 4]]],
+  ["You have just finished saving for a once-in-a-lifetime vacation. Three weeks before you plan to leave, you lose your job. You would:", [
+    ["Cancel the vacation", 1],
+    ["Take a much more modest vacation", 2],
+    ["Go as scheduled, reasoning that you need the time to prepare for a job search", 3],
+    ["Extend your vacation, because this might be your last chance to go first-class", 4]]],
+  ["If you unexpectedly received $20,000 to invest, what would you do?", [
+    ["Deposit it in a bank account, money market account, or insured CD", 1],
+    ["Invest it in safe high-quality bonds or bond mutual funds", 2],
+    ["Invest it in stocks or stock mutual funds", 3]]],
+  ["In terms of experience, how comfortable are you investing in stocks or stock mutual funds?", [
+    ["Not at all comfortable", 1],
+    ["Somewhat comfortable", 2],
+    ["Very comfortable", 3]]],
+  ["When you think of the word \u201crisk\u201d, which of the following words comes to mind first?", [
+    ["Loss", 1],
+    ["Uncertainty", 2],
+    ["Opportunity", 3],
+    ["Thrill", 4]]],
+  ["Some experts are predicting prices of assets such as gold, jewels, collectibles and real estate (hard assets) to increase in value; bond prices may fall, however experts tend to agree that government bonds are relatively safe. Most of your investment assets are now in high-interest government bonds. What would you do?", [
+    ["Hold the bonds", 1],
+    ["Sell the bonds, put half the proceeds into money market accounts, and the other half into hard assets", 2],
+    ["Sell the bonds and put the total proceeds into hard assets", 3],
+    ["Sell the bonds, put all the money into hard assets, and borrow additional money to buy more", 4]]],
+  ["Given the best and worst case returns of the four investment choices below, which would you prefer?", [
+    ["$200 gain best case; $0 gain/loss worst case", 1],
+    ["$800 gain best case, $200 loss worst case", 2],
+    ["$2,600 gain best case, $800 loss worst case", 3],
+    ["$4,800 gain best case, $2,400 loss worst case", 4]]],
+  ["In addition to whatever you own, you have been given $1,000. You are now asked to choose between:", [
+    ["A sure gain of $500", 1],
+    ["A 50% chance to gain $1,000 and a 50% chance to gain nothing", 3]]],
+  ["In addition to whatever you own, you have been given $2,000. You are now asked to choose between:", [
+    ["A sure loss of $500", 1],
+    ["A 50% chance to lose $1,000 and a 50% chance to lose nothing", 3]]],
+  ["Suppose a relative left you an inheritance of $100,000, stipulating in the will that you invest ALL the money in ONE of the following choices. Which one would you select?", [
+    ["A savings account or money market mutual fund", 1],
+    ["A mutual fund that owns stocks and bonds", 2],
+    ["A portfolio of 15 common stocks", 3],
+    ["Commodities like gold, silver, and oil", 4]]],
+  ["If you had to invest $20,000, which of the following investment choices would you find most appealing?", [
+    ["60% in low-risk investments, 30% in medium-risk investments, 10% in high-risk investments", 1],
+    ["30% in low-risk investments, 40% in medium-risk investments, 30% in high-risk investments", 2],
+    ["10% in low-risk investments, 40% in medium-risk investments, 50% in high-risk investments", 3]]],
+  ["Your trusted friend and neighbour, an experienced geologist, is putting together a group of investors to fund an exploratory gold mining venture. The venture could pay back 50 to 100 times the investment if successful. If the mine is a bust, the entire investment is worthless. Your friend estimates the chance of success is only 20%. If you had the money, how much would you invest?", [
+    ["Nothing", 1],
+    ["One month\u2019s salary", 2],
+    ["Three months\u2019 salary", 3],
+    ["Six months\u2019 salary", 4]]],
+];
+
+/* The published bands. The scale's arithmetic minimum is 13, not 0 -- every item scores at
+   least 1 -- but the bottom band is quoted as 0-18 in the source and is left as published. */
+const GL_BANDS = [
+  [33, 47, "High tolerance for risk"],
+  [29, 32, "Above-average tolerance for risk"],
+  [23, 28, "Average / moderate tolerance for risk"],
+  [19, 22, "Below-average tolerance for risk"],
+  [0, 18, "Low tolerance for risk"],
+];
+
+const C_FIELDS = ["cRef", "cAdviser", "cFirm", "cAmount", "cMonthly", "cExisting", "cTerm",
+                  "cObjective", "cPurpose", "cWithdrawals", "cWithdrawAmt", "cEmergency",
+                  "cCapacity", "cKnowledge", "cEsg", "cLevel", "cNotes"];
+let clientData = { answers: {} };
+let clientReady = false;
+
+function clientLoad() {
+  try {
+    const raw = localStorage.getItem(LS_CLIENT);
+    if (raw) clientData = JSON.parse(raw);
+  } catch (_) { /* private mode, or a corrupt value -- start empty rather than fail */ }
+  if (!clientData.answers) clientData.answers = {};
+  // The adviser and firm are already remembered for the suitability record; reuse them
+  // rather than asking the same person for their own name twice.
+  try {
+    const a = JSON.parse(localStorage.getItem(LS_ADVISER) || "{}");
+    if (!clientData.cAdviser && a.adviser) clientData.cAdviser = a.adviser;
+    if (!clientData.cFirm && a.firm) clientData.cFirm = a.firm;
+  } catch (_) {}
+}
+
+function clientSave() {
+  try { localStorage.setItem(LS_CLIENT, JSON.stringify(clientData)); } catch (_) {}
+}
+
+function glScore() {
+  let total = 0, answered = 0;
+  GL_ITEMS.forEach(function (item, i) {
+    const pick = clientData.answers[i];
+    if (pick == null) return;
+    answered++;
+    total += item[1][pick][1];
+  });
+  return { total: total, answered: answered };
+}
+
+function glBand(total) {
+  for (const b of GL_BANDS) if (total >= b[0] && total <= b[1]) return b[2];
+  return "";
+}
+
+function initClient() {
+  if (!clientReady) {
+    clientLoad();
+    $("cQuestions").innerHTML = GL_ITEMS.map(function (item, i) {
+      return '<div class="q"><p><b>' + (i + 1) + '</b>' + esc(item[0]) + '</p>' +
+        item[1].map(function (opt, k) {
+          return '<label><input type="radio" name="gl' + i + '" value="' + k + '">' +
+            '<span>' + esc(opt[0]) + '</span></label>';
+        }).join('') + '</div>';
+    }).join('');
+    $("cQIntro").innerHTML = 'Grable &amp; Lytton\u2019s 13-item Financial Risk Tolerance ' +
+      'Scale, published in <em>Financial Services Review</em> in 1999 and used in hundreds of ' +
+      'studies since. Reproduced verbatim, dollar amounts included: the score bands were ' +
+      'calibrated on these exact questions, and rewording them would leave a scale that no ' +
+      'longer means what it was validated to mean. It measures <strong>willingness</strong> ' +
+      'to take risk &mdash; not capacity, not term, and not your firm\u2019s risk level.';
+
+    $("cQuestions").querySelectorAll("input[type=radio]").forEach(function (r) {
+      r.addEventListener("change", function () {
+        clientData.answers[Number(r.name.slice(2))] = Number(r.value);
+        clientSave();
+        renderClient();
+      });
+    });
+    C_FIELDS.forEach(function (id) {
+      $(id).addEventListener("input", function () {
+        clientData[id] = $(id).value;
+        clientSave();
+        renderClient();
+      });
+    });
+    $("cQReset").onclick = function () {
+      clientData.answers = {};
+      $("cQuestions").querySelectorAll("input[type=radio]").forEach(function (r) { r.checked = false; });
+      clientSave();
+      renderClient();
+    };
+    $("cClear").onclick = function () {
+      if (!confirm("Clear everything recorded for this client, including the questionnaire?")) return;
+      clientData = { answers: {} };
+      try { localStorage.removeItem(LS_CLIENT); } catch (_) {}
+      C_FIELDS.forEach(function (id) { $(id).value = ""; });
+      $("cQuestions").querySelectorAll("input[type=radio]").forEach(function (r) { r.checked = false; });
+      renderClient();
+      toast("Client cleared");
+    };
+    $("cToMatch").onclick = function () {
+      const lvl = Number(clientData.cLevel);
+      if (!(lvl >= 1 && lvl <= 10)) {
+        alert("Record the risk level your firm assessed first \u2014 the tool does not derive it from the questionnaire.");
+        $("cLevel").focus();
+        return;
+      }
+      $("riskInput").value = lvl;
+      updateBandLine();
+      document.querySelector('.nav a[data-view="match"]').click();
+      runMatch();
+    };
+    clientReady = true;
+  }
+
+  C_FIELDS.forEach(function (id) { if (clientData[id] != null) $(id).value = clientData[id]; });
+  Object.keys(clientData.answers).forEach(function (i) {
+    const r = $("cQuestions").querySelector('input[name="gl' + i + '"][value="' + clientData.answers[i] + '"]');
+    if (r) r.checked = true;
+  });
+  renderClient();
+}
+
+function renderClient() {
+  const sc = glScore();
+  const done = sc.answered === GL_ITEMS.length;
+  $("cScore").textContent = sc.answered ? sc.total : "\u2014";
+  $("cAnswered").textContent = sc.answered + "/" + GL_ITEMS.length;
+  $("cBand").textContent = done ? glBand(sc.total)
+    : sc.answered ? "Incomplete \u2014 " + (GL_ITEMS.length - sc.answered) + " left"
+    : "Answer the questions to score";
+  $("cScoreNote").innerHTML = done
+    ? "A score of <strong>" + sc.total + "</strong> out of 47. The scale runs from 13 (every " +
+      "answer the most cautious) to 47. Published bands: 33 and above high, 29\u201332 " +
+      "above average, 23\u201328 average, 19\u201322 below average, 18 and under low. " +
+      "<strong>This is a tolerance score, not a risk level</strong> \u2014 mapping it onto " +
+      "your firm\u2019s 1\u201310 scale is your judgement, and the tool deliberately will not " +
+      "do it for you."
+    : "Every item must be answered for the total to mean anything \u2014 a partial score " +
+      "cannot be read against the published bands.";
+  renderClientFlags(sc, done);
+}
+
+/* Each check compares something recorded on this page against something the fund data
+   measures. A check that fires is a prompt to write down why, not a verdict. */
+function renderClientFlags(sc, done) {
+  const out = [];
+  const term = Number(clientData.cTerm);
+  const cap = Number(clientData.cCapacity);
+  const lvl = Number(clientData.cLevel);
+  const obj = clientData.cObjective || "";
+
+  if (term && term < 3) {
+    out.push(["Term is " + term + " year" + (term === 1 ? "" : "s") + ".", "Stock-market " +
+      "investment is generally described as a five-year-plus proposition, and every fund in " +
+      "this tool is measured over years rather than months. A term this short is a reason to " +
+      "record why market investment is right at all."]);
+  } else if (term && term < 5) {
+    out.push(["Term is " + term + " years \u2014 under the usual five.",
+      "Worth recording why, particularly if the objective is growth."]);
+  }
+
+  if (term && term >= 5 && obj === "Capital preservation") {
+    out.push(["Capital preservation over " + term + " years.", "Nothing wrong with that, but " +
+      "the funds this tool measures all carry market risk; preservation over a long term is " +
+      "usually a cash or near-cash question rather than a fund-selection one."]);
+  }
+
+  if (clientData.cEmergency === "No") {
+    out.push(["No emergency fund recorded.", "Money that might be needed at short notice is " +
+      "money that may have to be sold at the worst moment. Worth resolving before the " +
+      "investment term starts."]);
+  }
+
+  if (clientData.cWithdrawals === "Regular income" && obj === "Capital growth") {
+    out.push(["Regular income is planned, but the objective is recorded as capital growth.",
+      "These pull in opposite directions \u2014 worth reconciling in the notes."]);
+  }
+
+  // The measured half: what funds in the chosen band have actually done.
+  if (lvl >= 1 && lvl <= 10 && universe.funds.length) {
+    const b = bandFor(lvl);
+    if (b) {
+      const inBand = universe.funds.filter(function (f) {
+        return !f.leveraged && f.sector !== "Benchmark index" &&
+               f.volDaily != null && f.volDaily >= b[0] && f.volDaily <= b[1];
+      });
+      const mdd = median(inBand.map(function (f) { return f.maxDD; }));
+      const w12 = median(inBand.map(function (f) { return f.worst12m; }));
+      if (inBand.length < 5) {
+        out.push(["Risk " + lvl + " has only " + inBand.length + " fund" +
+          (inBand.length === 1 ? "" : "s") + " in this universe.",
+          "Your band for level " + lvl + " is " + b[0] + "% to " + b[1] + "% volatility. " +
+          "That is a thin shelf to choose from \u2014 check the band itself as well as the " +
+          "universe."]);
+      } else if (mdd != null) {
+        const line = "Funds in your risk " + lvl + " band (" + b[0] + "\u2013" + b[1] +
+          "% volatility, " + inBand.length + " of them) have a median maximum drawdown of " +
+          fmt(mdd) + "% and a median worst twelve months of " + fmt(w12) + "%.";
+        if (cap && Math.abs(mdd) > cap) {
+          out.push([line, "The capacity for loss recorded here is " + cap + "%. The typical " +
+            "fund in this band has already fallen further than that at some point in its " +
+            "history. That is measured, not predicted, and it is the number worth putting in " +
+            "front of the client."]);
+        } else if (cap) {
+          out.push([line, "The capacity for loss recorded here is " + cap + "%, which the " +
+            "median fund in the band has stayed within historically. Past falls are not a " +
+            "cap on future ones.", true]);
+        } else {
+          out.push([line, "No capacity for loss recorded yet \u2014 fill it in and this " +
+            "check becomes a comparison."]);
+        }
+      }
+    } else {
+      out.push(["No volatility band is set for risk " + lvl + ".",
+        "Set one in Match by risk before this level means anything."]);
+    }
+  }
+
+  if (done && lvl >= 1 && lvl <= 10) {
+    const band = glBand(sc.total);
+    const high = sc.total >= 29, low = sc.total <= 22;
+    if (high && lvl <= 3) {
+      out.push(["The questionnaire says \u201c" + band + "\u201d, but the level recorded is " +
+        lvl + ".", "A defensible combination \u2014 capacity, term or objective can all " +
+        "override willingness \u2014 but one worth explaining in writing."]);
+    } else if (low && lvl >= 7) {
+      out.push(["The questionnaire says \u201c" + band + "\u201d, but the level recorded is " +
+        lvl + ".", "Placing a cautious client at a high level needs a clear reason on file."]);
+    }
+  }
+
+  if (clientData.cKnowledge === "None" && lvl >= 7) {
+    out.push(["No investment knowledge or experience recorded, at risk level " + lvl + ".",
+      "Worth recording what was explained and how it was understood."]);
+  }
+
+  $("cFlags").innerHTML = out.length
+    ? out.map(function (f) {
+        return '<div class="flagline' + (f[2] ? ' ok' : '') + '"><strong>' + esc(f[0]) +
+          '</strong> ' + esc(f[1]) + '</div>';
+      }).join('')
+    : '<p class="sub" style="margin:0">Nothing to flag yet. Fill in the term, capacity for ' +
+      'loss and assessed risk level, and answer the questionnaire, and the checks below ' +
+      'compare them against what the fund data actually shows.</p>';
 }
 
 /* ---- Browse selection wiring ---- */

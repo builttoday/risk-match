@@ -121,6 +121,62 @@ function check(label, ok, detail) {
   await wait(150);
   check('Escape closes it and leaves the tick', modal.hidden && boxes()[2].checked);
 
+  console.log('\nBROWSE COLUMN ORDER');
+  // The sort arrow is an empty <i> inside the heading, so textContent picks up a stray "i".
+  const heads = Array.from(doc.querySelectorAll('#bTable .fhead .num'))
+                     .map(h => ({ t: h.firstChild.textContent.trim(),
+                                  xf: h.classList.contains('xf') }));
+  const visible = heads.filter(h => !h.xf).map(h => h.t);
+  check('return comes before volatility',
+        visible[0] === '5yr return' && visible[1] === 'Volatility', visible.join(' | '));
+  check('Sortino is not in the default view', heads.some(h => h.t === 'Sortino' && h.xf));
+  check('Max fall is not in the default view', heads.some(h => h.t === 'Max fall' && h.xf));
+  const firstRow = doc.querySelector('#bList .fundrow');
+  const cells = Array.from(firstRow.querySelectorAll('.num'))
+                     .filter(c => !c.classList.contains('xf'));
+  check('cells line up with headings', cells.length === visible.length,
+        cells.length + ' cells, ' + visible.length + ' headings');
+
+  console.log('\nCLIENT');
+  click(doc.querySelector('.nav a[data-view="client"]'));
+  await wait(600);
+  check('questionnaire renders', n('#cQuestions .q') === 13, n('#cQuestions .q') + ' questions');
+  check('every question has its options', n('#cQuestions input[type=radio]') === 45,
+        n('#cQuestions input[type=radio]') + ' options');
+  // Answer every item at its most cautious, then its boldest. 13 and 47 are the arithmetic
+  // limits of the published scale, so any other total means the scoring is wrong.
+  // Item 1 scores in REVERSE -- "a real gambler" is the first option and scores 4 -- so the
+  // cautious answer there is the last option, not the first. Assuming otherwise makes a
+  // correct implementation look broken by exactly 3 points at each end.
+  const REVERSED = new Set([0]);
+  for (const bold of [false, true]) {
+    for (let i = 0; i < 13; i++) {
+      const rs = Array.from(doc.querySelectorAll('input[name="gl' + i + '"]'));
+      const last = REVERSED.has(i) ? !bold : bold;
+      const r = last ? rs[rs.length - 1] : rs[0];
+      r.checked = true; fire(r, 'change');
+    }
+    await wait(250);
+    const score = doc.getElementById('cScore').textContent;
+    const band = doc.getElementById('cBand').textContent;
+    check((bold ? 'boldest' : 'most cautious') + ' answers total ' + (bold ? 47 : 13),
+          score === (bold ? '47' : '13'), score + ' - ' + band);
+  }
+  for (const [id, v] of [['cLevel', '5'], ['cCapacity', '10'], ['cTerm', '2']]) {
+    const el = doc.getElementById(id);
+    el.value = v; fire(el, 'input');
+  }
+  await wait(300);
+  check('checks fire against the fund data', n('#cFlags .flagline') >= 2,
+        n('#cFlags .flagline') + ' flags');
+  check('a check quotes measured drawdown',
+        /median maximum drawdown/.test(doc.getElementById('cFlags').textContent));
+  click(doc.getElementById('cToMatch'));
+  await wait(400);
+  check('the risk level carries into Match by risk',
+        doc.getElementById('matchView').classList.contains('on') &&
+        doc.getElementById('riskInput').value === '5');
+
   console.log('\nANALYSIS -- every panel, then every control');
   click(doc.querySelector('.nav a[data-view="analysis"]'));
   await wait(1500);
