@@ -21,12 +21,19 @@ are starting points, not anyone's house view.
 Leveraged and inverse products are excluded unless you ask for them: their volatility is a
 real figure, but it describes a daily-rebalancing trading instrument rather than a holding.
 
-**Browse funds** — all 974, A–Z, filtered by fund manager, sector, minimum history, and
+**Browse funds** — all 976, A–Z, filtered by fund manager, sector, minimum history, and
 sorted by clicking any column header. Volatility, five-year return, drawdown, Sharpe, Sortino,
 beta and worst twelve months are shown by default; **Show all figures** adds weekly volatility,
 one- and three-year returns, correlation and CAGR. Select rows to send them straight to the
 growth calculator or My Choice, and each row links to a factsheet search and its price
 history.
+
+Ticking a fund opens a dialog in the middle of the screen and asks what it is for, rather than
+guessing. A tick on its own is ambiguous — compare this, keep this, or just look at this
+— so the dialog names the fund, shows its measurements, says which of your own risk bands
+its volatility falls in, and offers the growth calculator, My Choice, its factsheet and its
+price history. The tick survives Escape and a click outside, so a mis-click never quietly
+empties a selection someone has been building up. Select-all does not open it.
 
 **Growth calculator** — pick funds, set an amount, choose a rolling period or a specific start
 date, and see what it would have become. **Amount and start date are editable per fund**, so a
@@ -44,9 +51,32 @@ of a market, and one combined list invites a comparison that should not be made.
 appears instead as a **sector** in Browse funds, holding its tracker share classes — the form
 a UK investor can actually own it in.
 
-**Analysis** — top tens by any measure, the universe broken down by sector and by region, and
-the correlation study below. Every figure is computed in the browser from the same data the
-rest of the tool uses, so no ranking can go stale against the numbers beside it.
+**Analysis** — five panels over one shared pool of funds, described at the top of the page
+and reported back as a count, so no two tables here can quietly be measured over different
+universes. Narrow that pool by what it is, minimum history, manager, sector, currency risk and
+whether leveraged products are included.
+
+- **Rankings** — thirteen measures, either end first, ten to fifty rows. The order box says
+  "highest" and "lowest" rather than "best" and "worst", because beta and correlation have no
+  good end.
+- **Break the universe down** — by sector, region, manager, what it is, volatility range,
+  length of history or currency, ordered by any of the medians, with small groups filtered out.
+- **Your risk levels** — how many funds each of *your* bands actually contains, measured
+  against daily or weekly volatility. A level with two funds in it is a band worth re-reading
+  before a client is placed in it.
+- **Does one measure move with another?** — any two measures plotted against each other with
+  Pearson and Spearman recomputed live over whatever pool is set. Where the two disagree the
+  relationship is a curve, which is the whole point of showing both.
+- **The episodes that mattered** — median total return through the Covid crash and recovery,
+  the 2022 sell-off, the gilt crisis, the rally to end-2024 and 2025 so far, from month-end
+  prices. Each cell carries the number of funds that have prices covering the whole window:
+  a group whose funds mostly launched after 2020 shows a small count for the Covid columns, and
+  the median of four survivors is not what that sector went through at the time.
+
+Every figure is computed in the browser from the same data the rest of the tool uses, so no
+ranking can go stale against the numbers beside it. The controlled 60-month correlation study
+stays at the foot of the page, unchanged: the live scatter answers the same question over any
+subset, but a subset the reader chose is not a controlled window.
 
 **My Choice** — star any fund to build a personal shortlist, and enter the units you hold to
 value it. **Each fund carries its own measurement period** — six months for one bought in the
@@ -120,7 +150,7 @@ error stays invisible until a holding is valued.
 
 ## Coverage
 
-974 share classes and instruments, up to 25 years of history — median 8.7 years, with 456 funds
+976 share classes and instruments, up to 25 years of history — median 8.7 years, with 456 funds
 having ten years or more and 219 having twenty. Not the whole market: there is no free way to
 enumerate every UK fund. The FCA Register API returns at most 20 rows per search with no working
 pagination, and its bulk extract is a paid service.
@@ -143,6 +173,45 @@ in one hop.
 
 **Searching by ISIN works far better than by name.** A fund that returns nothing for nine name
 variations resolves immediately from its ISIN.
+
+### Adding a fund that the sweep missed
+
+`build/discover.py` finds funds by sweeping a list of fund-house names, so a smaller manager
+whose name is not on that list is simply absent. `build/add.py` prices one named share class
+and merges it in — `python add.py GB00BNM3D752` — without refetching the other thousand. It
+imports fetch.py's own `chart`/`to_gbp`/`stats` rather than reimplementing them, so an added
+fund is measured by exactly the same calculation as the rest of the universe; a second
+implementation that drifted by a rounding rule would put a fund in the wrong band, which is
+the one thing this tool must not do. Follow it with `classify.py`, `fca.py`, `pack.py`,
+`beta.py`, all of which are whole-file and cheap.
+
+Note that `fetch.py` matches the benchmark by exact timestamp when it computes beta, and Yahoo
+stamps an OEIC and an LSE ETF at different times of day, so the beta on a newly added OEIC is
+wrong until `beta.py` recomputes it on a shared monthly window. Added this way, the two IFSL
+Rockhold funds first showed betas of 0.35 and 0.02; the real figures are 0.75 and 0.19.
+
+### Model portfolios are not funds, and cannot be measured here
+
+A discretionary manager's MPS ranges are published as factsheets but are not priced
+instruments: no ISIN, no daily price, nothing for this tool to measure. Their factsheets carry
+the manager's own risk figures, computed by a licensed data provider, and typically say the
+document is for the recipient it was delivered to and should not be reproduced — so those
+numbers cannot be copied in here either.
+
+What can be done instead is to hold the **underlying funds** and let the tool measure the
+blend from public prices. Rockhold's Fund Blend range, for example, is stated on its own
+factsheet as a mix of two OEICs, both of which are now in the universe:
+
+| | vol (weekly) | vol (daily basis) | max drawdown | history |
+|---|---|---|---|---|
+| IFSL Rockhold Global Equity A GBP Acc | 10.83% | 8.89% | −15.9% | from Oct 2021 |
+| IFSL Rockhold Fixed Interest A GBP Acc | 3.79% | 2.94% | −11.6% | from Oct 2021 |
+
+A 65/35 mix of the two measures **7.60%** weekly volatility over the whole common history,
+against the 7.30 standard deviation the Balanced factsheet quotes for its own five-year window
+to 30 September 2025. The two figures agreeing to within a third of a percentage point is the
+useful result: the risk of a published blend can be reproduced from public prices, so the
+tool never needs to restate anyone else's licensed number.
 
 Price data is from public sources and is suitable for research, not as a licensed feed. Some
 of it is simply wrong: fourteen instruments arrived with volatilities between 126% and
@@ -167,7 +236,7 @@ entry. A dash means no confident name match was found — not that the fund is u
 status followed by "?" means the match was loose and may be the wrong fund. Click through before
 putting a reference number in a client file.
 
-**Only 50 of the 974 are currently matched.** The matches live in `build/fca_cache.json`, keyed
+**Only 50 of the 976 are currently matched.** The matches live in `build/fca_cache.json`, keyed
 by symbol, precisely so a rebuild of the universe carries them forward — when they were held
 only on the fund record, growing the universe from 190 funds to 982 wiped the entire FCA column
 and nothing failed loudly enough to notice. Filling in the rest means running `build/fca.py`
@@ -228,6 +297,7 @@ It is a backtest, not advice, and not a recommendation.
 
 ```
 build/discover.py   find candidate funds (Yahoo search, fund houses + FTSE 100 + benchmarks)
+build/add.py        price one named share class by ISIN or symbol and merge it in, no rebuild
 build/fetch.py      price them, convert to GBP, compute statistics and weekly series
 build/names.py      backfill full names from chart metadata
 build/classify.py   derive manager, sector and the leveraged/inverse flag
@@ -239,5 +309,8 @@ build/repair.py     re-measure instruments whose price series is visibly broken
 build/pack.py       write funds.json and series.json for the site
 build/beta.py       recompute beta and correlation on a shared monthly window
 build/correlate.py  does anything predict growth? (needs numpy)
+build/smoke.js      click through every view in a DOM and check each one renders rows
+                    (npm install jsdom; node build/smoke.js). Run it after every rebuild --
+                    a dropped field breaks a view without anything failing loudly.
 build/portfolio.py  walk-forward portfolio test
 ```

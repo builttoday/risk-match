@@ -307,6 +307,38 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
         vertical-align:middle; }
 .fundrow .meta a { color:var(--muted); text-decoration:underline; text-underline-offset:2px; }
 .fundrow .meta a:hover { color:var(--navy); }
+/* --- the dialog that asks what a ticked fund is for -------------------------------- */
+.modal { position:fixed; inset:0; z-index:70; display:flex; align-items:center;
+         justify-content:center; padding:18px; background:rgba(10,15,22,.55); }
+.modal[hidden] { display:none; }
+.modal-card { width:min(540px,100%); max-height:88vh; overflow:auto; background:var(--surface);
+         color:var(--ink); border:1px solid var(--line); border-radius:14px;
+         box-shadow:var(--shadow); padding:20px 22px 18px; }
+.modal-card h3 { margin:0 0 2px; font-size:1.06rem; line-height:1.35; }
+.modal-card .modal-q { font-size:.72rem; text-transform:uppercase; letter-spacing:.09em;
+         color:var(--muted); margin:0 0 10px; }
+.modal-figs { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:14px 0 6px; }
+.modal-figs div { background:var(--surface-2); border-radius:9px; padding:7px 10px; }
+.modal-figs span { display:block; font-size:.6rem; text-transform:uppercase;
+         letter-spacing:.07em; color:var(--muted); }
+.modal-figs b { font-size:.98rem; font-weight:600; }
+.modal-acts { display:grid; gap:8px; margin-top:16px; }
+.modal-acts button { width:100%; text-align:left; padding:11px 14px; border:1px solid var(--line);
+         border-radius:9px; background:var(--surface); color:var(--ink); cursor:pointer;
+         font-size:.92rem; }
+.modal-acts button:hover { border-color:var(--navy); }
+.modal-acts button.primary { background:var(--navy); color:#fff; border-color:var(--navy); }
+:root[data-theme="dark"] .modal-acts button.primary { color:#0A0F16; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .modal-acts button.primary { color:#0A0F16; }
+}
+.modal-acts button em { display:block; font-style:normal; font-size:.76rem; color:var(--muted);
+         margin-top:2px; }
+.modal-acts button.primary em { color:rgba(255,255,255,.8); }
+.modal-foot { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.modal-foot button { flex:1 1 140px; padding:9px 12px; border:1px solid var(--line);
+         border-radius:9px; background:var(--surface-2); color:var(--ink); cursor:pointer;
+         font-size:.86rem; }
 .toast { position:fixed; left:50%; bottom:26px; transform:translateX(-50%);
          background:var(--navy); color:#fff; padding:11px 20px; border-radius:24px;
          font-size:.9rem; box-shadow:var(--shadow); z-index:60; }
@@ -665,46 +697,152 @@ th .info { vertical-align: baseline; }
     <p class="sub">Every figure below is computed in your browser from the same data the rest
     of the tool uses. Rankings are <strong>measurements of the past</strong>, not a buy list:
     the funds at the top of a five-year table are the ones that already went up.</p>
+
+    <h3 class="fsh">What is being measured</h3>
+    <p class="sub">One set of funds feeds every panel on this page, so no two tables here can
+    quietly be measured over different universes.</p>
     <div class="ctrls">
-      <div class="fld" style="flex:0 0 230px;"><label for="anMetric">Rank by</label>
-        <select id="anMetric">
-          <option value="r5">5-year total return</option>
-          <option value="r3">3-year total return</option>
-          <option value="r1">1-year return</option>
-          <option value="cagr">Growth a year, whole history</option>
-          <option value="sharpe">Sharpe ratio</option>
-          <option value="sortino">Sortino ratio</option>
-          <option value="volDaily-asc">Lowest volatility</option>
-          <option value="maxDD">Shallowest drawdown</option>
-        </select></div>
-      <div class="fld" style="flex:0 0 210px;"><label for="anWhat">Across</label>
+      <div class="fld"><label for="anWhat">Across</label>
         <select id="anWhat">
           <option value="funds">Funds and trusts</option>
           <option value="shares">Individual shares</option>
           <option value="">Everything</option>
         </select></div>
-      <div class="fld" style="flex:0 0 180px;"><label for="anMinYears">Minimum history</label>
+      <div class="fld"><label for="anMinYears">Minimum history</label>
         <select id="anMinYears">
           <option value="5" selected>5 years</option>
           <option value="10">10 years</option>
           <option value="3">3 years</option>
           <option value="0">Any</option>
         </select></div>
+      <div class="fld"><label for="anHouse">Fund manager</label>
+        <select id="anHouse"><option value="">Every manager</option></select></div>
+      <div class="fld"><label for="anSector">Sector</label>
+        <select id="anSector"><option value="">Every sector</option></select></div>
+      <div class="fld"><label for="anCur">Currency risk</label>
+        <select id="anCur">
+          <option value="">Either</option>
+          <option value="gbp">Priced in sterling</option>
+          <option value="conv">Converted to sterling</option>
+        </select></div>
+      <div class="fld"><label for="anLev">Leveraged and inverse</label>
+        <select id="anLev">
+          <option value="0">Excluded</option>
+          <option value="1">Included</option>
+        </select></div>
     </div>
-    <h3 class="fsh" id="anTopTitle">Top 10</h3>
+    <p class="sub" id="anPoolNote"></p>
+  </div>
+
+  <div class="panel">
+    <h3 class="fsh" id="anTopTitle">Rankings</h3>
+    <div class="ctrls">
+      <div class="fld"><label for="anMetric">Rank by</label>
+        <select id="anMetric"></select></div>
+      <div class="fld" style="flex:0 0 190px;"><label for="anDir">Order</label>
+        <select id="anDir">
+          <option value="hi">Highest first</option>
+          <option value="lo">Lowest first</option>
+        </select></div>
+      <div class="fld" style="flex:0 0 150px;"><label for="anCount">Show</label>
+        <select id="anCount">
+          <option value="10">Top 10</option>
+          <option value="25">Top 25</option>
+          <option value="50">Top 50</option>
+        </select></div>
+    </div>
     <div class="tscroll"><div class="tinner" style="min-width:760px" id="anTop"></div></div>
     <p class="sub" id="anTopNote"></p>
+  </div>
 
-    <h3 class="fsh">By sector</h3>
-    <div class="tscroll"><div class="tinner" style="min-width:640px" id="anSectors"></div></div>
+  <div class="panel">
+    <h3 class="fsh">Break the universe down</h3>
+    <div class="ctrls">
+      <div class="fld"><label for="anGroup">Group by</label>
+        <select id="anGroup">
+          <option value="sector">Sector</option>
+          <option value="region">Region</option>
+          <option value="house">Fund manager</option>
+          <option value="type">What it is</option>
+          <option value="vol">Volatility range</option>
+          <option value="hist">Length of history</option>
+          <option value="cur">Currency</option>
+        </select></div>
+      <div class="fld"><label for="anGroupSort">Order by</label>
+        <select id="anGroupSort">
+          <option value="n">Number of funds</option>
+          <option value="volDaily">Median volatility</option>
+          <option value="r5">Median 5-year return</option>
+          <option value="maxDD">Median drawdown</option>
+          <option value="sharpe">Median Sharpe</option>
+          <option value="name">Name</option>
+        </select></div>
+      <div class="fld" style="flex:0 0 190px;"><label for="anGroupMin">Ignore groups under</label>
+        <select id="anGroupMin">
+          <option value="1">1 fund</option>
+          <option value="3" selected>3 funds</option>
+          <option value="10">10 funds</option>
+        </select></div>
+    </div>
+    <div class="tscroll"><div class="tinner" style="min-width:660px" id="anGroups"></div></div>
+    <p class="sub" id="anGroupNote"></p>
+  </div>
 
-    <h3 class="fsh">By region</h3>
-    <div class="tscroll"><div class="tinner" style="min-width:640px" id="anRegions"></div></div>
-    <p class="sub">Region is derived from the sector, which is itself derived from the fund
-    name. A fund holding global equities is shown as Global whatever it actually owns, and a
-    thematic fund has no region at all. Treat it as a rough shape of the universe, not as an
-    asset allocation.</p>
+  <div class="panel">
+    <h3 class="fsh">How many funds each of your risk levels has</h3>
+    <p class="sub">The bands are the ones set in <strong>Match by risk</strong>, so this is the
+    shape of your own framework against this universe, not anyone else&rsquo;s. A level with
+    two funds in it is a band worth re-reading before a client is placed in it.</p>
+    <div class="ctrls">
+      <div class="fld" style="flex:0 0 260px;"><label for="anBandBasis">Measure bands against</label>
+        <select id="anBandBasis">
+          <option value="volDaily">Daily volatility</option>
+          <option value="volWeekly">Weekly volatility (SRRI)</option>
+        </select></div>
+    </div>
+    <div class="tscroll"><div class="tinner" style="min-width:560px" id="anBands"></div></div>
+    <p class="sub">Bands are allowed to overlap, so a fund on a boundary is counted in both
+    neighbouring levels and the counts add to more than the universe. That is deliberate: a
+    fund at 8.0% should appear for a firm that calls 8 the top of level 4 and for one that
+    calls it the bottom of level 5.</p>
+  </div>
 
+  <div class="panel">
+    <h3 class="fsh">Does one measure move with another?</h3>
+    <p class="sub">Pick any two measures and see the whole pool plotted, with both correlations
+    recomputed live. This is the same question the study lower down answers over a fixed
+    window &mdash; here you can ask it of any subset instead.</p>
+    <div class="ctrls">
+      <div class="fld"><label for="anX">Across the bottom</label>
+        <select id="anX"></select></div>
+      <div class="fld"><label for="anY">Up the side</label>
+        <select id="anY"></select></div>
+    </div>
+    <div id="anScatter"></div>
+    <p class="sub" id="anScatterNote"></p>
+  </div>
+
+  <div class="panel">
+    <h3 class="fsh">How each group behaved in the episodes that mattered</h3>
+    <p class="sub">Total return across each stretch, computed from month-end prices. A fund is
+    counted only where it has prices covering the whole window, so the number in brackets is
+    how many of the group existed and are still in this data &mdash; not how many were around
+    at the time.</p>
+    <div class="ctrls">
+      <div class="fld"><label for="anStressBy">Group by</label>
+        <select id="anStressBy">
+          <option value="sector">Sector</option>
+          <option value="region">Region</option>
+          <option value="house">Fund manager</option>
+          <option value="type">What it is</option>
+          <option value="vol">Volatility range</option>
+        </select></div>
+    </div>
+    <div class="tscroll"><div class="tinner" style="min-width:820px" id="anStress"></div></div>
+    <p class="sub" id="anStressNote"></p>
+  </div>
+
+  <div class="panel">
     <h3 class="fsh">Does anything predict growth?</h3>
     <div id="anFindings"></div>
   </div>
@@ -766,6 +904,23 @@ th .info { vertical-align: baseline; }
     <div id="gWarn"></div>
     <div id="gTotals" class="gtot"></div>
     <div id="gTable"></div>
+  </div>
+</div>
+
+<!-- Asked, rather than assumed, when a fund is ticked in Browse funds. -->
+<div id="fundModal" class="modal" hidden role="dialog" aria-modal="true"
+     aria-labelledby="fmTitle">
+  <div class="modal-card">
+    <p class="modal-q">What would you like to do with this fund?</p>
+    <h3 id="fmTitle"></h3>
+    <p class="sub" id="fmMeta" style="margin:2px 0 0"></p>
+    <div class="modal-figs" id="fmFigs"></div>
+    <p class="sub" id="fmBand" style="margin:6px 0 0"></p>
+    <div class="modal-acts" id="fmActs"></div>
+    <div class="modal-foot">
+      <button data-act="keep">Keep it ticked, carry on</button>
+      <button data-act="untick">Untick it</button>
+    </div>
   </div>
 </div>
 
@@ -1237,47 +1392,186 @@ function renderShares() {
 }
 
 /* -------------------------------------------------------------------- analysis */
+/* ONE POOL FEEDS EVERY PANEL. The rankings, the breakdown, the band census, the scatter and
+   the stress table all read anPool(), and anPoolNote says out loud what is in it. An earlier
+   version filtered separately in two places, which is how a table can end up describing a
+   different universe from the one above it without anything looking wrong. */
+
+/* key, label, which end is normally interesting first, unit. The direction is only a DEFAULT
+   for the order box -- beta and correlation have no good end, and the reader can flip any of
+   them, which is why the box says "highest/lowest" rather than "best/worst". */
+const AN_METRICS = [
+  ['r5',        '5-year total return',              'hi', '%'],
+  ['r3',        '3-year total return',              'hi', '%'],
+  ['r1',        '1-year return',                    'hi', '%'],
+  ['cagr',      'Growth a year, whole history',     'hi', '%'],
+  ['sharpe',    'Sharpe ratio',                     'hi', ''],
+  ['sortino',   'Sortino ratio',                    'hi', ''],
+  ['volDaily',  'Volatility, daily',                'lo', '%'],
+  ['volWeekly', 'Volatility, weekly (SRRI)',        'lo', '%'],
+  ['maxDD',     'Maximum drawdown',                 'hi', '%'],
+  ['worst12m',  'Worst 12 months',                  'hi', '%'],
+  ['beta',      'Beta to the global market',        'lo', ''],
+  ['corr',      'Correlation to the global market', 'lo', ''],
+  ['years',     'Years of history',                 'hi', 'y'],
+];
+const AN_2DP = { sharpe: 1, sortino: 1, beta: 1, corr: 1 };
+
+/* Market episodes as month-end to month-end. Fixed dates rather than "the worst quarter for
+   each fund": the point is to compare funds through the SAME weather. The last one runs to
+   whatever month the data ends in, so it does not go stale between rebuilds. */
+const AN_EPISODES = [
+  ['Covid crash',       '2020-01', '2020-03'],
+  ['Covid recovery',    '2020-03', '2020-12'],
+  ['2022 sell-off',     '2021-12', '2022-09'],
+  ['Gilt crisis',       '2022-08', '2022-10'],
+  ['Rally to end 2024', '2022-10', '2024-12'],
+  ['Since 2025',        '2024-12', ''],
+];
+
 let anReady = false;
+let anMonthly = null;      // symbol -> { 'YYYY-MM': close }, built once from SERIES
+let anLastMonth = '';
+
+function anMetricLabel(k) {
+  var m = AN_METRICS.filter(function (x) { return x[0] === k; })[0];
+  return m ? m[1] : k;
+}
+function anCell(k, v) {
+  if (v == null) return '<span class="meta">&mdash;</span>';
+  if (AN_2DP[k]) return fmt(v, 2);
+  if (k === 'years') return fmt(v, 1) + 'y';
+  if (k === 'volDaily' || k === 'volWeekly') return fmt(v, 1);
+  return sgn(v);
+}
+
 function initAnalysis() {
   if (!anReady) {
-    ['anMetric', 'anWhat', 'anMinYears'].forEach(function (id) {
+    var houses = {}, sectors = {};
+    universe.funds.forEach(function (f) {
+      if (f.house) houses[f.house] = (houses[f.house] || 0) + 1;
+      if (f.sector) sectors[f.sector] = (sectors[f.sector] || 0) + 1;
+    });
+    function fill(id, counts) {
+      var el = $(id);
+      Object.keys(counts).sort().forEach(function (k) {
+        var o = document.createElement('option');
+        o.value = k; o.textContent = k + ' (' + counts[k] + ')';
+        el.appendChild(o);
+      });
+    }
+    fill('anHouse', houses);
+    fill('anSector', sectors);
+
+    var opts = AN_METRICS.map(function (m) {
+      return '<option value="' + m[0] + '">' + esc(m[1]) + '</option>';
+    }).join('');
+    $('anMetric').innerHTML = opts;
+    $('anX').innerHTML = opts;
+    $('anY').innerHTML = opts;
+    $('anMetric').value = 'r5';
+    $('anX').value = 'volDaily';
+    $('anY').value = 'r5';
+
+    // Changing the measure resets the order to the end most people want to see first;
+    // changing the order box afterwards is respected until the measure changes again.
+    $('anMetric').addEventListener('change', function () {
+      var m = AN_METRICS.filter(function (x) { return x[0] === $('anMetric').value; })[0];
+      if (m) $('anDir').value = m[2];
+    });
+
+    ['anWhat', 'anMinYears', 'anHouse', 'anSector', 'anCur', 'anLev', 'anMetric', 'anDir',
+     'anCount', 'anGroup', 'anGroupSort', 'anGroupMin', 'anBandBasis', 'anX', 'anY',
+     'anStressBy'].forEach(function (id) {
       $(id).addEventListener('input', renderAnalysis);
     });
     anReady = true;
   }
   renderAnalysis();
+  // The stress table needs the monthly price file, which is three megabytes and is not worth
+  // loading for someone who only opened this tab to read the sector table. Load it in the
+  // background and redraw when it lands.
+  initGrowth().then(function () { renderAnStress(); });
 }
 
 function anPool() {
   var what = $('anWhat').value;
   var minY = parseFloat($('anMinYears').value) || 0;
+  var house = $('anHouse').value, sector = $('anSector').value;
+  var cur = $('anCur').value, lev = $('anLev').value === '1';
   return universe.funds.filter(function (f) {
-    if (f.leveraged || f.sector === 'Benchmark index') return false;
+    if (f.sector === 'Benchmark index') return false;
+    if (f.leveraged && !lev) return false;
     if ((f.years || 0) < minY) return false;
+    if (house && f.house !== house) return false;
+    if (sector && f.sector !== sector) return false;
+    if (cur === 'gbp' && f.gbpConverted) return false;
+    if (cur === 'conv' && !f.gbpConverted) return false;
     if (what === 'shares') return isShare(f);
     if (what === 'funds') return !isShare(f) && f.type !== 'EQUITY';
     return true;
   });
 }
 
-function renderAnalysis() {
-  var m = $('anMetric').value;
-  var asc = m.indexOf('-asc') > 0;
-  var key = asc ? m.replace('-asc', '') : m;
-  var lowBest = asc || key === 'maxDD';
-  var pool = anPool().filter(function (f) { return f[key] != null; });
-  pool.sort(function (a, b) { return lowBest ? a[key] - b[key] : b[key] - a[key]; });
-  var top = pool.slice(0, 10);
+/* The grouping dimensions. Every one of them is derived from a field already on the fund --
+   nothing here reclassifies anything, and "derived" stays derived. */
+function anGroupKey(f, dim) {
+  if (dim === 'sector') return f.sector || 'Unclassified';
+  if (dim === 'region') return regionOf(f);
+  if (dim === 'house') return f.house || 'Unknown';
+  if (dim === 'type') {
+    if (isShare(f)) return 'FTSE 100 company';
+    if (f.type === 'ETF') return 'ETF';
+    if (f.type === 'MUTUALFUND') return 'Fund (OEIC or unit trust)';
+    return 'Listed company or trust';
+  }
+  if (dim === 'cur') return (f.currency || 'unknown') + (f.gbpConverted ? ' \u2192 GBP' : '');
+  if (dim === 'hist') {
+    var y = f.years || 0;
+    return y >= 20 ? '20 years or more' : y >= 10 ? '10 to 20 years'
+         : y >= 5 ? '5 to 10 years' : y >= 3 ? '3 to 5 years' : 'Under 3 years';
+  }
+  var v = f.volDaily;
+  if (v == null) return 'Not measured';
+  return v < 3 ? 'Under 3%' : v < 6 ? '3 to 6%' : v < 9 ? '6 to 9%' : v < 12 ? '9 to 12%'
+       : v < 18 ? '12 to 18%' : v < 25 ? '18 to 25%' : '25% or more';
+}
 
-  var label = $('anMetric').selectedOptions[0].textContent;
-  $('anTopTitle').textContent = 'Top 10 — ' + label;
+function renderAnalysis() {
+  var pool = anPool();
+  $('anPoolNote').innerHTML = 'Measuring <strong>' + pool.length + '</strong> of ' +
+    universe.funds.length + '. ' +
+    ($('anLev').value === '1' ? 'Leveraged and inverse products are included &mdash; their ' +
+      'volatility is a real measurement but describes a daily-rebalancing trading instrument ' +
+      'rather than a holding. ' : 'Leveraged and inverse products are excluded. ') +
+    'Benchmark indices are always excluded. <strong>Survivorship bias applies</strong>: funds ' +
+    'that closed after doing badly are not in this data at all, so any ranking of survivors ' +
+    'flatters the industry.';
+  renderAnTop(pool);
+  renderAnGroups(pool);
+  renderAnBands(pool);
+  renderAnScatter(pool);
+  renderAnStress();
+}
+
+function renderAnTop(pool) {
+  var key = $('anMetric').value;
+  var hi = $('anDir').value === 'hi';
+  var n = parseInt($('anCount').value, 10) || 10;
+  var rows = pool.filter(function (f) { return f[key] != null; });
+  rows.sort(function (a, b) { return hi ? b[key] - a[key] : a[key] - b[key]; });
+  var top = rows.slice(0, n);
+  var label = anMetricLabel(key);
+
+  $('anTopTitle').textContent = (hi ? 'Highest ' : 'Lowest ') + label.toLowerCase() +
+    ' \u2014 top ' + n;
 
   var G = 'grid-template-columns:28px 1fr 150px 78px 66px 66px 34px';
   $('anTop').innerHTML =
     '<div class="fhead" style="' + G + '">' +
     '<div>#</div><div>Fund or company' + infoBtn('name') + '</div>' +
     '<div>Sector' + infoBtn('sector') + '</div>' +
-    '<div class="num">' + esc(label.split(',')[0]) + '</div>' +
+    '<div class="num">' + esc(label.split(',')[0]) + infoBtn(key) + '</div>' +
     '<div class="num">Vol %' + infoBtn('volDaily') + '</div>' +
     '<div class="num">History' + infoBtn('years') + '</div><div></div></div>' +
     (top.length ? top.map(function (f, i) {
@@ -1286,54 +1580,285 @@ function renderAnalysis() {
         '<div><div class="nm">' + esc(f.name || f.symbol) + '</div>' +
         '<div class="meta">' + esc(f.symbol) + ' &middot; ' + esc(f.house || '') + '</div></div>' +
         '<div class="meta" data-l="Sector">' + esc(f.sector || '') + '</div>' +
-        '<div class="num" data-l="' + esc(label) + '">' +
-          (key === 'sharpe' || key === 'sortino' ? fmt(f[key], 2) : sgn(f[key])) + '</div>' +
+        '<div class="num" data-l="' + esc(label) + '">' + anCell(key, f[key]) + '</div>' +
         '<div class="num" data-l="Vol %">' + fmt(f.volDaily) + '</div>' +
         '<div class="num" data-l="History">' + fmt(f.years) + 'y</div>' +
         '<div>' + choiceStar(f.symbol) + '</div></div>';
-    }).join('') : '<p class="sub" style="padding:16px 12px">Nothing has enough history for that.</p>');
+    }).join('') : '<p class="sub" style="padding:16px 12px">Nothing in this pool has a figure ' +
+      'for that measure.</p>');
   wireStars($('anTop'));
 
-  $('anTopNote').innerHTML = 'Ranked out of ' + pool.length + ' with a figure for this measure' +
-    ($('anMinYears').value !== '0' ? ' and at least ' + $('anMinYears').value +
-      ' years of history' : '') + '. Leveraged products and benchmark indices are excluded. ' +
-    '<strong>Survivorship bias applies</strong>: funds that closed after doing badly are not ' +
-    'in this data at all, so any ranking of survivors flatters the industry.';
+  $('anTopNote').innerHTML = 'Ranked out of ' + rows.length + ' with a figure for this ' +
+    'measure. ' + (rows.length < 10 ? 'That is a small number to rank &mdash; widen the pool ' +
+    'above before reading much into the order. ' : '') +
+    'Past performance is not a guide to future returns.';
+}
 
-  function groupTable(el, groups, headLabel) {
-    var ks = Object.keys(groups).sort(function (a, b) { return groups[b].length - groups[a].length; });
-    var GG = 'grid-template-columns:1fr 62px 74px 78px 74px 70px';
-    el.innerHTML = '<div class="fhead" style="' + GG + '">' +
-      '<div>' + esc(headLabel) + '</div><div class="num">Count</div>' +
-      '<div class="num">Median vol' + infoBtn('volDaily') + '</div>' +
-      '<div class="num">Median 5yr' + infoBtn('r5') + '</div>' +
-      '<div class="num">Median DD' + infoBtn('maxDD') + '</div>' +
-      '<div class="num">Sharpe' + infoBtn('sharpe') + '</div></div>' +
-      ks.map(function (k) {
-        var g = groups[k];
-        return '<div class="fundrow" style="' + GG + '">' +
-          '<div class="nm">' + esc(k) + '</div>' +
-          '<div class="num" data-l="Count">' + g.length + '</div>' +
-          '<div class="num" data-l="Median vol">' + fmt(median(g.map(function (f) { return f.volDaily; }))) + '</div>' +
-          '<div class="num" data-l="Median 5yr">' + sgn(median(g.map(function (f) { return f.r5; }))) + '</div>' +
-          '<div class="num" data-l="Median DD">' + fmt(median(g.map(function (f) { return f.maxDD; }))) + '</div>' +
-          '<div class="num" data-l="Sharpe">' + fmt(median(g.map(function (f) { return f.sharpe; })), 2) + '</div>' +
-          '</div>';
-      }).join('');
+function renderAnGroups(pool) {
+  var dim = $('anGroup').value;
+  var minN = parseInt($('anGroupMin').value, 10) || 1;
+  var sortBy = $('anGroupSort').value;
+  var groups = {};
+  pool.forEach(function (f) {
+    var k = anGroupKey(f, dim);
+    (groups[k] = groups[k] || []).push(f);
+  });
+  var ks = Object.keys(groups).filter(function (k) { return groups[k].length >= minN; });
+  var hidden = Object.keys(groups).length - ks.length;
+
+  function med(k, field) { return median(groups[k].map(function (f) { return f[field]; })); }
+  ks.sort(function (a, b) {
+    if (sortBy === 'name') return a < b ? -1 : a > b ? 1 : 0;
+    if (sortBy === 'n') return groups[b].length - groups[a].length;
+    var va = med(a, sortBy), vb = med(b, sortBy);
+    if (va == null) return 1;
+    if (vb == null) return -1;
+    // Volatility reads best low-first; every other median reads best high-first.
+    return sortBy === 'volDaily' ? va - vb : vb - va;
+  });
+
+  var GG = 'grid-template-columns:1fr 62px 74px 78px 78px 74px 70px';
+  $('anGroups').innerHTML = '<div class="fhead" style="' + GG + '">' +
+    '<div>' + esc($('anGroup').selectedOptions[0].textContent) + '</div>' +
+    '<div class="num">Count</div>' +
+    '<div class="num">Median vol' + infoBtn('volDaily') + '</div>' +
+    '<div class="num">Median 5yr' + infoBtn('r5') + '</div>' +
+    '<div class="num">Worst 12m' + infoBtn('worst12m') + '</div>' +
+    '<div class="num">Median DD' + infoBtn('maxDD') + '</div>' +
+    '<div class="num">Sharpe' + infoBtn('sharpe') + '</div></div>' +
+    (ks.length ? ks.map(function (k) {
+      return '<div class="fundrow" style="' + GG + '">' +
+        '<div class="nm">' + esc(k) + '</div>' +
+        '<div class="num" data-l="Count">' + groups[k].length + '</div>' +
+        '<div class="num" data-l="Median vol">' + fmt(med(k, 'volDaily')) + '</div>' +
+        '<div class="num" data-l="Median 5yr">' + sgn(med(k, 'r5')) + '</div>' +
+        '<div class="num" data-l="Worst 12m">' + sgn(med(k, 'worst12m')) + '</div>' +
+        '<div class="num" data-l="Median DD">' + fmt(med(k, 'maxDD')) + '</div>' +
+        '<div class="num" data-l="Sharpe">' + fmt(med(k, 'sharpe'), 2) + '</div></div>';
+    }).join('') : '<p class="sub" style="padding:16px 12px">No group is that big in this pool.</p>');
+
+  $('anGroupNote').innerHTML = 'Medians, not averages: one fund with a 300% five-year return ' +
+    'would drag an average and tells you nothing about the group. ' +
+    (hidden > 0 ? '<strong>' + hidden + ' smaller group' + (hidden === 1 ? '' : 's') +
+      '</strong> hidden by the size filter. ' : '') +
+    (dim === 'region' ? 'Region is derived from the sector, which is itself derived from the ' +
+      'fund name. A fund holding global equities is shown as Global whatever it actually ' +
+      'owns, and a thematic fund has no region at all. ' : '') +
+    (dim === 'house' ? 'Manager is read from the start of the fund name, so a share class ' +
+      'named after its ACD rather than its manager files under the ACD. ' : '');
+}
+
+function renderAnBands(pool) {
+  var basis = $('anBandBasis').value;
+  var rows = Object.keys(DEFAULT_BANDS).map(function (lvl) {
+    var b = bandFor(lvl);
+    var inBand = b ? pool.filter(function (f) {
+      return f[basis] != null && f[basis] >= b[0] && f[basis] <= b[1];
+    }) : [];
+    return { lvl: lvl, band: b, funds: inBand };
+  });
+  var max = Math.max.apply(null, rows.map(function (r) { return r.funds.length; }).concat([1]));
+  var GB = 'grid-template-columns:74px 110px 1fr 64px 78px 78px';
+  $('anBands').innerHTML = '<div class="fhead" style="' + GB + '">' +
+    '<div>Risk level</div><div>Your band</div><div>Share of the pool</div>' +
+    '<div class="num">Funds</div><div class="num">Median 5yr' + infoBtn('r5') + '</div>' +
+    '<div class="num">Median DD' + infoBtn('maxDD') + '</div></div>' +
+    rows.map(function (r) {
+      var pc = r.funds.length / max * 100;
+      return '<div class="fundrow" style="' + GB + '">' +
+        '<div class="nm">Risk ' + esc(r.lvl) + '</div>' +
+        '<div class="meta" data-l="Your band">' +
+          (r.band ? r.band[0] + '% to ' + r.band[1] + '%' : 'not set') + '</div>' +
+        '<div class="fsbar-t" style="align-self:center"><i style="width:' +
+          pc.toFixed(1) + '%"></i></div>' +
+        '<div class="num" data-l="Funds">' + r.funds.length + '</div>' +
+        '<div class="num" data-l="Median 5yr">' +
+          sgn(median(r.funds.map(function (f) { return f.r5; }))) + '</div>' +
+        '<div class="num" data-l="Median DD">' +
+          fmt(median(r.funds.map(function (f) { return f.maxDD; }))) + '</div></div>';
+    }).join('');
+}
+
+/* ---- correlation, computed here rather than read off the build ---- */
+function anPearson(xs, ys) {
+  var n = xs.length;
+  if (n < 3) return null;
+  var mx = xs.reduce(function (a, b) { return a + b; }, 0) / n;
+  var my = ys.reduce(function (a, b) { return a + b; }, 0) / n;
+  var sxy = 0, sxx = 0, syy = 0;
+  for (var i = 0; i < n; i++) {
+    var dx = xs[i] - mx, dy = ys[i] - my;
+    sxy += dx * dy; sxx += dx * dx; syy += dy * dy;
+  }
+  return (sxx && syy) ? sxy / Math.sqrt(sxx * syy) : null;
+}
+// Ties share the average rank, otherwise a field with many equal values (whole-number betas,
+// say) reports a correlation that is partly an artefact of the sort order.
+function anRanks(xs) {
+  var idx = xs.map(function (v, i) { return i; })
+              .sort(function (a, b) { return xs[a] - xs[b]; });
+  var r = new Array(xs.length), i = 0;
+  while (i < idx.length) {
+    var j = i;
+    while (j + 1 < idx.length && xs[idx[j + 1]] === xs[idx[i]]) j++;
+    var avg = (i + j) / 2 + 1;
+    for (var k = i; k <= j; k++) r[idx[k]] = avg;
+    i = j + 1;
+  }
+  return r;
+}
+
+function renderAnScatter(pool) {
+  var xk = $('anX').value, yk = $('anY').value;
+  var pts = pool.filter(function (f) { return f[xk] != null && f[yk] != null; })
+                .map(function (f) { return { x: f[xk], y: f[yk], f: f }; });
+  var note = $('anScatterNote');
+  if (pts.length < 5) {
+    $('anScatter').innerHTML = '<p class="sub">Not enough funds have both measures to plot.</p>';
+    note.textContent = '';
+    return;
+  }
+  var xs = pts.map(function (p) { return p.x; }), ys = pts.map(function (p) { return p.y; });
+  var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
+  var y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+  if (x1 === x0) x1 = x0 + 1;
+  if (y1 === y0) y1 = y0 + 1;
+  var W = 680, H = 340, L = 52, R = 12, T = 14, B = 34;
+  function px(v) { return L + (v - x0) / (x1 - x0) * (W - L - R); }
+  function py(v) { return H - B - (v - y0) / (y1 - y0) * (H - T - B); }
+
+  var r = anPearson(xs, ys);
+  var rs = anPearson(anRanks(xs), anRanks(ys));
+
+  // Least squares line, drawn only across the range the data actually covers.
+  var n = xs.length;
+  var mx = xs.reduce(function (a, b) { return a + b; }, 0) / n;
+  var my = ys.reduce(function (a, b) { return a + b; }, 0) / n;
+  var sxy = 0, sxx = 0;
+  for (var i = 0; i < n; i++) { sxy += (xs[i] - mx) * (ys[i] - my); sxx += (xs[i] - mx) * (xs[i] - mx); }
+  var slope = sxx ? sxy / sxx : 0, icpt = my - slope * mx;
+  function clampY(v) { return Math.max(y0, Math.min(y1, v)); }
+
+  var dots = pts.map(function (p) {
+    return '<circle cx="' + px(p.x).toFixed(1) + '" cy="' + py(p.y).toFixed(1) +
+      '" r="2.6" fill="var(--navy)" fill-opacity=".38"><title>' +
+      esc(p.f.name || p.f.symbol) + ' \u2014 ' + anMetricLabel(xk) + ' ' + p.x.toFixed(2) +
+      ', ' + anMetricLabel(yk) + ' ' + p.y.toFixed(2) + '</title></circle>';
+  }).join('');
+
+  function tick(v, horiz) {
+    return horiz
+      ? '<text x="' + px(v).toFixed(1) + '" y="' + (H - 12) + '" font-size="10" ' +
+        'text-anchor="middle" fill="var(--muted)">' + v.toFixed(1) + '</text>'
+      : '<text x="' + (L - 6) + '" y="' + (py(v) + 3).toFixed(1) + '" font-size="10" ' +
+        'text-anchor="end" fill="var(--muted)">' + v.toFixed(1) + '</text>';
   }
 
-  var pool2 = anPool();
-  var bySec = {}, byReg = {};
-  pool2.forEach(function (f) {
-    var sc = f.sector || 'Unclassified';
-    (bySec[sc] = bySec[sc] || []).push(f);
-    var rg = regionOf(f);
-    (byReg[rg] = byReg[rg] || []).push(f);
-  });
-  groupTable($('anSectors'), bySec, 'Sector');
-  groupTable($('anRegions'), byReg, 'Region');
+  $('anScatter').innerHTML =
+    '<div class="tscroll"><div class="tinner" style="min-width:560px">' +
+    '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" role="img" ' +
+    'aria-label="' + esc(anMetricLabel(yk) + ' against ' + anMetricLabel(xk)) + '">' +
+    '<line x1="' + L + '" y1="' + (H - B) + '" x2="' + (W - R) + '" y2="' + (H - B) +
+      '" stroke="var(--line)"/>' +
+    '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + (H - B) +
+      '" stroke="var(--line)"/>' +
+    (y0 < 0 && y1 > 0 ? '<line x1="' + L + '" y1="' + py(0).toFixed(1) + '" x2="' + (W - R) +
+      '" y2="' + py(0).toFixed(1) + '" stroke="var(--line)" stroke-dasharray="3 3"/>' : '') +
+    dots +
+    '<line x1="' + px(x0).toFixed(1) + '" y1="' + py(clampY(icpt + slope * x0)).toFixed(1) +
+      '" x2="' + px(x1).toFixed(1) + '" y2="' + py(clampY(icpt + slope * x1)).toFixed(1) +
+      '" stroke="var(--navy)" stroke-width="1.6" stroke-dasharray="6 4"/>' +
+    tick(x0, true) + tick((x0 + x1) / 2, true) + tick(x1, true) +
+    tick(y0, false) + tick((y0 + y1) / 2, false) + tick(y1, false) +
+    '<text x="' + ((L + W - R) / 2) + '" y="' + (H - 1) + '" font-size="10" ' +
+      'text-anchor="middle" fill="var(--muted)">' + esc(anMetricLabel(xk)) + '</text>' +
+    '<text x="12" y="' + ((T + H - B) / 2) + '" font-size="10" fill="var(--muted)" ' +
+      'transform="rotate(-90 12 ' + ((T + H - B) / 2) + ')" text-anchor="middle">' +
+      esc(anMetricLabel(yk)) + '</text>' +
+    '</svg></div></div>';
 
-  $('anFindings').innerHTML = AN_FINDINGS;
+  note.innerHTML = '<strong>' + pts.length + ' funds.</strong> Pearson ' +
+    (r == null ? '&mdash;' : (r >= 0 ? '+' : '\u2212') + Math.abs(r).toFixed(2)) +
+    ', Spearman ' +
+    (rs == null ? '&mdash;' : (rs >= 0 ? '+' : '\u2212') + Math.abs(rs).toFixed(2)) + '. ' +
+    'Pearson measures a straight line, Spearman measures order alone, and <strong>when the ' +
+    'two disagree the relationship is a curve</strong> that neither number describes. ' +
+    'Correlation is not cause, and pairing two measures that share an input &mdash; Sharpe ' +
+    'against growth, say, when Sharpe is growth divided by volatility &mdash; correlates a ' +
+    'number with itself.';
+}
+
+/* ---- stress episodes, from the monthly series ---- */
+function anBuildMonthly() {
+  if (anMonthly || !SERIES) return;
+  anMonthly = {};
+  Object.keys(SERIES).forEach(function (sym) {
+    var s = SERIES[sym], m = {};
+    for (var i = 0; i < s.t.length; i++) {
+      var ym = new Date(s.t[i] * 1000).toISOString().slice(0, 7);
+      m[ym] = s.c[i];
+      if (ym > anLastMonth) anLastMonth = ym;
+    }
+    anMonthly[sym] = m;
+  });
+}
+
+function anEpisodeReturn(sym, from, to) {
+  var m = anMonthly[sym];
+  if (!m) return null;
+  var a = m[from], b = m[to || anLastMonth];
+  if (a == null || b == null || !a) return null;
+  return (b / a - 1) * 100;
+}
+
+function renderAnStress() {
+  if (!$('anStress')) return;
+  if (!SERIES) {
+    $('anStress').innerHTML = '<p class="sub" style="padding:16px 12px">Loading price ' +
+      'history&hellip;</p>';
+    return;
+  }
+  anBuildMonthly();
+  var pool = anPool();
+  var dim = $('anStressBy').value;
+  var groups = {};
+  pool.forEach(function (f) {
+    if (!anMonthly[f.symbol]) return;
+    var k = anGroupKey(f, dim);
+    (groups[k] = groups[k] || []).push(f);
+  });
+  var ks = Object.keys(groups).sort(function (a, b) { return groups[b].length - groups[a].length; })
+                 .slice(0, 14);
+
+  var eps = AN_EPISODES.map(function (e) {
+    return [e[0], e[1], e[2] || anLastMonth];
+  });
+  var GS = 'grid-template-columns:1fr' + eps.map(function () { return ' 108px'; }).join('');
+  $('anStress').innerHTML = '<div class="fhead" style="' + GS + '">' +
+    '<div>' + esc($('anStressBy').selectedOptions[0].textContent) + '</div>' +
+    eps.map(function (e) {
+      return '<div class="num">' + esc(e[0]) + '<div class="meta" style="font-weight:400">' +
+        esc(e[1]) + ' \u2192 ' + esc(e[2]) + '</div></div>';
+    }).join('') + '</div>' +
+    (ks.length ? ks.map(function (k) {
+      return '<div class="fundrow" style="' + GS + '">' +
+        '<div class="nm">' + esc(k) + ' <span class="meta">(' + groups[k].length + ')</span></div>' +
+        eps.map(function (e) {
+          var vals = groups[k].map(function (f) { return anEpisodeReturn(f.symbol, e[1], e[2]); })
+                              .filter(function (v) { return v != null; });
+          return '<div class="num" data-l="' + esc(e[0]) + '">' +
+            (vals.length ? sgn(median(vals)) + ' <span class="meta">(' + vals.length + ')</span>'
+                         : '<span class="meta">&mdash;</span>') + '</div>';
+        }).join('') + '</div>';
+    }).join('') : '<p class="sub" style="padding:16px 12px">No group in this pool has price ' +
+      'history.</p>');
+
+  $('anStressNote').innerHTML = 'Median total return in each window, with the number of funds ' +
+    'that have prices covering all of it in brackets. <strong>Read the brackets before the ' +
+    'percentages</strong>: a group whose funds mostly launched after 2020 shows a small count ' +
+    'for the Covid columns, and the median of four survivors is not the experience of that ' +
+    'sector at the time. Month-end prices, so a fall and recovery inside one month is ' +
+    'invisible here.' + (ks.length === 14 ? ' Showing the 14 largest groups.' : '');
 }
 
 /* The result of build/correlate.py, which measures every fund over one identical 60-month
@@ -2062,6 +2587,10 @@ function renderBrowse() {
     c.onchange = function () {
       if (c.checked) bSel.add(c.dataset.pick); else bSel.delete(c.dataset.pick);
       bSelUpdate();
+      // Only a tick asks the question. Unticking is already an unambiguous instruction, and
+      // the select-all box sets .checked directly without firing change, so it cannot open
+      // nine hundred dialogs.
+      if (c.checked) openFundModal(c.dataset.pick);
     };
   });
   bSelUpdate();
@@ -2728,6 +3257,140 @@ function toast(msg) {
   el.textContent = msg;
   document.body.appendChild(el);
   setTimeout(function () { el.remove(); }, 2200);
+}
+
+/* ------------------------------------------------------ what a ticked fund is for
+   A tick in Browse is ambiguous on its own: it could mean compare this, keep this, or just
+   look at this. Rather than guess, ticking opens a dialog in the middle of the screen and
+   asks. Every action offered already existed somewhere in the tool -- what was missing was
+   being asked at the moment of choosing.
+
+   THE TICK STAYS unless the reader says otherwise. Escape and a click outside both leave the
+   fund selected, so a mis-click costs one keystroke and never silently loses a selection
+   someone has been building up. */
+let fmSym = null, fmPrevFocus = null;
+
+function fmFund() {
+  return universe.funds.find(function (x) { return x.symbol === fmSym; });
+}
+
+// Which of the firm's own levels this fund's volatility lands in. The bands overlap on
+// purpose, so a fund can sit in two, and saying "4 and 5" is more honest than picking one.
+function fmBandsFor(f) {
+  if (f.volDaily == null) return [];
+  return Object.keys(DEFAULT_BANDS).filter(function (lvl) {
+    var b = bandFor(lvl);
+    return b && f.volDaily >= b[0] && f.volDaily <= b[1];
+  });
+}
+
+function openFundModal(sym) {
+  var f = universe.funds.find(function (x) { return x.symbol === sym; });
+  if (!f) return;
+  fmSym = sym;
+  fmPrevFocus = document.activeElement;
+
+  $('fmTitle').textContent = f.name || f.symbol;
+  $('fmMeta').innerHTML = esc(f.symbol) + (f.house ? ' &middot; ' + esc(f.house) : '') +
+    (f.sector ? ' &middot; ' + esc(f.sector) : '') +
+    (f.years ? ' &middot; ' + f.years + ' years of history' : '') +
+    (f.gbpConverted ? ' &middot; converted to sterling' : '');
+
+  var figs = [['Volatility', fmt(f.volDaily) + '%'], ['Weekly vol', fmt(f.volWeekly) + '%'],
+              ['5yr total', sgn(f.r5) + '%'], ['Max drawdown', fmt(f.maxDD) + '%'],
+              ['Sharpe', fmt(f.sharpe, 2)], ['Beta', fmt(f.beta, 2)]];
+  $('fmFigs').innerHTML = figs.map(function (r) {
+    return '<div><span>' + esc(r[0]) + '</span><b>' + r[1] + '</b></div>';
+  }).join('');
+
+  var lv = fmBandsFor(f);
+  $('fmBand').innerHTML = f.volDaily == null ? '' :
+    (lv.length
+      ? 'At ' + fmt(f.volDaily) + '% a year this sits in <strong>your risk ' +
+        (lv.length > 1 ? lv.slice(0, -1).join(', ') + ' and ' + lv[lv.length - 1] : lv[0]) +
+        '</strong> band' + (lv.length > 1 ? 's' : '') + '.'
+      : 'At ' + fmt(f.volDaily) + '% a year this falls outside every band you have set.');
+
+  var many = bSel.size > 1;
+  $('fmActs').innerHTML =
+    '<button class="primary" data-act="growth">Open it in the growth calculator' +
+      '<em>See what a sum invested in it would have become</em></button>' +
+    (many ? '<button data-act="growthAll">Open all ' + bSel.size + ' selected funds together' +
+      '<em>Compare them on one chart</em></button>' : '') +
+    '<button data-act="choice">' +
+      (inChoice(fmSym) ? 'Remove it from My Choice' : 'Add it to My Choice') +
+      '<em>' + (inChoice(fmSym) ? 'It is on your shortlist now'
+                                : 'Your shortlist, kept on this device only') + '</em></button>' +
+    '<button data-act="factsheet">Find its factsheet' +
+      '<em>Opens a Trustnet search in a new tab</em></button>' +
+    '<button data-act="prices">Look at its price history' +
+      '<em>Opens the public price page in a new tab</em></button>';
+
+  var m = $('fundModal');
+  m.hidden = false;
+  m.querySelectorAll('[data-act]').forEach(function (b) { b.onclick = fmAct; });
+  var first = m.querySelector('.modal-acts button');
+  if (first) first.focus();
+}
+
+function closeFundModal() {
+  $('fundModal').hidden = true;
+  fmSym = null;
+  if (fmPrevFocus && fmPrevFocus.focus) fmPrevFocus.focus();
+}
+
+function fmAct(ev) {
+  var act = ev.currentTarget.dataset.act;
+  var sym = fmSym, f = fmFund();
+  if (act === 'keep') { closeFundModal(); return; }
+  if (act === 'untick') {
+    bSel.delete(sym);
+    var box = document.querySelector('#bList [data-pick="' + (window.CSS && CSS.escape
+      ? CSS.escape(sym) : sym) + '"]');
+    if (box) box.checked = false;
+    bSelUpdate();
+    closeFundModal();
+    return;
+  }
+  if (act === 'choice') { toggleChoice(sym); renderBrowse(); closeFundModal(); return; }
+  if (act === 'factsheet') { window.open(factsheetSearchUrl(f), '_blank', 'noopener'); return; }
+  if (act === 'prices') { window.open(dataUrl(f), '_blank', 'noopener'); return; }
+  if (act === 'growth' || act === 'growthAll') {
+    var picked = act === 'growthAll' ? Array.from(bSel) : [sym];
+    closeFundModal();
+    document.querySelector('.nav a[data-view="growth"]').click();
+    initGrowth().then(function () {
+      var missing = picked.filter(function (x) { return !SERIES[x]; });
+      gSel = picked.filter(function (x) { return SERIES[x]; });
+      gRender();
+      if (missing.length) {
+        $('gWarn').innerHTML = '<div class="warnline"><strong>Not shown: ' +
+          missing.map(esc).join(', ') + '.</strong> Too little price history to chart.</div>' +
+          $('gWarn').innerHTML;
+      }
+    });
+  }
+}
+
+if ($('fundModal')) {
+  // A click on the backdrop, not on the card, closes it -- leaving the tick in place.
+  $('fundModal').addEventListener('mousedown', function (ev) {
+    if (ev.target === $('fundModal')) closeFundModal();
+  });
+  document.addEventListener('keydown', function (ev) {
+    if ($('fundModal').hidden) return;
+    if (ev.key === 'Escape') { closeFundModal(); return; }
+    if (ev.key !== 'Tab') return;
+    // Keep the keyboard inside the dialog while it is open.
+    var items = Array.prototype.slice.call(
+      $('fundModal').querySelectorAll('button:not([disabled])'));
+    if (!items.length) return;
+    var i = items.indexOf(document.activeElement);
+    var next = ev.shiftKey ? (i <= 0 ? items.length - 1 : i - 1)
+                           : (i === items.length - 1 ? 0 : i + 1);
+    items[next].focus();
+    ev.preventDefault();
+  });
 }
 
 /* ---- Browse selection wiring ---- */

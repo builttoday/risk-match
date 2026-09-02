@@ -69,7 +69,24 @@ def main():
     hit = sum(1 for f in funds if f["symbol"] in cache)
     print(f"{len(funds)} funds, {len(cache)} cached matches, {hit} of them still in the universe")
 
+    # The key is the author's own, and lives outside this repository on purpose: this repo is
+    # public. Read from the environment first, then from the filing-diff tool that already
+    # holds one. Never copy the file in here -- .gitignore blocks it, but the reason matters
+    # more than the rule.
     email, key = os.environ.get("FCA_EMAIL"), os.environ.get("FCA_KEY")
+    if not (email and key):
+        for cand in (os.environ.get("FCA_KEY_FILE"),
+                     os.path.join(os.path.expanduser("~"), ".fca-key.json"),
+                     os.path.join("C:" + os.sep, "LocalDocs", "filing-diff",
+                                  "fca-key.json")):
+            if cand and os.path.exists(cand):
+                try:
+                    k = json.load(open(cand, encoding="utf-8"))
+                    email, key = k.get("email"), k.get("key")
+                    print("using the register key from %s" % cand)
+                    break
+                except Exception:
+                    pass
     if not (email and key):
         print("FCA_EMAIL / FCA_KEY not set -- carrying the cache forward, matching nothing new.")
         print("Get a free key at https://register.fca.org.uk/Developer/s/ to fill the rest.")

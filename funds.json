@@ -1,6 +1,6 @@
 {
- "builtAt": "2026-09-02T09:50:31Z",
- "count": 974,
+ "builtAt": "2026-09-02T13:52:43Z",
+ "count": 976,
  "riskFree": 4.0,
  "benchmark": "VWRP.L",
  "houses": [
@@ -509,6 +509,10 @@
    2
   ],
   [
+   "Rockhold",
+   2
+  ],
+  [
    "Unicorn",
    2
   ],
@@ -748,7 +752,7 @@
   ],
   [
    "Global Equity",
-   193
+   194
   ],
   [
    "UK Equity (single share)",
@@ -760,7 +764,7 @@
   ],
   [
    "Strategic / Global Bond",
-   41
+   42
   ],
   [
    "Single share",
@@ -851,7 +855,7 @@
    1
   ]
  ],
- "fcaCheckedAt": "2026-08-29T22:40:06.389Z",
+ "fcaCheckedAt": "2026-09-02T13:52:35Z",
  "fcaMatched": 50,
  "funds": [
   {
@@ -29631,6 +29635,64 @@
    "stem": "Invesco Global Emerg Mkts UK",
    "derived": true,
    "firstDate": "2014-01",
+   "hasSeries": true
+  },
+  {
+   "symbol": "0P0001NIW1.L",
+   "name": "IFSL Rockhold Global Equity A GBP Acc",
+   "type": "MUTUALFUND",
+   "house": "Rockhold",
+   "sector": "Global Equity",
+   "currency": "GBP",
+   "gbpConverted": false,
+   "leveraged": false,
+   "years": 4.9,
+   "days": 1223,
+   "volDaily": 8.89,
+   "volWeekly": 10.83,
+   "maxDD": -15.9,
+   "cagr": 8.95,
+   "sharpe": 0.56,
+   "sortino": 0.74,
+   "worst12m": -10.4,
+   "r1": 19.72,
+   "r3": 52.82,
+   "r5": null,
+   "last": 1.518,
+   "beta": 0.75,
+   "corr": 0.86,
+   "stem": "IFSL Rockhold Global Equity",
+   "derived": true,
+   "firstDate": "2021-10",
+   "hasSeries": true
+  },
+  {
+   "symbol": "0P0001NIW2.L",
+   "name": "IFSL Rockhold Fixed Interest A GBP Acc",
+   "type": "MUTUALFUND",
+   "house": "Rockhold",
+   "sector": "Strategic / Global Bond",
+   "currency": "GBP",
+   "gbpConverted": false,
+   "leveraged": false,
+   "years": 4.9,
+   "days": 1223,
+   "volDaily": 2.94,
+   "volWeekly": 3.79,
+   "maxDD": -11.6,
+   "cagr": 0.12,
+   "sharpe": -1.32,
+   "sortino": -2.13,
+   "worst12m": -9.9,
+   "r1": 2.28,
+   "r3": 10.02,
+   "r5": null,
+   "last": 1.006,
+   "beta": 0.19,
+   "corr": 0.56,
+   "stem": "IFSL Rockhold Fixed Interest",
+   "derived": true,
+   "firstDate": "2021-10",
    "hasSeries": true
   }
  ],

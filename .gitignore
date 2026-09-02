@@ -19,3 +19,15 @@ __pycache__/
 # Screenshots and scratch
 _shot_*.png
 *.bak
+
+# Never commit an API key. The FCA register key lives outside this repo, in the
+# filing-diff folder, and is read from there at build time -- it must not be copied in.
+fca-key.json
+*-key.json
+*.key
+.env
+
+# smoke.js asks for jsdom; keep an npm install out of the repo.
+node_modules/
+package-lock.json
+package.json
