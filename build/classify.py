@@ -156,6 +156,19 @@ def leveraged(name):
     return bool(LEV_RE.search(name or ""))
 
 
+# An S&P 500 tracker is what somebody means by "the S&P 500" in a tool you can buy from, so
+# it gets its own heading rather than being scattered through North America and Global Equity.
+# Matched on the index name, which every share class of it carries.
+SP500_RE = re.compile("|".join([
+    r"BSLASHbs ?& ?p ?500BSLASHb", r"BSLASHbsp ?500BSLASHb", r"BSLASHbs&p500BSLASHb",
+    r"BSLASHb500 (index|ucits|equal weight)", r"BSLASHbus 500BSLASHb",
+]).replace("BSLASH", chr(92)), re.I)
+
+
+def is_sp500(name):
+    return bool(SP500_RE.search(name or ""))
+
+
 def main():
     d = json.load(open(IN, encoding="utf-8"))
     funds = d["funds"]
@@ -164,13 +177,17 @@ def main():
         nm = f.get("name") or f["symbol"]
         if f.get("type") == "EQUITY":
             f["house"] = "— single company share"
-            f["sector"] = "UK Equity (single share)" if f.get("index") == "FTSE100" else "Single share"
+            f["sector"] = ("UK Equity (single share)" if f.get("index") == "FTSE100"
+                           else "US Equity (single share)" if f.get("index") == "SP500"
+                           else "Single share")
         elif f.get("type") == "INDEX":
             f["house"] = "— index"
             f["sector"] = "Benchmark index"
         else:
             f["house"] = house_of(nm)
             f["sector"] = sector_of(nm)
+        if is_sp500(nm) and f.get("type") != "EQUITY":
+            f["sector"] = "S&P 500"
         f["displayName"] = display_name(nm)
         f["stem"] = stem(nm)
         f["derived"] = True

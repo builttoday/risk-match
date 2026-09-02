@@ -29,12 +29,29 @@ growth calculator or My Choice, and each row links to a factsheet search and its
 history.
 
 **Growth calculator** — pick funds, set an amount, choose a rolling period or a specific start
-date, and see what it would have become. Computed in the browser from the price series, so any
+date, and see what it would have become. **Amount and start date are editable per fund**, so a
+holding bought last spring is not measured over the same five years as one held since 2015; the
+date box shows the date actually used, which is the first price on or after the one asked for,
+so a start before the fund existed is visible rather than silent. The mix can be sent straight
+to the factsheet. Computed in the browser from the price series, so any
 figure can be traced back to a price history. A scenario is linkable:
 `?g=SYM,SYM&amt=1000&from=2026-01-01#growth`.
 
+**Shares** — the 92 FTSE 100 constituents the tool holds, measured exactly as the funds are,
+with an ICB industry from a dated hand-written map rather than guessed from the company name.
+Kept apart from the funds on purpose: a single company carries the risk of one business, not
+of a market, and one combined list invites a comparison that should not be made. The S&P 500
+appears instead as a **sector** in Browse funds, holding its tracker share classes — the form
+a UK investor can actually own it in.
+
+**Analysis** — top tens by any measure, the universe broken down by sector and by region, and
+the correlation study below. Every figure is computed in the browser from the same data the
+rest of the tool uses, so no ranking can go stale against the numbers beside it.
+
 **My Choice** — star any fund to build a personal shortlist, and enter the units you hold to
-value it. Stored in `localStorage` on your own device: nothing is sent anywhere and nothing is
+value it. **Each fund carries its own measurement period** — six months for one bought in the
+spring, two years for another — and its return, volatility and drawdown are recomputed over
+that period from the price series rather than read off a stored five-year figure. Stored in `localStorage` on your own device: nothing is sent anywhere and nothing is
 committed to this repository, because the site is public and what someone holds is not.
 
 **Factsheet** — a printable analysis of the holdings you entered: valuation, measured
@@ -45,6 +62,18 @@ Portfolio volatility is **computed from the combined weighted series, not averag
 holdings**. A weighted average always overstates risk because it assumes everything moves
 together; the factsheet shows both figures so the diversification actually delivered is
 visible.
+
+## Every column explains itself
+
+Each column heading carries an (i). A heading is a two-word abbreviation of a statistical
+decision, and an adviser reading "Sortino 0.42" cannot act on it without knowing what went in
+— above all the risk-free rate, without which neither Sharpe nor Sortino means anything. A
+`title` attribute will not do this job: it never appears on a phone, and it cannot be reached
+by keyboard. The definitions answer hover, focus and tap alike.
+
+Two columns were also **mislabelled**: the three- and five-year returns are cumulative, and
+were headed "p.a.". A fund that grew 39% in total across three years was being shown as having
+grown 39% a year. They now read "3yr total" and "5yr total".
 
 ## The numbers
 
@@ -100,6 +129,18 @@ Some funds are simply absent from the public price source — BlackRock Consensu
 under any of three ISINs and five name forms. Full coverage needs a commercial data licence
 (FE fundinfo, Morningstar, or a cheaper feed such as EODHD).
 
+**Trustnet is FE fundinfo's own retail site**, so the factsheets this tool links to and the
+paid feed that would fix the coverage gap come from the same company. Registering with
+Trustnet is free and gives a person full factsheet access in a browser — it does not provide
+an API, a bulk export, or a licence, and scraping the site to get one would breach its terms.
+The two are worth keeping distinct: a login solves *looking a fund up*, and only a data
+licence solves *holding the data*.
+
+Trustnet has no public search URL to link to — its search is built client-side, and
+`/search?q=`, `/fund/search?keywords=` and `/factsheets/search?q=` all return 404 or 500. So
+the factsheet link is a site-scoped web search instead, which lands on the right share class
+in one hop.
+
 **Searching by ISIN works far better than by name.** A fund that returns nothing for nine name
 variations resolves immediately from its ISIN.
 
@@ -133,6 +174,41 @@ and nothing failed loudly enough to notice. Filling in the rest means running `b
 with a register API key (free, from https://register.fca.org.uk/Developer/s/) in `FCA_EMAIL`
 and `FCA_KEY`; without them the script carries the cache forward and matches nothing new.
 
+## Does anything predict growth?
+
+`build/correlate.py`, across 634 funds over the **same 60 months** (Sept 2021 – Aug 2026).
+The common window is the whole point: each fund's own history covers a different stretch of
+market, so comparing funds over their own periods measures the years rather than the funds.
+
+| Against growth | Pearson | Spearman | Reading |
+|---|---|---|---|
+| Worst 12 months | +0.70 | +0.29 | The strongest single link |
+| Maximum drawdown | +0.63 | +0.11 | Shallower falls, more growth |
+| Correlation to market | +0.23 | +0.29 | Weak but real |
+| Beta | +0.12 | +0.36 | Barely clears zero |
+| Volatility | −0.25 | +0.35 | Sign flips — not a straight line |
+
+**Risk paid, but only up to a point.** Sorted into ten volatility bands, average growth climbs
+from 2.2% a year in the calmest tenth to 9.7% around the sixth, then falls away — and the most
+volatile tenth averaged 1.0%. That sign flip between Pearson and Spearman is the relationship
+being a hill rather than a slope, and no single correlation can describe a hill.
+
+**But the spread in that top tenth is the real story.** Its *average* was 1.0% a year while its
+*median* was 14.1%. Most of the most volatile funds did well; a handful did so badly they pulled
+the average down thirteen points. That is the honest description of high volatility — not lower
+returns, but a far wider range of outcomes with a bad end long enough to swamp the mean.
+
+**Drawdown separates funds that volatility does not.** Holding volatility constant, the link
+between a shallower worst fall and higher growth strengthens from +0.63 to **+0.84**. That is
+why this tool shows drawdown and worst-12-months beside volatility instead of letting
+volatility speak alone.
+
+Three cautions. Drawdown, worst-12-months and growth are all summaries of one price path, so
+part of the association is arithmetic rather than a discovery. This is a single five-year
+window containing the 2022 sell-off; it describes what happened, not what will. And **Sharpe
+and Sortino are excluded entirely** — each is growth divided by a risk measure, so correlating
+either with growth is correlating growth with itself, and yields a meaningless +0.84.
+
 ## The portfolio backtest
 
 `build/portfolio.py` tests mechanical fund-of-funds construction rules walk-forward: each
@@ -155,9 +231,13 @@ build/discover.py   find candidate funds (Yahoo search, fund houses + FTSE 100 +
 build/fetch.py      price them, convert to GBP, compute statistics and weekly series
 build/names.py      backfill full names from chart metadata
 build/classify.py   derive manager, sector and the leveraged/inverse flag
+                    (run AFTER repair.py: pack.py reads classify's output, so a repair
+                     made after classifying never reaches the site)
 build/fca.py        match to the FCA register, cached across rebuilds
+build/indices.py    add FTSE 100 and S&P 500 constituents, with their industries
 build/repair.py     re-measure instruments whose price series is visibly broken
 build/pack.py       write funds.json and series.json for the site
 build/beta.py       recompute beta and correlation on a shared monthly window
+build/correlate.py  does anything predict growth? (needs numpy)
 build/portfolio.py  walk-forward portfolio test
 ```

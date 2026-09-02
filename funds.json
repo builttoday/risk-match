@@ -1,5 +1,5 @@
 {
- "builtAt": "2026-09-02T00:05:11Z",
+ "builtAt": "2026-09-02T09:50:31Z",
  "count": 974,
  "riskFree": 4.0,
  "benchmark": "VWRP.L",
@@ -744,7 +744,7 @@
  "sectors": [
   [
    "Unclassified",
-   313
+   311
   ],
   [
    "Global Equity",
@@ -763,16 +763,16 @@
    41
   ],
   [
-   "North America",
-   39
-  ],
-  [
    "Single share",
    36
   ],
   [
    "Emerging Markets",
    34
+  ],
+  [
+   "North America",
+   30
   ],
   [
    "Energy & Resources",
@@ -799,6 +799,10 @@
    13
   ],
   [
+   "S&P 500",
+   12
+  ],
+  [
    "UK Equity",
    12
   ],
@@ -808,7 +812,7 @@
   ],
   [
    "Benchmark index",
-   8
+   7
   ],
   [
    "Absolute Return",
@@ -16378,7 +16382,7 @@
    "name": "Amundi Index Solutions - Amundi S&P 500 Swap UCITS ETF EUR Acc",
    "type": "ETF",
    "house": "Amundi",
-   "sector": "North America",
+   "sector": "S&P 500",
    "currency": "EUR",
    "gbpConverted": true,
    "leveraged": false,
@@ -16429,6 +16433,8 @@
    "corr": 0.37,
    "stem": "Anglo American",
    "derived": true,
+   "industry": "Basic Materials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -16488,6 +16494,8 @@
    "corr": 0.14,
    "stem": "Associated British Foods",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -16547,6 +16555,8 @@
    "corr": -0.05,
    "stem": "Admiral Group",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2004-09",
    "hasSeries": true
   },
@@ -16983,6 +16993,8 @@
    "corr": 0.46,
    "stem": "Antofagasta",
    "derived": true,
+   "industry": "Basic Materials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -17129,6 +17141,8 @@
    "corr": 0.38,
    "stem": "Autotrader Group",
    "derived": true,
+   "industry": "Technology",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2015-03",
    "hasSeries": true
   },
@@ -17159,6 +17173,8 @@
    "corr": 0.36,
    "stem": "Aviva",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -17334,6 +17350,8 @@
    "corr": -0.16,
    "stem": "BAE Systems",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -17422,6 +17440,8 @@
    "corr": 0.33,
    "stem": "Barclays",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -17481,6 +17501,8 @@
    "corr": -0.05,
    "stem": "British American Tobacco p l c",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -17540,6 +17562,8 @@
    "corr": 0.04,
    "stem": "Beazley",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2002-11",
    "hasSeries": true
   },
@@ -17686,6 +17710,8 @@
    "corr": 0.28,
    "stem": "The Berkeley Group Holdings",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -17716,6 +17742,8 @@
    "corr": 0.12,
    "stem": "& European Value",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2014-06",
    "hasSeries": true
   },
@@ -17804,6 +17832,8 @@
    "corr": 0.33,
    "stem": "Bunzl",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -17863,6 +17893,8 @@
    "corr": -0.12,
    "stem": "BP p l c",
    "derived": true,
+   "industry": "Energy",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -17951,6 +17983,8 @@
    "corr": 0.05,
    "stem": "BT Group",
    "derived": true,
+   "industry": "Telecommunications",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -17981,6 +18015,8 @@
    "corr": 0.19,
    "stem": "Barratt Redrow",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -18098,6 +18134,8 @@
    "corr": 0.07,
    "stem": "Coca Cola HBC AG",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2013-04",
    "hasSeries": true
   },
@@ -18244,6 +18282,8 @@
    "corr": -0.09,
    "stem": "Centrica",
    "derived": true,
+   "industry": "Utilities",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -18332,6 +18372,8 @@
    "corr": 0.26,
    "stem": "Compass Group",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -18362,6 +18404,8 @@
    "corr": 0.49,
    "stem": "Croda International",
    "derived": true,
+   "industry": "Basic Materials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -18421,6 +18465,8 @@
    "corr": 0.26,
    "stem": "Convatec Group",
    "derived": true,
+   "industry": "Health Care",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2016-10",
    "hasSeries": true
   },
@@ -18480,6 +18526,8 @@
    "corr": 0.49,
    "stem": "DCC Energy",
    "derived": true,
+   "industry": "Energy",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -18597,6 +18645,8 @@
    "corr": 0.22,
    "stem": "Diageo",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -18975,6 +19025,8 @@
    "corr": 0.46,
    "stem": "Diploma",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -19179,6 +19231,8 @@
    "corr": 0.11,
    "stem": "Endeavour Mining",
    "derived": true,
+   "industry": "Basic Materials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2018-01",
    "hasSeries": true
   },
@@ -19325,6 +19379,8 @@
    "corr": 0.19,
    "stem": "Entain",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2004-12",
    "hasSeries": true
   },
@@ -19413,6 +19469,8 @@
    "corr": 0.43,
    "stem": "Experian",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2006-10",
    "hasSeries": true
   },
@@ -19472,6 +19530,8 @@
    "corr": 0.78,
    "stem": "& Investment Trust Ord",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -20082,6 +20142,8 @@
    "corr": 0.38,
    "stem": "Frasers Group",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2007-02",
    "hasSeries": true
   },
@@ -20141,6 +20203,8 @@
    "corr": 0.06,
    "stem": "Fresnillo",
    "derived": true,
+   "industry": "Basic Materials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2008-05",
    "hasSeries": true
   },
@@ -20381,7 +20445,7 @@
    "name": "Fidelity 500 Index",
    "type": "MUTUALFUND",
    "house": "Fidelity",
-   "sector": "Unclassified",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -20606,6 +20670,8 @@
    "corr": 0.3,
    "stem": "Glencore",
    "derived": true,
+   "industry": "Basic Materials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2011-05",
    "hasSeries": true
   },
@@ -20701,7 +20767,7 @@
    "name": "Goldman Sachs S&P 500 Premium Income ETF",
    "type": "ETF",
    "house": "Goldman Sachs",
-   "sector": "North America",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -20810,6 +20876,8 @@
    "corr": 0.02,
    "stem": "GSK",
    "derived": true,
+   "industry": "Health Care",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21014,6 +21082,8 @@
    "corr": 0.39,
    "stem": "Hikma Pharmaceuticals",
    "derived": true,
+   "industry": "Health Care",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2005-11",
    "hasSeries": true
   },
@@ -21044,6 +21114,8 @@
    "corr": 0.61,
    "stem": "Halma",
    "derived": true,
+   "industry": "Technology",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21074,6 +21146,8 @@
    "corr": -0.15,
    "stem": "Haleon",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2022-07",
    "hasSeries": true
   },
@@ -21104,6 +21178,8 @@
    "corr": 0.21,
    "stem": "HSBC Holdings",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21134,6 +21210,8 @@
    "corr": 0.19,
    "stem": "Hiscox",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21222,6 +21300,8 @@
    "corr": 0.47,
    "stem": "Howden Joinery Group",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21310,6 +21390,8 @@
    "corr": 0.33,
    "stem": "International Consolidated Airlines Group",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2003-01",
    "hasSeries": true
   },
@@ -21369,6 +21451,8 @@
    "corr": 0.51,
    "stem": "ICG",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21457,6 +21541,8 @@
    "corr": 0.48,
    "stem": "InterContinental Hotels Group",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2003-03",
    "hasSeries": true
   },
@@ -21487,6 +21573,8 @@
    "corr": 0.46,
    "stem": "3i Group Ord",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21517,6 +21605,8 @@
    "corr": -0.19,
    "stem": "Imperial Brands",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21547,6 +21637,8 @@
    "corr": 0.4,
    "stem": "IMI",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21577,6 +21669,8 @@
    "corr": 0.36,
    "stem": "Informa",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -21757,6 +21851,8 @@
    "corr": 0.5,
    "stem": "Intertek Group",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2002-05",
    "hasSeries": true
   },
@@ -21765,7 +21861,7 @@
    "name": "iShares Core S&P 500 ETF",
    "type": "ETF",
    "house": "iShares",
-   "sector": "North America",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -21991,6 +22087,8 @@
    "corr": 0.31,
    "stem": "JD Sports Fashion",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -22340,6 +22438,8 @@
    "corr": 0.28,
    "stem": "Kingfisher",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -22399,6 +22499,8 @@
    "corr": 0.32,
    "stem": "Land Securities Group",
    "derived": true,
+   "industry": "Real Estate",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -22487,6 +22589,8 @@
    "corr": 0.39,
    "stem": "Legal & General Group",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -22575,6 +22679,8 @@
    "corr": 0.24,
    "stem": "Lloyds Banking Group",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -22605,6 +22711,8 @@
    "corr": 0.39,
    "stem": "LondonMetric Property",
    "derived": true,
+   "industry": "Real Estate",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2007-11",
    "hasSeries": true
   },
@@ -22693,6 +22801,8 @@
    "corr": 0.22,
    "stem": "London Stock Exchange Group",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -23158,6 +23268,8 @@
    "corr": 0.24,
    "stem": "Marks and Spencer Group",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -23217,6 +23329,8 @@
    "corr": -0.09,
    "stem": "Mondi",
    "derived": true,
+   "industry": "Basic Materials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2007-06",
    "hasSeries": true
   },
@@ -23247,6 +23361,8 @@
    "corr": 0.41,
    "stem": "&",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2019-10",
    "hasSeries": true
   },
@@ -23277,6 +23393,8 @@
    "corr": 0.26,
    "stem": "Melrose Industries",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2003-10",
    "hasSeries": true
   },
@@ -23742,6 +23860,8 @@
    "corr": 0.23,
    "stem": "National Grid",
    "derived": true,
+   "industry": "Utilities",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -23946,6 +24066,8 @@
    "corr": 0.18,
    "stem": "NatWest Group",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -23976,6 +24098,8 @@
    "corr": 0.29,
    "stem": "NEXT",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -24506,7 +24630,7 @@
    "name": "BNY Mellon S&P 500 Index",
    "type": "MUTUALFUND",
    "house": "BNY Mellon",
-   "sector": "North America",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -25050,6 +25174,8 @@
    "corr": 0.13,
    "stem": "Prudential",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -25080,6 +25206,8 @@
    "corr": 0.64,
    "stem": "Pershing Square Holdings",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2017-03",
    "hasSeries": true
   },
@@ -25139,6 +25267,8 @@
    "corr": 0.24,
    "stem": "Persimmon",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -25169,6 +25299,8 @@
    "corr": 0.27,
    "stem": "Pearson",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -25663,6 +25795,8 @@
    "corr": 0.08,
    "stem": "RELX",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -25809,6 +25943,8 @@
    "corr": 0.31,
    "stem": "Rio Tinto Group",
    "derived": true,
+   "industry": "Basic Materials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -25839,6 +25975,8 @@
    "corr": 0.13,
    "stem": "Reckitt Benckiser Group",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -25869,6 +26007,8 @@
    "corr": 0.35,
    "stem": "Rightmove",
    "derived": true,
+   "industry": "Technology",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2006-03",
    "hasSeries": true
   },
@@ -25928,6 +26068,8 @@
    "corr": 0.16,
    "stem": "Rolls Royce Holdings",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -25965,7 +26107,7 @@
    "name": "Invesco S&P 500 Equal Weight ETF",
    "type": "ETF",
    "house": "Invesco",
-   "sector": "North America",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -26016,6 +26158,8 @@
    "corr": 0.29,
    "stem": "Rentokil Initial",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26075,6 +26219,8 @@
    "corr": 0.18,
    "stem": "Sainsbury",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26134,6 +26280,8 @@
    "corr": 0.39,
    "stem": "Schroders",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26164,6 +26312,8 @@
    "corr": 0.32,
    "stem": "The Sage Group",
    "derived": true,
+   "industry": "Technology",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26223,6 +26373,8 @@
    "corr": 0.38,
    "stem": "SEGRO",
    "derived": true,
+   "industry": "Real Estate",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26253,6 +26405,8 @@
    "corr": -0.17,
    "stem": "Shell",
    "derived": true,
+   "industry": "Energy",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26457,6 +26611,8 @@
    "corr": 0.47,
    "stem": "Smiths Group",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26487,6 +26643,8 @@
    "corr": 0.73,
    "stem": "Scottish Mortgage Ord",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26517,6 +26675,8 @@
    "corr": 0.19,
    "stem": "Smith & Nephew",
    "derived": true,
+   "industry": "Health Care",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26554,7 +26714,7 @@
    "name": "Invesco S&P 500 Momentum ETF",
    "type": "ETF",
    "house": "Invesco",
-   "sector": "North America",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -26605,6 +26765,8 @@
    "corr": 0.57,
    "stem": "Spirax Group",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26613,7 +26775,7 @@
    "name": "State Street SPDR S&P 500 ETF Trust",
    "type": "ETF",
    "house": "State Street",
-   "sector": "North America",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -26664,6 +26826,8 @@
    "corr": 0.14,
    "stem": "SSE",
    "derived": true,
+   "industry": "Utilities",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26694,6 +26858,8 @@
    "corr": 0.16,
    "stem": "Standard Chartered",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26724,6 +26890,8 @@
    "corr": 0.39,
    "stem": "St James s Place",
    "derived": true,
+   "industry": "Financials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -26783,6 +26951,8 @@
    "corr": 0.21,
    "stem": "Severn Trent",
    "derived": true,
+   "industry": "Utilities",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -27016,6 +27186,8 @@
    "corr": 0.27,
    "stem": "Tesco",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -27046,6 +27218,8 @@
    "corr": 0.21,
    "stem": "Taylor Wimpey",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -27134,6 +27308,8 @@
    "corr": 0.1,
    "stem": "Unilever",
    "derived": true,
+   "industry": "Consumer Staples",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -27251,6 +27427,8 @@
    "corr": 0.22,
    "stem": "Unite Group",
    "derived": true,
+   "industry": "Real Estate",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -27281,6 +27459,8 @@
    "corr": 0.21,
    "stem": "United Utilities Group",
    "derived": true,
+   "industry": "Utilities",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -27434,7 +27614,7 @@
    "name": "Vanguard 500 Index Admiral",
    "type": "MUTUALFUND",
    "house": "Vanguard",
-   "sector": "Unclassified",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -27722,6 +27902,8 @@
    "corr": 0.0,
    "stem": "Vodafone Group Public Limited Company",
    "derived": true,
+   "industry": "Telecommunications",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -27759,7 +27941,7 @@
    "name": "Vanguard S&P 500 ETF",
    "type": "ETF",
    "house": "Vanguard",
-   "sector": "North America",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -27933,7 +28115,7 @@
    "name": "Vanguard S&P 500 UCITS ETF USD Accumulation",
    "type": "ETF",
    "house": "Vanguard",
-   "sector": "North America",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
@@ -28363,6 +28545,8 @@
    "corr": 0.43,
    "stem": "Weir",
    "derived": true,
+   "industry": "Industrials",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -28451,6 +28635,8 @@
    "corr": 0.12,
    "stem": "WPP",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -28481,6 +28667,8 @@
    "corr": 0.16,
    "stem": "Whitbread",
    "derived": true,
+   "industry": "Consumer Discretionary",
+   "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
   },
@@ -29071,7 +29259,7 @@
    "name": "S&P 500",
    "type": "INDEX",
    "house": "\u2014 index",
-   "sector": "Benchmark index",
+   "sector": "S&P 500",
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,

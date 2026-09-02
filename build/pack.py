@@ -28,6 +28,7 @@ KEEP = ("symbol", "name", "type", "house", "sector", "currency", "gbpConverted",
         "leveraged", "index", "years", "days", "volDaily", "volWeekly", "maxDD",
         "cagr", "sharpe", "sortino", "worst12m", "r1", "r3", "r5", "last",
         "beta", "corr", "stem", "derived",
+        "industry", "industryAsAt", "subIndustry",
         "fcaPrn", "fcaStatus", "fcaName", "fcaUrl", "fcaScore")
 
 

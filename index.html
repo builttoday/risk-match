@@ -203,13 +203,14 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 .nav a { padding:6px 12px; border-radius:7px; text-decoration:none; color:var(--muted);
          font-size:.9rem; font-weight:500; }
 .nav a.on { background: var(--navy-soft); color: var(--navy); }
-.ctrls { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:14px; }
+.ctrls { display:flex; gap:12px 14px; flex-wrap:wrap; align-items:flex-end;
+         margin:0 0 18px; }
 .ctrls .fld { flex:1 1 170px; min-width:150px; }
 .ctrls label { display:block; font-size:.72rem; text-transform:uppercase;
                letter-spacing:.08em; color:var(--muted); margin-bottom:4px; }
 .ctrls input, .ctrls select { width:100%; padding:8px 10px; border:1px solid var(--line);
                border-radius:8px; background:var(--surface); color:var(--ink); }
-.azletter { position:sticky; top:56px; background:var(--surface-2); padding:5px 12px;
+.azletter { position:sticky; top:33px; background:var(--surface-2); padding:5px 12px;
             font-weight:600; font-size:.8rem; letter-spacing:.1em; color:var(--muted);
             border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
 .fundrow { display:grid; grid-template-columns:var(--bgrid);
@@ -249,6 +250,18 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 .btnrow button { padding:8px 14px; border:1px solid var(--line); border-radius:8px;
         background:var(--surface); color:var(--ink); cursor:pointer; font-size:.88rem; }
 .btnrow button.primary { background:var(--navy); color:#fff; border-color:var(--navy); }
+.uin.dt { text-align:left; font-size:.78rem; padding:5px 6px; }
+.pinned { color:var(--navy); font-weight:600; }
+.srcbar { display:flex; gap:6px; margin:0 0 16px; flex-wrap:wrap; }
+.srcbar button { border:1px solid var(--line); background:var(--surface); color:var(--muted);
+       border-radius:8px; padding:7px 13px; font-size:.83rem; cursor:pointer; }
+.srcbar button.on { background:var(--navy-soft); border-color:var(--navy); color:var(--navy);
+       font-weight:600; }
+.pin { width:100%; padding:5px 6px; border:1px solid var(--line); border-radius:6px;
+       background:var(--surface); color:var(--ink); font-size:.8rem; }
+.pa { display:block; font-size:.66rem; color:var(--muted); font-family:"IBM Plex Mono",monospace; }
+.warn-txt { color:var(--warn); }
+.gtot b.small, .choicestats b.small { font-size:.95rem !important; font-family:inherit !important; }
 .uin { width:100%; padding:6px 8px; border:1px solid var(--line);
        border-radius:6px; background:var(--surface); color:var(--ink);
        font-size:.82rem; text-align:right; }
@@ -277,7 +290,8 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
   .panel { box-shadow:none; border:none; }
 }
 
-.selbar { position:sticky; bottom:12px; z-index:5; position:sticky; bottom:0; z-index:8; display:flex; gap:10px; align-items:center;
+.selbar { position:sticky; bottom:12px; z-index:5; margin-top:14px;
+          box-shadow:0 6px 20px rgba(0,0,0,.10); position:sticky; bottom:0; z-index:8; display:flex; gap:10px; align-items:center;
           flex-wrap:wrap; background:var(--navy-soft); border:1px solid var(--line);
           border-radius:10px; padding:10px 14px; margin:10px 0; }
 .selbar span { font-size:.88rem; font-weight:600; color:var(--navy); margin-right:auto; }
@@ -303,7 +317,8 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
 .fhead .sortable.on i { opacity:1; }
 .fhead .sortable.on { color:var(--navy); }
 
-.tscroll { overflow-x: auto; }
+.tscroll { overflow-x:auto; border:1px solid var(--line); border-radius:12px;
+           background:var(--surface); }
 #bTable { --bgrid: 30px minmax(230px,1fr) 116px 126px 62px 62px 62px 58px 58px 52px 80px 40px; min-width: 1120px; }
 #bTable.wide { --bgrid: 30px minmax(180px,1fr) 100px 112px 58px 58px 58px 58px 58px 60px 58px 58px 48px 78px 50px 56px 34px; min-width: 1500px; }
 .tinner { min-width: 1120px; }
@@ -315,8 +330,122 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
    list. The toggle shows them and widens the grid; the table scrolls rather than squashes. */
 #bTable:not(.wide) .xf { display: none; }
 .figtog { display:inline-flex; align-items:center; gap:7px; font-size:.82rem; color:var(--muted);
-          cursor:pointer; user-select:none; white-space:nowrap; }
+          cursor:pointer; user-select:none; flex-wrap:wrap; }
 .figtog input { margin:0; }
+
+/* --- the (i) beside a column heading, and its tooltip ------------------------------ */
+.info {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 14px; height: 14px; margin-left: 5px; padding: 0; flex: 0 0 auto;
+  border: 1px solid var(--line); border-radius: 50%; background: var(--surface);
+  color: var(--muted); font-size: 9px; font-weight: 700; font-style: italic;
+  font-family: Georgia, serif; line-height: 1; cursor: help; vertical-align: middle;
+  text-transform: none; letter-spacing: 0;
+}
+.info:hover, .info:focus-visible { border-color: var(--navy); color: var(--navy);
+  background: var(--navy-soft); outline: none; }
+.tip {
+  position: absolute; z-index: 60; background: var(--ink); color: var(--paper);
+  border-radius: 10px; padding: 10px 12px; font-size: .78rem; line-height: 1.45;
+  box-shadow: 0 8px 26px rgba(0,0,0,.28); text-transform: none; letter-spacing: normal;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-weight: 400;
+  text-align: left; pointer-events: none;
+}
+.tip strong { display: block; margin-bottom: 4px; font-size: .82rem; }
+th .info { vertical-align: baseline; }
+
+/* ============================================================================
+   Phones and small tablets.
+
+   A twelve-column table cannot be squeezed into 390px, and scrolling it
+   sideways hides exactly the numbers somebody opened the page to read. So
+   below this width every table stops being a table: each fund becomes a card,
+   and each figure carries the column heading it lost. That is what the data-l
+   attributes on the cells and data-label on the match table cells are for.
+   ========================================================================== */
+@media (max-width: 760px) {
+  .wrap { padding: 14px 12px 80px; }
+  .panel { padding: 16px 14px; border-radius: 12px; margin-bottom: 14px; }
+  h2 { font-size: 1.15rem; }
+
+  /* Header and tabs: every tab visible, none half off the edge. */
+  header .inner { flex-wrap: wrap; gap: 10px; }
+  .nav { margin-left: 0; width: 100%; flex-wrap: wrap; gap: 6px; }
+  .nav a { flex: 1 1 auto; text-align: center; padding: 8px 10px; font-size: .8rem;
+           white-space: nowrap; }
+
+  /* Filters stack, and every control is thumb-sized. */
+  .ctrls { gap: 12px; }
+  .ctrls .fld, .askrow .fld { flex: 1 1 100% !important; min-width: 0; }
+  .ctrls input, .ctrls select, .fld input, .fld select { font-size: 16px; }
+  .askrow { gap: 12px; }
+  #riskInput { width: 100%; }
+  .btn { width: 100%; }
+  .summary { gap: 8px; }
+  .summary .tools { margin-left: 0; width: 100%; }
+  .summary .tools .btn { flex: 1 1 auto; width: auto; }
+
+  /* ---- grid tables become cards ---- */
+  .tscroll { overflow-x: visible; border: 0; background: none; border-radius: 0; }
+  #bTable, #bTable.wide, .tinner { min-width: 0 !important; }
+  .fhead { display: none !important; }
+  .fundrow {
+    display: flex !important; flex-wrap: wrap; align-items: flex-start;
+    gap: 10px 18px; padding: 14px; margin-bottom: 10px;
+    border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+  }
+  .fundrow > div { min-width: 0; }
+  .fundrow > div:has(.nm) { flex: 1 1 100%; order: -1; }
+  .fundrow > div:has(> input[type="checkbox"]) { flex: 0 0 auto; order: -2; }
+  .fundrow > .num, .fundrow > .meta { flex: 0 0 auto; text-align: left !important; }
+  .fundrow > [data-l]::before {
+    content: attr(data-l); display: block; font-family: "IBM Plex Mono", monospace;
+    font-size: .56rem; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 2px; white-space: nowrap;
+  }
+  .fundrow > div:has(.uin) { flex: 1 1 100%; }
+  .uin { font-size: 16px; }        /* 16px stops iOS zooming the page on focus */
+  .azletter { top: 0; margin: 4px 0 8px; border-radius: 8px; }
+  .selbar { flex-wrap: wrap; }
+  .selbar button { flex: 1 1 auto; }
+
+  /* ---- the match table becomes cards the same way ---- */
+  .tablewrap { overflow-x: visible; border: 0; background: none; }
+  table, thead, tbody, tr, td { display: block; width: auto; }
+  thead { display: none; }
+  tbody tr {
+    position: relative; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px; margin-bottom: 10px; padding: 12px 14px;
+  }
+  td {
+    border: 0 !important; padding: 4px 0 !important; text-align: left !important;
+    white-space: normal !important; min-width: 0 !important; max-width: none !important;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+  }
+  td::before {
+    content: attr(data-label); flex: 0 0 auto; color: var(--muted);
+    font-family: "IBM Plex Mono", monospace; font-size: .58rem; letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  td.pick { position: absolute; top: 12px; right: 12px; padding: 0 !important; display: block; }
+  td.pick::before { content: none; }
+  td.pick + td { padding-right: 30px !important; display: block; }
+  td.pick + td::before { content: none; }
+  tbody tr td[colspan] { display: block; text-align: center !important; padding: 24px 0 !important; }
+  tbody tr td[colspan]::before { content: none; }
+
+  /* ---- factsheet and growth ---- */
+  .fscols { grid-template-columns: 1fr !important; }
+  .fshead, .gtot { gap: 14px 22px; }
+  .gtot div b, .fshead div b { font-size: 1.3rem; }
+  .fstop { flex-direction: column; }
+  .tip { font-size: .8rem; }
+}
+
+@media (max-width: 400px) {
+  .nav a { flex: 1 1 44%; }
+  .fundrow > .num { min-width: 58px; }
+}
 </style>
 </head>
 <body>
@@ -326,6 +455,8 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
   <div class="nav">
     <a href="#" data-view="match" class="on">Match by risk</a>
     <a href="#" data-view="browse">Browse funds</a>
+    <a href="#" data-view="shares">Shares</a>
+    <a href="#" data-view="analysis">Analysis</a>
     <a href="#" data-view="choice">My Choice</a>
     <a href="#" data-view="growth">Growth calculator</a>
     <a href="#" data-view="factsheet">Factsheet</a>
@@ -441,7 +572,7 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
         <select id="bqSort">
           <option value="name">Name A&ndash;Z</option>
           <option value="volDaily">Volatility, lowest first</option>
-          <option value="-r5">5-year return, highest first</option>
+          <option value="-r5">5-year total return, highest first</option>
           <option value="-sharpe">Sharpe, highest first</option>
           <option value="maxDD">Drawdown, shallowest first</option>
           <option value="-sortino">Sortino, highest first</option>
@@ -454,8 +585,8 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
         <select id="bqMine"><option value="">All funds</option>
           <option value="1">My Choice only</option></select></div>
     </div>
-    <p class="sub" id="bCount"></p>
-    <label class="figtog"><input type="checkbox" id="bAllFigs"> Show all figures
+    <p class="sub" id="bCount" style="margin:0 0 10px"></p>
+    <label class="figtog" style="margin:0 0 14px"><input type="checkbox" id="bAllFigs"> Show all figures
       <span class="meta">(weekly vol, 1yr, 3yr, correlation, CAGR)</span></label>
     <div class="tscroll"><div class="tinner" id="bTable">
     <div class="fhead">
@@ -465,9 +596,9 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
       <div class="sortable" data-sk="sector">Sector<i></i></div>
       <div class="num sortable" data-sk="volDaily" title="Standard deviation of daily returns, annualised">Vol %<i></i></div>
       <div class="num sortable xf" data-sk="volWeekly" title="Weekly volatility annualised &mdash; the SRRI convention used on UCITS KIIDs">Vol wk<i></i></div>
-      <div class="num sortable xf" data-sk="r1">1yr %<i></i></div>
-      <div class="num sortable xf" data-sk="r3">3yr %<i></i></div>
-      <div class="num sortable" data-sk="r5">5yr %<i></i></div>
+      <div class="num sortable xf" data-sk="r1">1yr<i></i></div>
+      <div class="num sortable xf" data-sk="r3">3yr tot<i></i></div>
+      <div class="num sortable" data-sk="r5">5yr tot<i></i></div>
       <div class="num sortable" data-sk="maxDD">Max DD<i></i></div>
       <div class="num sortable" data-sk="sharpe" title="Excess return per unit of volatility, against a 4% risk-free rate">Sharpe<i></i></div>
       <div class="num sortable" data-sk="sortino" title="Like Sharpe, but only counts downside volatility">Sortino<i></i></div>
@@ -486,6 +617,96 @@ td.pick, th.pick { width: 34px; text-align: center; padding-right: 0; }
       <button id="bToGrowth" class="primary">Open in growth calculator</button>
       <button id="bSelClear">Clear</button>
     </div>
+  </div>
+</div>
+
+
+<div id="sharesView" class="view">
+  <div class="panel">
+    <h2>FTSE 100 companies</h2>
+    <p class="sub">The FTSE 100 constituents, measured exactly as the funds are. A single
+    company carries the risk of one business, not of a market, so these are kept apart from
+    the funds: putting them in one list invites a comparison that should not be made. For the
+    S&amp;P 500, look under the <strong>S&amp;P 500</strong> sector in Browse funds &mdash;
+    the tracker share classes are there, which is the form a UK investor can actually hold
+    it in.</p>
+    <div class="ctrls">
+      <div class="fld"><label for="shName">Search</label>
+        <input id="shName" type="text" placeholder="e.g. Rolls-Royce"></div>
+      <div class="fld" style="flex:0 0 210px;"><label for="shSector">Industry</label>
+        <select id="shSector"><option value="">All industries</option></select></div>
+      <div class="fld" style="flex:0 0 210px;"><label for="shSort">Sort</label>
+        <select id="shSort">
+          <option value="name">Name A&ndash;Z</option>
+          <option value="-r1">1-year return, highest first</option>
+          <option value="-r5">5-year total return, highest first</option>
+          <option value="volDaily">Volatility, lowest first</option>
+          <option value="-sharpe">Sharpe, highest first</option>
+          <option value="maxDD">Drawdown, shallowest first</option>
+        </select></div>
+    </div>
+    <div id="shStats" class="gtot"></div>
+    <p class="sub" id="shCount" style="margin:0 0 10px"></p>
+    <div class="tscroll"><div class="tinner" id="shTable" style="min-width:900px">
+      <div class="fhead" id="shHead"></div>
+      <div id="shList"></div>
+    </div></div>
+    <h3 class="fsh">By industry</h3>
+    <div id="shSectors"></div>
+    <p class="sub">Industry comes from a hand-written map, dated in the build script, not
+    from the company name &mdash; unlike the fund sectors elsewhere in this tool, which are
+    derived. Nothing here is a recommendation.</p>
+  </div>
+</div>
+
+<div id="analysisView" class="view">
+  <div class="panel">
+    <h2>What the whole universe looks like</h2>
+    <p class="sub">Every figure below is computed in your browser from the same data the rest
+    of the tool uses. Rankings are <strong>measurements of the past</strong>, not a buy list:
+    the funds at the top of a five-year table are the ones that already went up.</p>
+    <div class="ctrls">
+      <div class="fld" style="flex:0 0 230px;"><label for="anMetric">Rank by</label>
+        <select id="anMetric">
+          <option value="r5">5-year total return</option>
+          <option value="r3">3-year total return</option>
+          <option value="r1">1-year return</option>
+          <option value="cagr">Growth a year, whole history</option>
+          <option value="sharpe">Sharpe ratio</option>
+          <option value="sortino">Sortino ratio</option>
+          <option value="volDaily-asc">Lowest volatility</option>
+          <option value="maxDD">Shallowest drawdown</option>
+        </select></div>
+      <div class="fld" style="flex:0 0 210px;"><label for="anWhat">Across</label>
+        <select id="anWhat">
+          <option value="funds">Funds and trusts</option>
+          <option value="shares">Individual shares</option>
+          <option value="">Everything</option>
+        </select></div>
+      <div class="fld" style="flex:0 0 180px;"><label for="anMinYears">Minimum history</label>
+        <select id="anMinYears">
+          <option value="5" selected>5 years</option>
+          <option value="10">10 years</option>
+          <option value="3">3 years</option>
+          <option value="0">Any</option>
+        </select></div>
+    </div>
+    <h3 class="fsh" id="anTopTitle">Top 10</h3>
+    <div class="tscroll"><div class="tinner" style="min-width:760px" id="anTop"></div></div>
+    <p class="sub" id="anTopNote"></p>
+
+    <h3 class="fsh">By sector</h3>
+    <div class="tscroll"><div class="tinner" style="min-width:640px" id="anSectors"></div></div>
+
+    <h3 class="fsh">By region</h3>
+    <div class="tscroll"><div class="tinner" style="min-width:640px" id="anRegions"></div></div>
+    <p class="sub">Region is derived from the sector, which is itself derived from the fund
+    name. A fund holding global equities is shown as Global whatever it actually owns, and a
+    thematic fund has no region at all. Treat it as a rough shape of the universe, not as an
+    asset allocation.</p>
+
+    <h3 class="fsh">Does anything predict growth?</h3>
+    <div id="anFindings"></div>
   </div>
 </div>
 
@@ -748,9 +969,9 @@ const COLUMNS = [
   ["name", "Fund"],
   ["volDaily", "Volatility"],
   ["maxDD", "Max drawdown"],
-  ["r1", "1yr p.a."],
-  ["r3", "3yr p.a."],
-  ["r5", "5yr p.a."],
+  ["r1", "1yr"],
+  ["r3", "3yr total"],
+  ["r5", "5yr total"],
   ["years", "History"],
   ["fcaStatus", "FCA"],
 ];
@@ -768,6 +989,409 @@ const COLUMNS = [
 function dataUrl(f) {
   return `https://finance.yahoo.com/quote/${encodeURIComponent(f.symbol)}`;
 }
+
+
+/* ============================================================================
+   One definition per measure, shown from an (i) beside every column heading.
+
+   A column heading is a two-word abbreviation of a statistical decision, and an
+   adviser reading "Sortino 0.42" cannot act on it without knowing what went into
+   it -- above all the risk-free rate, without which neither Sharpe nor Sortino
+   means anything at all. A `title` attribute alone will not do: it never appears
+   on a phone, it takes a second to show, and it cannot be reached by keyboard.
+   So the definitions live here, and the (i) answers hover, focus and tap alike.
+   ========================================================================== */
+const GLOSSARY = {
+  name:      ['Fund', 'The share class exactly as its own factsheet names it. "Acc" accumulates income back into the price; "Inc" pays it out, so an Inc share class shows lower growth than the Acc of the same fund. Names are shown verbatim, never expanded or tidied, so they can be matched against a platform.'],
+  house:     ['Fund manager', 'Derived from the fund\u2019s own name, not taken from a classification feed. Good enough to filter and browse by; it is not the manager of record.'],
+  industry: ['Industry', 'The ICB industry, from a hand-written map dated in the build script. Unlike the fund sectors elsewhere in this tool, it is not guessed from the name.'],
+  sector:    ['Sector', 'Also derived from the name. There is no free feed of IA sector classifications, so treat this as navigation, not as the sector of record.'],
+  volDaily:  ['Volatility', 'Annualised volatility: the standard deviation of daily sterling returns \u00d7 \u221a252. Roughly, how far the price swings about its trend over a year. Higher is not worse in itself \u2014 it is the number a risk band is set against. Realised and backward-looking; it is not a forecast.'],
+  volWeekly: ['Weekly volatility', 'The same measure from weekly returns (\u00d7 \u221a52). This is the SRRI convention used on every UCITS KIID, so it is usually the figure a firm\u2019s risk bands were calibrated against. Shown beside the daily number so a fund cannot look like a band 5 here and a band 4 on its own factsheet with no explanation.'],
+  maxDD:     ['Maximum drawdown', 'The worst peak-to-trough fall across the whole history held, in sterling. It is the loss somebody who bought at the very worst moment actually lived through, not an estimate.'],
+  worst12m:  ['Worst 12 months', 'The worst return over any rolling twelve-month period. Drawdown is measured peak to trough on any days; this is the worst that a year of holding it ever felt.'],
+  sharpe:    ['Sharpe ratio', 'Return above the risk-free rate divided by volatility \u2014 how much growth each unit of price movement bought. This tool uses a stated risk-free rate of 4% a year; a Sharpe ratio quoted without one is meaningless, and a different rate gives a different answer. Above 1 is good; negative means it did worse than cash.'],
+  sortino:   ['Sortino ratio', 'Like Sharpe, but dividing by downside volatility only, so a fund is not penalised for rising sharply. Also against the stated 4% risk-free rate. Where Sortino sits far above Sharpe, the fund\u2019s volatility was mostly upward.'],
+  beta:      ['Beta', 'How far the fund moved for each 1% move in a global sterling equity benchmark. 1.0 tracked it; 0.5 moved half as much; above 1 amplified it; negative moved against it. Computed from 60 monthly returns \u2014 the same window for every fund, or two betas would not be comparable.'],
+  corr:      ['Correlation', 'How closely the fund moved with that same benchmark: +1 in lockstep, 0 unrelated, \u22121 opposite. Beta says how far it moved, correlation says how reliably. A high beta with low correlation means the fund is volatile for reasons of its own.'],
+  cagr:      ['CAGR', 'Compound annual growth rate over the whole history held \u2014 the single yearly rate that would have produced the same result. Funds have different history lengths, so two CAGRs here are not measured over the same period.'],
+  r1:        ['1 year', 'Total sterling return over the last year.'],
+  r3:        ['3 years', 'TOTAL return across three years, not per year. A fund showing 39% grew 39% in all over the three years, which is about 11.6% a year.'],
+  r5:        ['5 years', 'TOTAL return across five years, not per year. A fund showing 60% grew about 9.9% a year.'],
+  years:     ['History', 'How much price history the tool holds for this share class. A short history makes every figure beside it less reliable, and no figure can describe a market the fund did not live through.'],
+  fcaStatus: ['FCA register', 'Status on the FCA Financial Services Register, matched by name. A dash means no confident match was found \u2014 NOT that the fund is unauthorised. A "?" means the match was loose and may be the wrong fund. Click through before putting a reference number in a client file.'],
+  period:    ['Period', 'The stretch of history this row is measured over. Set it per fund: six months for one you bought in the spring, two years for one you have held longer. Return, volatility and drawdown beside it are all recomputed from the sterling monthly price series over the period chosen \u2014 they are not stored figures re-labelled.'],
+  periodRet: ['Return', 'Total sterling return across the period chosen, with the annual equivalent underneath where at least a year was measured. Below a year no annual rate is shown, because annualising four good months into a yearly rate invents a number the fund never earned.'],
+  gamount:   ['Amount', 'What went into this fund. Left blank, the row takes an even share of whatever is left of the total after the rows you have pinned. Fill it in to model what you actually put in.'],
+  gfrom:     ['From', 'The date this holding starts from. Each fund can have its own, so one bought last spring is not measured over the same five years as one held since 2015. The date shown is the first price on or after the one asked for, so a start before the fund existed is visible rather than silent.'],
+  units:     ['Units held', 'The number of units or shares you entered. Nothing is verified against a platform or custodian statement, and nothing leaves this device.'],
+  price:     ['Price', 'The most recent sterling price held for this share class.'],
+  value:     ['Value', 'Units multiplied by the latest price. An estimate from public price data, not a valuation.'],
+  weight:    ['Weight', 'This holding as a percentage of the total value entered.'],
+};
+
+function infoBtn(key) {
+  var g = GLOSSARY[key];
+  if (!g) return '';
+  return '<button type="button" class="info" data-def="' + key + '" aria-label="What ' +
+    esc(g[0]) + ' means">i</button>';
+}
+
+/* One tooltip element, moved about, rather than one per heading. */
+(function () {
+  var tip = null, current = null;
+  function ensure() {
+    if (!tip) {
+      tip = document.createElement('div');
+      tip.className = 'tip';
+      tip.setAttribute('role', 'tooltip');
+      tip.hidden = true;
+      document.body.appendChild(tip);
+    }
+    return tip;
+  }
+  function show(btn) {
+    var g = GLOSSARY[btn.dataset.def];
+    if (!g) return;
+    var t = ensure();
+    t.innerHTML = '<strong>' + esc(g[0]) + '</strong>' + esc(g[1]);
+    t.hidden = false;
+    current = btn;
+    var r = btn.getBoundingClientRect();
+    var w = Math.min(320, window.innerWidth - 24);
+    t.style.width = w + 'px';
+    t.style.left = Math.min(Math.max(12, r.left + r.width / 2 - w / 2),
+                            window.innerWidth - w - 12) + 'px';
+    // Above the heading by default, below it when there is no room -- a tooltip that
+    // opens off the top of the screen is worse than no tooltip.
+    var th = t.offsetHeight;
+    t.style.top = (r.top - th - 10 < 8 ? r.bottom + 10 : r.top - th - 10) + window.scrollY + 'px';
+  }
+  function hide() { if (tip) tip.hidden = true; current = null; }
+  function btnAt(e) { return e.target.closest ? e.target.closest('.info') : null; }
+
+  document.addEventListener('pointerover', function (e) {
+    var b = btnAt(e);
+    if (b) show(b);
+    else if (current && !e.target.closest('.tip')) hide();
+  });
+  document.addEventListener('focusin', function (e) {
+    var b = btnAt(e);
+    if (b) show(b); else hide();
+  });
+  // A phone has no hover, so the button has to toggle on tap.
+  document.addEventListener('click', function (e) {
+    var b = btnAt(e);
+    if (b) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (current === b) hide(); else show(b);
+    } else if (!e.target.closest('.tip')) {
+      hide();
+    }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
+  window.addEventListener('scroll', hide, true);
+  window.addEventListener('resize', hide);
+})();
+
+
+/* ============================================================================
+   Shares, and the universe analysis.
+   ========================================================================== */
+function isShare(f) { return f.type === 'EQUITY' && !!f.index; }
+
+/* Region from sector. Honest about its limits: a global fund is "Global" whatever it holds,
+   and a thematic one has no region at all, so those get their own buckets rather than being
+   quietly counted as somewhere. */
+const REGION_OF = {
+  'UK Equity': 'United Kingdom', 'UK Equity Income': 'United Kingdom',
+  'UK Equity (single share)': 'United Kingdom', 'UK Smaller Companies': 'United Kingdom',
+  'US Equity (single share)': 'North America',
+  'North America': 'North America', 'Europe': 'Europe', 'Japan': 'Japan',
+  'Asia Pacific': 'Asia Pacific', 'Emerging Markets': 'Emerging markets',
+  'Global Equity': 'Global', 'Benchmark index': 'Global',
+  'Corporate Bond': 'Fixed income and cash', 'High Yield Bond': 'Fixed income and cash',
+  'Gilts': 'Fixed income and cash', 'Index-Linked Gilts': 'Fixed income and cash',
+  'Strategic / Global Bond': 'Fixed income and cash', 'Money Market': 'Fixed income and cash',
+  'Technology': 'Thematic', 'Healthcare': 'Thematic', 'Property': 'Thematic',
+  'Infrastructure': 'Thematic', 'Energy & Resources': 'Thematic',
+  'Multi-Asset': 'Mixed', 'Absolute Return': 'Mixed',
+};
+function regionOf(f) {
+  if (f.index === 'SP500') return 'North America';
+  if (f.index === 'FTSE100') return 'United Kingdom';
+  return REGION_OF[f.sector] || 'Unclassified';
+}
+
+function median(xs) {
+  var a = xs.filter(function (v) { return v != null; }).sort(function (x, y) { return x - y; });
+  if (!a.length) return null;
+  var m = Math.floor(a.length / 2);
+  return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2;
+}
+function fmt(v, d) { return v == null ? '<span class="meta">&mdash;</span>' : v.toFixed(d == null ? 1 : d); }
+function sgn(v, d) {
+  if (v == null) return '<span class="meta">&mdash;</span>';
+  return '<span class="' + (v >= 0 ? 'pos' : 'neg') + '">' + (v > 0 ? '+' : '') +
+    v.toFixed(d == null ? 1 : d) + '</span>';
+}
+
+/* ---------------------------------------------------------------------- shares */
+const SH_GRID = 'grid-template-columns:1fr 150px 66px 66px 72px 66px 60px 56px 34px';
+let shReady = false;
+
+function initShares() {
+  if (!shReady) {
+    var inds = {};
+    universe.funds.forEach(function (f) { if (isShare(f) && f.industry) inds[f.industry] = 1; });
+    var sel = $('shSector');
+    Object.keys(inds).sort().forEach(function (k) {
+      sel.insertAdjacentHTML('beforeend', '<option value="' + esc(k) + '">' + esc(k) + '</option>');
+    });
+    ['shName', 'shSector', 'shSort'].forEach(function (id) {
+      $(id).addEventListener('input', renderShares);
+    });
+    shReady = true;
+  }
+  renderShares();
+}
+
+function renderShares() {
+  var q = $('shName').value.trim().toLowerCase();
+  var ind = $('shSector').value, sort = $('shSort').value;
+  var rows = universe.funds.filter(function (f) {
+    return isShare(f) &&
+      (!q || (f.name || '').toLowerCase().indexOf(q) >= 0 ||
+             (f.symbol || '').toLowerCase().indexOf(q) >= 0) &&
+      (!ind || f.industry === ind);
+  });
+
+  var desc = sort.charAt(0) === '-';
+  var key = desc ? sort.slice(1) : sort;
+  rows.sort(function (a, b) {
+    if (key === 'name') return (a.name || '').localeCompare(b.name || '');
+    var av = a[key], bv = b[key];
+    if (av == null) return 1;
+    if (bv == null) return -1;
+    return desc ? bv - av : av - bv;
+  });
+
+  $('shHead').setAttribute('style', SH_GRID);
+  $('shHead').innerHTML =
+    '<div>Company' + infoBtn('name') + '</div><div>Industry' + infoBtn('industry') + '</div>' +
+    '<div class="num">Vol %' + infoBtn('volDaily') + '</div>' +
+    '<div class="num">1yr' + infoBtn('r1') + '</div>' +
+    '<div class="num">5yr tot' + infoBtn('r5') + '</div>' +
+    '<div class="num">Max DD' + infoBtn('maxDD') + '</div>' +
+    '<div class="num">Sharpe' + infoBtn('sharpe') + '</div>' +
+    '<div class="num">Beta' + infoBtn('beta') + '</div><div></div>';
+
+  $('shList').innerHTML = rows.length ? rows.map(function (f) {
+    return '<div class="fundrow' + (inChoice(f.symbol) ? ' inchoice' : '') +
+      '" style="' + SH_GRID + '">' +
+      '<div><div class="nm">' + esc(f.name || f.symbol) +
+        (inChoice(f.symbol) ? '<span class="mine">In My Choice</span>' : '') + '</div>' +
+      '<div class="meta">' + esc(f.symbol) + ' &middot; ' +
+        'FTSE 100' +
+        (f.gbpConverted ? ' &middot; converted to GBP' : '') + ' &middot; ' +
+        '<a href="' + dataUrl(f) + '" target="_blank" rel="noopener">prices</a></div></div>' +
+      '<div class="meta" data-l="Industry">' + esc(f.industry || '&mdash;') + '</div>' +
+      '<div class="num" data-l="Vol %">' + fmt(f.volDaily) + '</div>' +
+      '<div class="num" data-l="1yr">' + sgn(f.r1) + '</div>' +
+      '<div class="num" data-l="5yr total">' + sgn(f.r5) + '</div>' +
+      '<div class="num" data-l="Max DD">' + fmt(f.maxDD) + '</div>' +
+      '<div class="num" data-l="Sharpe">' + fmt(f.sharpe, 2) + '</div>' +
+      '<div class="num" data-l="Beta">' + fmt(f.beta, 2) + '</div>' +
+      '<div>' + choiceStar(f.symbol) + '</div></div>';
+  }).join('') : '<p class="sub" style="padding:18px 12px">Nothing matches those filters.</p>';
+  wireStars($('shList'));
+
+  $('shCount').textContent = rows.length + ' compan' + (rows.length === 1 ? 'y' : 'ies');
+  var r1 = rows.filter(function (f) { return f.r1 != null; })
+               .sort(function (a, b) { return b.r1 - a.r1; });
+  $('shStats').innerHTML =
+    '<div><span>Companies</span><b>' + rows.length + '</b></div>' +
+    '<div><span>Median volatility</span><b>' + fmt(median(rows.map(function (f) { return f.volDaily; }))) + '%</b></div>' +
+    (r1.length ? '<div><span>Best year</span><b class="small">' + esc((r1[0].name || '').slice(0, 22)) +
+        ' ' + sgn(r1[0].r1) + '%</b></div>' +
+      '<div><span>Worst year</span><b class="small">' + esc((r1[r1.length - 1].name || '').slice(0, 22)) +
+        ' ' + sgn(r1[r1.length - 1].r1) + '%</b></div>' : '');
+
+  // Industry breakdown of whatever is on screen, not of the whole index.
+  var by = {};
+  rows.forEach(function (f) {
+    var k = f.industry || 'Unclassified';
+    (by[k] = by[k] || []).push(f);
+  });
+  var ks = Object.keys(by).sort(function (a, b) { return by[b].length - by[a].length; });
+  $('shSectors').innerHTML = ks.map(function (k) {
+    var g = by[k];
+    var pc = rows.length ? g.length / rows.length * 100 : 0;
+    return '<div class="fsbar"><div class="fsbar-l">' + esc(k) + ' <span class="meta">(' +
+      g.length + ')</span></div>' +
+      '<div class="fsbar-t"><i style="width:' + pc.toFixed(1) + '%"></i></div>' +
+      '<div class="fsbar-v">' + fmt(median(g.map(function (f) { return f.r1; }))) + '%</div></div>';
+  }).join('') + '<p class="sub">The bar is the share of companies shown; the figure on the ' +
+    'right is the median one-year return in that industry.</p>';
+}
+
+/* -------------------------------------------------------------------- analysis */
+let anReady = false;
+function initAnalysis() {
+  if (!anReady) {
+    ['anMetric', 'anWhat', 'anMinYears'].forEach(function (id) {
+      $(id).addEventListener('input', renderAnalysis);
+    });
+    anReady = true;
+  }
+  renderAnalysis();
+}
+
+function anPool() {
+  var what = $('anWhat').value;
+  var minY = parseFloat($('anMinYears').value) || 0;
+  return universe.funds.filter(function (f) {
+    if (f.leveraged || f.sector === 'Benchmark index') return false;
+    if ((f.years || 0) < minY) return false;
+    if (what === 'shares') return isShare(f);
+    if (what === 'funds') return !isShare(f) && f.type !== 'EQUITY';
+    return true;
+  });
+}
+
+function renderAnalysis() {
+  var m = $('anMetric').value;
+  var asc = m.indexOf('-asc') > 0;
+  var key = asc ? m.replace('-asc', '') : m;
+  var lowBest = asc || key === 'maxDD';
+  var pool = anPool().filter(function (f) { return f[key] != null; });
+  pool.sort(function (a, b) { return lowBest ? a[key] - b[key] : b[key] - a[key]; });
+  var top = pool.slice(0, 10);
+
+  var label = $('anMetric').selectedOptions[0].textContent;
+  $('anTopTitle').textContent = 'Top 10 — ' + label;
+
+  var G = 'grid-template-columns:28px 1fr 150px 78px 66px 66px 34px';
+  $('anTop').innerHTML =
+    '<div class="fhead" style="' + G + '">' +
+    '<div>#</div><div>Fund or company' + infoBtn('name') + '</div>' +
+    '<div>Sector' + infoBtn('sector') + '</div>' +
+    '<div class="num">' + esc(label.split(',')[0]) + '</div>' +
+    '<div class="num">Vol %' + infoBtn('volDaily') + '</div>' +
+    '<div class="num">History' + infoBtn('years') + '</div><div></div></div>' +
+    (top.length ? top.map(function (f, i) {
+      return '<div class="fundrow" style="' + G + '">' +
+        '<div class="meta">' + (i + 1) + '</div>' +
+        '<div><div class="nm">' + esc(f.name || f.symbol) + '</div>' +
+        '<div class="meta">' + esc(f.symbol) + ' &middot; ' + esc(f.house || '') + '</div></div>' +
+        '<div class="meta" data-l="Sector">' + esc(f.sector || '') + '</div>' +
+        '<div class="num" data-l="' + esc(label) + '">' +
+          (key === 'sharpe' || key === 'sortino' ? fmt(f[key], 2) : sgn(f[key])) + '</div>' +
+        '<div class="num" data-l="Vol %">' + fmt(f.volDaily) + '</div>' +
+        '<div class="num" data-l="History">' + fmt(f.years) + 'y</div>' +
+        '<div>' + choiceStar(f.symbol) + '</div></div>';
+    }).join('') : '<p class="sub" style="padding:16px 12px">Nothing has enough history for that.</p>');
+  wireStars($('anTop'));
+
+  $('anTopNote').innerHTML = 'Ranked out of ' + pool.length + ' with a figure for this measure' +
+    ($('anMinYears').value !== '0' ? ' and at least ' + $('anMinYears').value +
+      ' years of history' : '') + '. Leveraged products and benchmark indices are excluded. ' +
+    '<strong>Survivorship bias applies</strong>: funds that closed after doing badly are not ' +
+    'in this data at all, so any ranking of survivors flatters the industry.';
+
+  function groupTable(el, groups, headLabel) {
+    var ks = Object.keys(groups).sort(function (a, b) { return groups[b].length - groups[a].length; });
+    var GG = 'grid-template-columns:1fr 62px 74px 78px 74px 70px';
+    el.innerHTML = '<div class="fhead" style="' + GG + '">' +
+      '<div>' + esc(headLabel) + '</div><div class="num">Count</div>' +
+      '<div class="num">Median vol' + infoBtn('volDaily') + '</div>' +
+      '<div class="num">Median 5yr' + infoBtn('r5') + '</div>' +
+      '<div class="num">Median DD' + infoBtn('maxDD') + '</div>' +
+      '<div class="num">Sharpe' + infoBtn('sharpe') + '</div></div>' +
+      ks.map(function (k) {
+        var g = groups[k];
+        return '<div class="fundrow" style="' + GG + '">' +
+          '<div class="nm">' + esc(k) + '</div>' +
+          '<div class="num" data-l="Count">' + g.length + '</div>' +
+          '<div class="num" data-l="Median vol">' + fmt(median(g.map(function (f) { return f.volDaily; }))) + '</div>' +
+          '<div class="num" data-l="Median 5yr">' + sgn(median(g.map(function (f) { return f.r5; }))) + '</div>' +
+          '<div class="num" data-l="Median DD">' + fmt(median(g.map(function (f) { return f.maxDD; }))) + '</div>' +
+          '<div class="num" data-l="Sharpe">' + fmt(median(g.map(function (f) { return f.sharpe; })), 2) + '</div>' +
+          '</div>';
+      }).join('');
+  }
+
+  var pool2 = anPool();
+  var bySec = {}, byReg = {};
+  pool2.forEach(function (f) {
+    var sc = f.sector || 'Unclassified';
+    (bySec[sc] = bySec[sc] || []).push(f);
+    var rg = regionOf(f);
+    (byReg[rg] = byReg[rg] || []).push(f);
+  });
+  groupTable($('anSectors'), bySec, 'Sector');
+  groupTable($('anRegions'), byReg, 'Region');
+
+  $('anFindings').innerHTML = AN_FINDINGS;
+}
+
+/* The result of build/correlate.py, which measures every fund over one identical 60-month
+   window rather than over its own history -- otherwise a fund that compounded through
+   2009-2019 is being compared with one that only lived through 2022-2026, and the
+   difference between the periods swamps the difference between the funds. */
+const AN_FINDINGS =
+  '<p class="sub">Measured across <strong>634 funds and trusts over the same 60 months</strong> ' +
+  '(September 2021 to August 2026). Each fund\u2019s own history covers a different stretch of ' +
+  'market, so comparing funds over their own periods measures the years rather than the funds. ' +
+  'Leveraged products are excluded. Run <code>build/correlate.py</code> to reproduce every ' +
+  'figure here.</p>' +
+  '<div class="tscroll"><div class="tinner" style="min-width:560px">' +
+  '<div class="fhead" style="grid-template-columns:1fr 84px 92px 1fr">' +
+  '<div>Against growth</div><div class="num">Pearson</div><div class="num">Spearman</div>' +
+  '<div>Reading</div></div>' +
+  [['Worst 12 months', '+0.70', '+0.29', 'The strongest single link'],
+   ['Maximum drawdown', '+0.63', '+0.11', 'Shallower falls, more growth'],
+   ['Correlation to market', '+0.23', '+0.29', 'Weak but real'],
+   ['Beta', '+0.12', '+0.36', 'Barely clears zero'],
+   ['Volatility', '\u22120.25', '+0.35', 'Sign flips \u2014 not a straight line']].map(function (r) {
+    return '<div class="fundrow" style="grid-template-columns:1fr 84px 92px 1fr">' +
+      '<div class="nm">' + r[0] + '</div><div class="num" data-l="Pearson">' + r[1] + '</div>' +
+      '<div class="num" data-l="Spearman">' + r[2] + '</div>' +
+      '<div class="meta" data-l="Reading">' + r[3] + '</div></div>';
+  }).join('') + '</div></div>' +
+
+  '<p class="sub"><strong>Risk paid, but only up to a point.</strong> Sorted into ten ' +
+  'volatility bands, average growth climbs from 2.2% a year in the calmest tenth to 9.7% ' +
+  'around the sixth, then falls away \u2014 and the most volatile tenth averaged just ' +
+  '<strong>1.0% a year</strong>. That is why the straight-line correlation with volatility is ' +
+  'negative while the rank correlation is positive: the relationship is a hill, not a slope, ' +
+  'and a single number cannot describe a hill.</p>' +
+
+  '<p class="sub"><strong>But look at the spread in that top tenth.</strong> Its ' +
+  '<em>average</em> was 1.0% a year while its <em>median</em> was 14.1%. Most of the most ' +
+  'volatile funds did well; a handful did so badly they dragged the average down by thirteen ' +
+  'points. That gap is the honest description of high volatility \u2014 not "lower returns", ' +
+  'but a much wider range of outcomes, with the bad end far enough out to swamp the mean.</p>' +
+
+  '<p class="sub"><strong>Drawdown separates funds that volatility does not.</strong> Holding ' +
+  'volatility constant, the link between a shallower worst fall and higher growth strengthens ' +
+  'from +0.63 to <strong>+0.84</strong>. Among funds that moved about equally, the ones that ' +
+  'avoided the deep falls grew considerably more \u2014 which is why this tool shows drawdown ' +
+  'and worst-12-months beside volatility rather than leaving volatility to speak alone.</p>' +
+
+  '<p class="sub"><strong>Beta bought very little.</strong> Its confidence interval, ' +
+  '[+0.02, +0.23], only just clears zero. Over this window, taking more market risk was close ' +
+  'to unrewarded.</p>' +
+
+  '<p class="sub">Three cautions that matter more than any figure above. <strong>One:</strong> ' +
+  'drawdown, worst-12-months and growth are all summaries of one price path, so part of the ' +
+  'association between them is arithmetic rather than a discovery. <strong>Two:</strong> this ' +
+  'is a single five-year window containing the 2022 sell-off; it describes what happened, and ' +
+  'is not evidence about what will happen next. <strong>Three:</strong> Sharpe and Sortino are ' +
+  'excluded entirely, because each is growth divided by a risk measure \u2014 correlating ' +
+  'either with growth would be correlating growth with itself, and would produce a headline ' +
+  'figure of +0.84 that means precisely nothing.</p>';
 
 function factsheetSearchUrl(f) {
   // The share-class name, not the register's fund name: Trustnet publishes a factsheet per
@@ -812,10 +1436,10 @@ function cellFor(f, key) {
 function renderTable(band, lvl) {
   const head = `<th class="pick" title="Tick the funds you are recommending"></th>` +
     COLUMNS.map(([k, label]) =>
-    `<th data-key="${k}" class="${k === sortKey ? "sorted" : ""}">${label}${k === sortKey ? (sortDir > 0 ? " ↑" : " ↓") : ""}</th>`).join("");
+    `<th data-key="${k}" class="${k === sortKey ? "sorted" : ""}">${label}${k === sortKey ? (sortDir > 0 ? " ↑" : " ↓") : ""}${infoBtn(k === "volDaily" ? "volDaily" : k)}</th>`).join("");
 
   const body = shown.length
-    ? shown.map(f => `<tr><td class="pick"><input type="checkbox" class="pickbox" data-pick="${esc(f.symbol)}" ${picked.has(f.symbol) ? "checked" : ""} aria-label="Include ${esc(f.name)} in the record"></td>${COLUMNS.map(([k]) => cellFor(f, k)).join("")}</tr>`).join("")
+    ? shown.map(f => `<tr><td class="pick"><input type="checkbox" class="pickbox" data-pick="${esc(f.symbol)}" ${picked.has(f.symbol) ? "checked" : ""} aria-label="Include ${esc(f.name)} in the record"></td>${COLUMNS.map(([k, lbl]) => cellFor(f, k).replace("<td", `<td data-label="${lbl}"`)).join("")}</tr>`).join("")
     : `<tr><td colspan="${COLUMNS.length + 1}" style="text-align:center;color:var(--muted);padding:30px;">Nothing in the ${band[0]}–${band[1]}% band. Widen the band, or lower the minimum history.</td></tr>`;
 
   $("results").innerHTML = `
@@ -961,13 +1585,14 @@ function buildRecord(meta) {
 .nav a { padding:6px 12px; border-radius:7px; text-decoration:none; color:var(--muted);
          font-size:.9rem; font-weight:500; }
 .nav a.on { background: var(--navy-soft); color: var(--navy); }
-.ctrls { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:14px; }
+.ctrls { display:flex; gap:12px 14px; flex-wrap:wrap; align-items:flex-end;
+         margin:0 0 18px; }
 .ctrls .fld { flex:1 1 170px; min-width:150px; }
 .ctrls label { display:block; font-size:.72rem; text-transform:uppercase;
                letter-spacing:.08em; color:var(--muted); margin-bottom:4px; }
 .ctrls input, .ctrls select { width:100%; padding:8px 10px; border:1px solid var(--line);
                border-radius:8px; background:var(--surface); color:var(--ink); }
-.azletter { position:sticky; top:56px; background:var(--surface-2); padding:5px 12px;
+.azletter { position:sticky; top:33px; background:var(--surface-2); padding:5px 12px;
             font-weight:600; font-size:.8rem; letter-spacing:.1em; color:var(--muted);
             border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
 .fundrow { display:grid; grid-template-columns:var(--bgrid);
@@ -1007,6 +1632,18 @@ function buildRecord(meta) {
 .btnrow button { padding:8px 14px; border:1px solid var(--line); border-radius:8px;
         background:var(--surface); color:var(--ink); cursor:pointer; font-size:.88rem; }
 .btnrow button.primary { background:var(--navy); color:#fff; border-color:var(--navy); }
+.uin.dt { text-align:left; font-size:.78rem; padding:5px 6px; }
+.pinned { color:var(--navy); font-weight:600; }
+.srcbar { display:flex; gap:6px; margin:0 0 16px; flex-wrap:wrap; }
+.srcbar button { border:1px solid var(--line); background:var(--surface); color:var(--muted);
+       border-radius:8px; padding:7px 13px; font-size:.83rem; cursor:pointer; }
+.srcbar button.on { background:var(--navy-soft); border-color:var(--navy); color:var(--navy);
+       font-weight:600; }
+.pin { width:100%; padding:5px 6px; border:1px solid var(--line); border-radius:6px;
+       background:var(--surface); color:var(--ink); font-size:.8rem; }
+.pa { display:block; font-size:.66rem; color:var(--muted); font-family:"IBM Plex Mono",monospace; }
+.warn-txt { color:var(--warn); }
+.gtot b.small, .choicestats b.small { font-size:.95rem !important; font-family:inherit !important; }
 .uin { width:100%; padding:6px 8px; border:1px solid var(--line);
        border-radius:6px; background:var(--surface); color:var(--ink);
        font-size:.82rem; text-align:right; }
@@ -1061,7 +1698,8 @@ function buildRecord(meta) {
 .fhead .sortable.on i { opacity:1; }
 .fhead .sortable.on { color:var(--navy); }
 
-.tscroll { overflow-x: auto; }
+.tscroll { overflow-x:auto; border:1px solid var(--line); border-radius:12px;
+           background:var(--surface); }
 #bTable { --bgrid: 30px minmax(230px,1fr) 116px 126px 62px 62px 62px 58px 58px 52px 80px 40px; min-width: 1120px; }
 #bTable.wide { --bgrid: 30px minmax(180px,1fr) 100px 112px 58px 58px 58px 58px 58px 60px 58px 58px 48px 78px 50px 56px 34px; min-width: 1500px; }
 .tinner { min-width: 1120px; }
@@ -1073,7 +1711,7 @@ function buildRecord(meta) {
    list. The toggle shows them and widens the grid; the table scrolls rather than squashes. */
 #bTable:not(.wide) .xf { display: none; }
 .figtog { display:inline-flex; align-items:center; gap:7px; font-size:.82rem; color:var(--muted);
-          cursor:pointer; user-select:none; white-space:nowrap; }
+          cursor:pointer; user-select:none; flex-wrap:wrap; }
 .figtog input { margin:0; }
 </style></head><body>
 <header>
@@ -1235,8 +1873,10 @@ document.querySelectorAll('.nav a').forEach(function (a) {
     document.querySelectorAll('.view').forEach(function (x) { x.classList.remove('on'); });
     $(v + 'View').classList.add('on');
     if (v === 'browse') initBrowse();
+    if (v === 'shares') initShares();
+    if (v === 'analysis') initAnalysis();
     if (v === 'growth') initGrowth();
-    if (v === 'choice') { initGrowth(); renderChoice(); }
+    if (v === 'choice') { renderChoice(); initGrowth().then(renderChoice); }
     if (v === 'factsheet') {
       $('fsDate').textContent = 'Prepared ' + new Date().toLocaleDateString('en-GB',
         { day: 'numeric', month: 'long', year: 'numeric' }) + ' — figures in sterling';
@@ -1333,6 +1973,10 @@ function initBrowse() {
   if (af) af.addEventListener('change', function () {
     $('bTable').classList.toggle('wide', af.checked);
   });
+  document.querySelectorAll('#browseView .fhead [data-sk]').forEach(function (h) {
+    if (!h.querySelector('.info')) h.insertAdjacentHTML('beforeend', infoBtn(h.dataset.sk));
+    h.removeAttribute('title');   // the (i) replaces it, and two tooltips is one too many
+  });
   var foot = $('bFoot');
   if (foot) {
     foot.innerHTML = 'Beta and correlation are measured against <strong>' +
@@ -1395,20 +2039,20 @@ function renderBrowse() {
         'factsheet</a>' +
         ' &middot; <a href="' + dataUrl(f) + '" target="_blank" rel="noopener">prices</a>' +
         '</div></div>' +
-      '<div class="meta">' + esc(f.house || '') + '</div>' +
-      '<div class="meta">' + esc(f.sector || '') + '</div>' +
-      '<div class="num">' + num(f.volDaily) + '</div>' +
-      '<div class="num xf">' + num(f.volWeekly) + '</div>' +
-      '<div class="num xf">' + num(f.r1) + '</div>' +
-      '<div class="num xf">' + num(f.r3) + '</div>' +
-      '<div class="num">' + num(f.r5) + '</div>' +
-      '<div class="num">' + num(f.maxDD) + '</div>' +
-      '<div class="num">' + num(f.sharpe, 2) + '</div>' +
-      '<div class="num">' + num(f.sortino, 2) + '</div>' +
-      '<div class="num">' + num(f.beta, 2) + '</div>' +
-      '<div class="num">' + num(f.worst12m) + '</div>' +
-      '<div class="num xf">' + num(f.corr, 2) + '</div>' +
-      '<div class="num xf">' + num(f.cagr) + '</div>' +
+      '<div class="meta" data-l="Manager">' + esc(f.house || '') + '</div>' +
+      '<div class="meta" data-l="Sector">' + esc(f.sector || '') + '</div>' +
+      '<div class="num" data-l="Vol %">' + num(f.volDaily) + '</div>' +
+      '<div class="num xf" data-l="Vol wk">' + num(f.volWeekly) + '</div>' +
+      '<div class="num xf" data-l="1yr">' + num(f.r1) + '</div>' +
+      '<div class="num xf" data-l="3yr total">' + num(f.r3) + '</div>' +
+      '<div class="num" data-l="5yr total">' + num(f.r5) + '</div>' +
+      '<div class="num" data-l="Max DD">' + num(f.maxDD) + '</div>' +
+      '<div class="num" data-l="Sharpe">' + num(f.sharpe, 2) + '</div>' +
+      '<div class="num" data-l="Sortino">' + num(f.sortino, 2) + '</div>' +
+      '<div class="num" data-l="Beta">' + num(f.beta, 2) + '</div>' +
+      '<div class="num" data-l="Worst 12m">' + num(f.worst12m) + '</div>' +
+      '<div class="num xf" data-l="Corr">' + num(f.corr, 2) + '</div>' +
+      '<div class="num xf" data-l="CAGR">' + num(f.cagr) + '</div>' +
       '<div>' + choiceStar(f.symbol) + '</div></div>';
   });
   $('bList').innerHTML = html ||
@@ -1479,6 +2123,53 @@ function gChips() {
   });
 }
 
+
+/* Per-fund overrides for the growth calculator. Absent means "follow the panel", so the
+   simple case stays one amount and one date, and a row departs from it only when it is
+   deliberately edited. Kept in memory rather than saved: a growth scenario is a question
+   being asked, not a holding to remember. */
+let gAmt = {};    // symbol -> pounds
+let gFrom = {};   // symbol -> yyyy-mm-dd
+
+function gDefaultFrom() {
+  var now = Math.floor(Date.now() / 1000);
+  if ($('gYears').value === 'date') {
+    return Math.floor(new Date($('gFrom').value + 'T00:00:00Z').getTime() / 1000) || 0;
+  }
+  var yrs = parseFloat($('gYears').value);
+  return yrs ? now - yrs * 365.25 * 86400 : 0;
+}
+
+function gEachDefault() {
+  // The panel amount is the DEFAULT for a row, not a budget the pinned rows eat into.
+  // Treating it as a budget meant putting 5,000 into one fund of a 1,000 total silently
+  // set every other row to zero -- the totals changed for a reason nothing on screen gave.
+  var amt = parseFloat($('gAmount').value) || 0;
+  return gSel.length ? amt / gSel.length : 0;
+}
+
+function gAmountFor(sym) { return gAmt[sym] > 0 ? gAmt[sym] : gEachDefault(); }
+
+function gFromFor(sym) {
+  if (gFrom[sym]) {
+    var t = Math.floor(new Date(gFrom[sym] + 'T00:00:00Z').getTime() / 1000);
+    if (t) return t;
+  }
+  return gDefaultFrom();
+}
+
+function gIso(ts) { return new Date(ts * 1000).toISOString().slice(0, 10); }
+
+function gSetAmount(sym, v) {
+  if (!v || v <= 0) delete gAmt[sym]; else gAmt[sym] = v;
+  gRender();
+}
+function gSetFrom(sym, v) {
+  if (!v) delete gFrom[sym]; else gFrom[sym] = v;
+  gRender();
+}
+function gEvenSplit() { gAmt = {}; gFrom = {}; gRender(); }
+
 function gRender() {
   gChips();
   var amt = parseFloat($('gAmount').value) || 0;
@@ -1488,20 +2179,15 @@ function gRender() {
     return;
   }
 
-  var each = amt / gSel.length;
-  var now = Math.floor(Date.now() / 1000);
-  var wantFrom;
-  if ($('gYears').value === 'date') {
-    wantFrom = Math.floor(new Date($('gFrom').value + 'T00:00:00Z').getTime() / 1000) || 0;
-  } else {
-    wantFrom = yrs ? now - yrs * 365.25 * 86400 : 0;
-  }
-  var endTotal = 0, warn = [], rows = '';
+  var endTotal = 0, startTotal = 0, warn = [], rows = '';
+  var GG = 'grid-template-columns:1fr 108px 146px 104px 78px 74px 62px';
 
   gSel.forEach(function (sym) {
     var s = SERIES[sym];
     var f = universe.funds.find(function (x) { return x.symbol === sym; }) || { name: sym };
     if (!s) return;
+    var wantFrom = gFromFor(sym);
+    var each = gAmountFor(sym);
     var i = 0;
     while (i < s.t.length - 1 && s.t[i] < wantFrom) i++;
     var startPx = s.c[i], endPx = s.c[s.c.length - 1], startTs = s.t[i];
@@ -1509,41 +2195,52 @@ function gRender() {
 
     // A fund cannot show a return for years before it existed. Say so rather than
     // quietly reporting a short period as though it answered the question asked.
-    if ($('gYears').value !== 'date' && yrs && realYears < yrs - 0.25) {
+    if (!gFrom[sym] && $('gYears').value !== 'date' && yrs && realYears < yrs - 0.25) {
       warn.push(esc(f.name || sym) + ' has only ' + realYears.toFixed(1) + ' years');
     }
 
     var end = each * (endPx / startPx);
     endTotal += end;
+    startTotal += each;
     var grow = (endPx / startPx - 1) * 100;
     // Only annualise a period of a year or more. Scaling up eight months of return implies
     // the rest of the year repeats it, which is an extrapolation dressed as a measurement.
     var cagr = realYears >= 1.0 ? (Math.pow(endPx / startPx, 1 / realYears) - 1) * 100 : null;
     var d = new Date(startTs * 1000);
 
-    rows += '<div class="fundrow" style="grid-template-columns:1fr 100px 100px 84px 84px 72px">' +
-      '<div><div class="nm">' + esc(f.name || sym) + '</div><div class="meta">from ' +
-      d.toISOString().slice(0, 7) + ' &middot; ' + realYears.toFixed(1) + 'y</div></div>' +
-      '<div class="num">&pound;' + each.toFixed(2) + '</div>' +
-      '<div class="num">&pound;' + end.toFixed(2) + '</div>' +
-      '<div class="num">' + grow.toFixed(1) + '%</div>' +
-      '<div class="num">' + (cagr == null ? '&mdash;' : cagr.toFixed(1) + '%') + '</div>' +
-      '<div class="num">' + (f.volDaily == null ? '&mdash;' : f.volDaily.toFixed(1)) +
-      '</div></div>';
+    // The date box carries the date actually used -- the first price on or after the one
+    // asked for -- so a start before the fund existed shows itself instead of passing silently.
+    rows += '<div class="fundrow" style="' + GG + '">' +
+      '<div><div class="nm">' + esc(f.name || sym) + '</div><div class="meta">' +
+      'priced from ' + d.toISOString().slice(0, 10) + ' &middot; ' + realYears.toFixed(1) + 'y' +
+      (gAmt[sym] > 0 || gFrom[sym] ? ' &middot; <span class="pinned">edited</span>' : '') +
+      '</div></div>' +
+      '<div data-l="Amount"><input class="uin" type="number" min="0" step="50" ' +
+        'data-gamt="' + esc(sym) + '" value="' + (gAmt[sym] > 0 ? gAmt[sym] : '') +
+        '" placeholder="' + each.toFixed(0) + '"></div>' +
+      '<div data-l="From"><input class="uin dt" type="date" data-gfrom="' + esc(sym) +
+        '" value="' + (gFrom[sym] || gIso(Math.max(wantFrom, s.t[0]))) + '"></div>' +
+      '<div class="num" data-l="Value">&pound;' + end.toFixed(2) + '</div>' +
+      '<div class="num" data-l="Growth">' + (grow > 0 ? '+' : '') + grow.toFixed(1) + '%</div>' +
+      '<div class="num" data-l="Per year">' +
+        (cagr == null ? '&mdash;' : (cagr > 0 ? '+' : '') + cagr.toFixed(1) + '%') + '</div>' +
+      '<div class="num" data-l="Vol %">' +
+        (f.volDaily == null ? '&mdash;' : f.volDaily.toFixed(1)) + '</div></div>';
   });
 
-  var gain = endTotal - amt;
+  var invested = startTotal;
+  var gain = endTotal - invested;
   var money = function (v) {
     return v.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   var col = gain >= 0 ? 'var(--good)' : 'var(--bad)';
   $('gTotals').innerHTML =
-    '<div><span>Invested</span><b>&pound;' + money(amt) + '</b></div>' +
+    '<div><span>Invested</span><b>&pound;' + money(invested) + '</b></div>' +
     '<div><span>Would be worth</span><b>&pound;' + money(endTotal) + '</b></div>' +
     '<div><span>Gain</span><b style="color:' + col + '">' + (gain >= 0 ? '+' : '') +
     '&pound;' + money(gain) + '</b></div>' +
     '<div><span>Return</span><b style="color:' + col + '">' + (gain >= 0 ? '+' : '') +
-    (gain / amt * 100).toFixed(1) + '%</b></div>';
+    (invested ? (gain / invested * 100) : 0).toFixed(1) + '%</b></div>';
 
   $('gWarn').innerHTML = warn.length
     ? '<div class="warnline"><strong>Shorter history than you asked for.</strong> ' +
@@ -1551,15 +2248,42 @@ function gRender() {
       'like-for-like comparison.</div>'
     : '';
 
+  var anyPinned = gSel.some(function (x) { return gAmt[x] > 0 || gFrom[x]; });
   $('gTable').innerHTML =
-    '<div class="fhead" style="grid-template-columns:1fr 100px 100px 84px 84px 72px">' +
-    '<div>Fund</div><div class="num">In</div><div class="num">Out</div>' +
-    '<div class="num">Total</div><div class="num">Per year</div><div class="num">Vol %</div></div>' +
-    rows +
-    '<p class="sub" style="margin-top:12px">Split equally across the funds chosen and held ' +
-    'throughout, in sterling. Survivorship bias applies: only funds that still exist can be ' +
-    'shown, so any long-run figure here is flattering to the industry. Past performance is not ' +
-    'a guide to future returns, and nothing here is advice.</p>';
+    '<div class="tscroll"><div class="tinner" style="min-width:760px">' +
+    '<div class="fhead" style="' + GG + '">' +
+    '<div>Fund' + infoBtn('name') + '</div>' +
+    '<div>Amount' + infoBtn('gamount') + '</div>' +
+    '<div>From' + infoBtn('gfrom') + '</div>' +
+    '<div class="num">Value now' + infoBtn('value') + '</div>' +
+    '<div class="num">Growth' + infoBtn('periodRet') + '</div>' +
+    '<div class="num">Per year' + infoBtn('cagr') + '</div>' +
+    '<div class="num">Vol %' + infoBtn('volDaily') + '</div></div>' +
+    rows + '</div></div>' +
+    '<div class="btnrow" style="margin-top:12px">' +
+      (anyPinned ? '<button id="gEven">Back to an even split</button>' : '') +
+      '<button id="gSheet" class="primary">Factsheet for this mix</button>' +
+    '</div>' +
+    '<p class="sub" style="margin-top:12px">' +
+    (anyPinned
+      ? 'Amounts and start dates are set per fund; rows left blank share whatever is left of ' +
+        'the total. Because the rows cover different periods, the combined figure is what ' +
+        'this particular set of purchases would have done \u2014 not a like-for-like ' +
+        'comparison between the funds.'
+      : 'Split equally across the funds chosen and held throughout, in sterling. Set an ' +
+        'amount or a start date on any row to model what you actually bought.') +
+    ' Survivorship bias applies: only funds that still exist can be shown, so any long-run ' +
+    'figure here flatters the industry. Past performance is not a guide to future returns, ' +
+    'and nothing here is advice.</p>';
+
+  $('gTable').querySelectorAll('[data-gamt]').forEach(function (i) {
+    i.onchange = function () { gSetAmount(i.dataset.gamt, parseFloat(i.value)); };
+  });
+  $('gTable').querySelectorAll('[data-gfrom]').forEach(function (i) {
+    i.onchange = function () { gSetFrom(i.dataset.gfrom, i.value); };
+  });
+  if ($('gEven')) $('gEven').onclick = gEvenSplit;
+  if ($('gSheet')) $('gSheet').onclick = growthToFactsheet;
 }
 
 
@@ -1619,6 +2343,86 @@ function wireStars(root) {
 }
 
 /* ------------------------------------------------------------------ view */
+
+/* ============================================================================
+   A measurement period per fund.
+
+   A shortlist is rarely bought all at once. Showing a five-year return against
+   a holding somebody has owned for six months answers a question they did not
+   ask, so each row carries its own period and every figure on that row is
+   recomputed over it from the monthly sterling series -- never read off a
+   stored whole-history statistic, which would silently describe a different
+   span of time from the one the row claims.
+   ========================================================================== */
+const LS_PERIOD = 'riskmatch.periods';
+const PERIODS = [[3, '3 months'], [6, '6 months'], [12, '1 year'], [24, '2 years'],
+                 [36, '3 years'], [60, '5 years'], [120, '10 years'], [0, 'All history']];
+const PERIOD_DEFAULT = 60;
+
+function periodsLoad() {
+  try {
+    var v = JSON.parse(localStorage.getItem(LS_PERIOD) || '{}');
+    return (v && typeof v === 'object') ? v : {};
+  } catch (e) { return {}; }
+}
+let myPeriods = periodsLoad();
+
+function periodOf(sym) {
+  var v = myPeriods[sym];
+  return (v === 0 || v > 0) ? v : PERIOD_DEFAULT;
+}
+
+function setPeriod(sym, months) {
+  if (months === PERIOD_DEFAULT) delete myPeriods[sym]; else myPeriods[sym] = months;
+  try { localStorage.setItem(LS_PERIOD, JSON.stringify(myPeriods)); } catch (e) {}
+  renderChoice();
+}
+
+/* Return, volatility and drawdown over the last `months` of a fund's own series.
+   Returns null when the fund has no series or too little of it, so the row can say
+   so rather than show a figure covering less time than it claims. */
+function periodStats(sym, months) {
+  if (!SERIES || !SERIES[sym]) return null;
+  var S = SERIES[sym];
+  var t = S.t, c = S.c;
+  var i0 = 0;
+  if (months > 0) {
+    var cutoff = t[t.length - 1] - months * 30.44 * 86400;
+    while (i0 < t.length && t[i0] < cutoff) i0++;
+    i0 = Math.max(0, i0 - 1);
+  }
+  var px = c.slice(i0), ts = t.slice(i0);
+  if (px.length < 3 || !px[0]) return null;
+
+  var rets = [];
+  for (var i = 1; i < px.length; i++) if (px[i - 1]) rets.push(px[i] / px[i - 1] - 1);
+  if (rets.length < 2) return null;
+
+  var n = rets.length;
+  var mean = rets.reduce(function (a, b) { return a + b; }, 0) / n;
+  var sd = Math.sqrt(rets.reduce(function (a, b) { return a + (b - mean) * (b - mean); }, 0) / (n - 1));
+  var peak = px[0], mdd = 0;
+  px.forEach(function (v) { peak = Math.max(peak, v); mdd = Math.min(mdd, v / peak - 1); });
+  var yrs = n / 12;
+
+  return {
+    ret: (px[px.length - 1] / px[0] - 1) * 100,
+    vol: sd * Math.sqrt(12) * 100,
+    maxDD: mdd * 100,
+    months: n,
+    years: yrs,
+    // Annualised only where a year or more was actually measured; annualising four
+    // months of a good run into a yearly rate is how a 6% quarter becomes "27% a year".
+    cagr: yrs >= 1 ? (Math.pow(px[px.length - 1] / px[0], 1 / yrs) - 1) * 100 : null,
+    from: ts[0]
+  };
+}
+
+function periodLabel(m) {
+  for (var i = 0; i < PERIODS.length; i++) if (PERIODS[i][0] === m) return PERIODS[i][1];
+  return m + ' months';
+}
+
 function renderChoice() {
   var wrap = $('choiceList');
   var funds = myChoice.map(function (s) {
@@ -1637,11 +2441,19 @@ function renderChoice() {
 
   // A shortlist is worth summarising: the spread of volatility across it says more about
   // what has been assembled than any single fund's number does.
-  var vols = funds.map(function (f) { return f.volDaily; }).filter(function (v) { return v != null; });
+  var pstats = {};
+  funds.forEach(function (f) { pstats[f.symbol] = periodStats(f.symbol, periodOf(f.symbol)); });
+  var vols = funds.map(function (f) {
+    var st = pstats[f.symbol];
+    return st ? st.vol : f.volDaily;
+  }).filter(function (v) { return v != null; });
   var avg = vols.length ? vols.reduce(function (a, b) { return a + b; }, 0) / vols.length : null;
   var lo = vols.length ? Math.min.apply(null, vols) : null;
   var hi = vols.length ? Math.max.apply(null, vols) : null;
-  var dds = funds.map(function (f) { return f.maxDD; }).filter(function (v) { return v != null; });
+  var dds = funds.map(function (f) {
+    var st = pstats[f.symbol];
+    return st ? st.maxDD : f.maxDD;
+  }).filter(function (v) { return v != null; });
   var worst = dds.length ? Math.min.apply(null, dds) : null;
 
   $('choiceStats').innerHTML =
@@ -1650,29 +2462,62 @@ function renderChoice() {
       '<div><span>Average volatility</span><b>' + avg.toFixed(1) + '%</b></div>' +
       '<div><span>Range</span><b>' + lo.toFixed(1) + '&ndash;' + hi.toFixed(1) + '%</b></div>') +
     (worst == null ? '' :
-      '<div><span>Worst drawdown held</span><b>' + worst.toFixed(1) + '%</b></div>');
+      '<div><span>Worst drawdown held</span><b>' + worst.toFixed(1) + '%</b></div>') +
+    '<div><span>Measured over</span><b class="small">' +
+      (function () {
+        var set = {};
+        funds.forEach(function (f) { set[periodOf(f.symbol)] = 1; });
+        var ks = Object.keys(set);
+        return ks.length === 1 ? esc(periodLabel(Number(ks[0]))) : 'each fund\u2019s own period';
+      })() + '</b></div>';
 
   function num(v, d) { return v == null ? '<span class="meta">&mdash;</span>' : v.toFixed(d || 1); }
+  function signed(v) {
+    if (v == null) return '<span class="meta">&mdash;</span>';
+    return '<span class="' + (v >= 0 ? 'pos' : 'neg') + '">' +
+      (v > 0 ? '+' : '') + v.toFixed(1) + '</span>';
+  }
+  var G = 'grid-template-columns:1fr 118px 104px 74px 66px 62px 104px 34px';
   wrap.innerHTML =
-    '<div class="fhead" style="grid-template-columns:1fr 120px 68px 68px 62px 120px 40px">' +
-    '<div>Fund</div><div>Manager</div>' +
-    '<div class="num">Vol %</div><div class="num">5yr %</div><div class="num">Max DD</div>' +
-    '<div class="num">Units held</div><div></div></div>' +
+    '<div class="fhead" style="' + G + '">' +
+    '<div>Fund' + infoBtn('name') + '</div><div>Manager' + infoBtn('house') + '</div>' +
+    '<div>Period' + infoBtn('period') + '</div>' +
+    '<div class="num">Return' + infoBtn('periodRet') + '</div>' +
+    '<div class="num">Vol %' + infoBtn('volDaily') + '</div>' +
+    '<div class="num">Max DD' + infoBtn('maxDD') + '</div>' +
+    '<div class="num">Units held' + infoBtn('units') + '</div><div></div></div>' +
     funds.map(function (f) {
-      return '<div class="fundrow" style="grid-template-columns:1fr 120px 68px 68px 62px 120px 40px">' +
+      var m = periodOf(f.symbol);
+      var st = periodStats(f.symbol, m);
+      // A fund whose history is shorter than the period chosen must say so, not quietly
+      // report a figure covering less time than the column claims.
+      var short = st && m > 0 && st.months < m - 1;
+      return '<div class="fundrow" style="' + G + '">' +
         '<div><div class="nm">' + esc(f.name || f.symbol) + '</div><div class="meta">' +
-        esc(f.symbol) + (f.years ? ' &middot; ' + f.years + 'y' : '') + '</div></div>' +
-        '<div class="meta">' + esc(f.house || '') + '</div>' +
-        '<div class="num">' + num(f.volDaily) + '</div>' +
-        '<div class="num">' + num(f.r5) + '</div>' +
-        '<div class="num">' + num(f.maxDD) + '</div>' +
-        '<div><input class="uin" type="number" min="0" step="any" data-units="' +
+        esc(f.symbol) + (f.years ? ' &middot; ' + f.years + 'y held' : '') +
+        (short ? ' &middot; <span class="warn-txt">only ' + (st.months / 12).toFixed(1) +
+                 'y of history</span>' : '') + '</div></div>' +
+        '<div class="meta" data-l="Manager">' + esc(f.house || '') + '</div>' +
+        '<div data-l="Period"><select class="pin" data-period="' + esc(f.symbol) + '">' +
+          PERIODS.map(function (p) {
+            return '<option value="' + p[0] + '"' + (p[0] === m ? ' selected' : '') + '>' +
+              p[1] + '</option>';
+          }).join('') + '</select></div>' +
+        '<div class="num" data-l="Return">' + (st ? signed(st.ret) : '<span class="meta">&mdash;</span>') +
+          (st && st.cagr != null ? '<span class="pa">' + (st.cagr > 0 ? '+' : '') +
+            st.cagr.toFixed(1) + '%/yr</span>' : '') + '</div>' +
+        '<div class="num" data-l="Vol %">' + (st ? num(st.vol) : num(f.volDaily)) + '</div>' +
+        '<div class="num" data-l="Max DD">' + (st ? num(st.maxDD) : num(f.maxDD)) + '</div>' +
+        '<div data-l="Units held"><input class="uin" type="number" min="0" step="any" data-units="' +
           esc(f.symbol) + '" value="' + (myUnits[f.symbol] || '') + '" placeholder="0"></div>' +
         '<div>' + choiceStar(f.symbol) + '</div></div>';
     }).join('');
   wireStars(wrap);
   wrap.querySelectorAll('[data-units]').forEach(function (i) {
     i.onchange = function () { setUnits(i.dataset.units, parseFloat(i.value)); };
+  });
+  wrap.querySelectorAll('[data-period]').forEach(function (sel) {
+    sel.onchange = function () { setPeriod(sel.dataset.period, Number(sel.value)); };
   });
   if (typeof renderHoldings === 'function') renderHoldings();
 }
@@ -1849,10 +2694,10 @@ function renderHoldings() {
     return '<div class="fundrow" style="grid-template-columns:1fr 110px 110px 90px 70px">' +
       '<div><div class="nm">' + esc(f ? (f.name || s) : s) + '</div>' +
       '<div class="meta">' + esc(s) + '</div></div>' +
-      '<div class="num">' + (myUnits[s]).toLocaleString('en-GB') + '</div>' +
-      '<div class="num">' + (f && f.last != null ? '&pound;' + f.last.toFixed(4) : '&mdash;') + '</div>' +
-      '<div class="num">' + (v == null ? '&mdash;' : '&pound;' + v.toFixed(2)) + '</div>' +
-      '<div class="num">' + (total && v != null ? (v / total * 100).toFixed(1) + '%' : '&mdash;') +
+      '<div class="num" data-l="Units">' + (myUnits[s]).toLocaleString('en-GB') + '</div>' +
+      '<div class="num" data-l="Price">' + (f && f.last != null ? '&pound;' + f.last.toFixed(4) : '&mdash;') + '</div>' +
+      '<div class="num" data-l="Value">' + (v == null ? '&mdash;' : '&pound;' + v.toFixed(2)) + '</div>' +
+      '<div class="num" data-l="Weight">' + (total && v != null ? (v / total * 100).toFixed(1) + '%' : '&mdash;') +
       '</div></div>';
   }).join('');
 
@@ -1866,8 +2711,10 @@ function renderHoldings() {
             '<div><span>Worst fall</span><b>' + st.maxDD.toFixed(1) + '%</b></div>' : '') +
     '</div>' +
     '<div class="fhead" style="grid-template-columns:1fr 110px 110px 90px 70px">' +
-    '<div>Holding</div><div class="num">Units</div><div class="num">Price</div>' +
-    '<div class="num">Value</div><div class="num">Weight</div></div>' + rows +
+    '<div>Holding</div><div class="num">Units' + infoBtn('units') + '</div>' +
+    '<div class="num">Price' + infoBtn('price') + '</div>' +
+    '<div class="num">Value' + infoBtn('value') + '</div>' +
+    '<div class="num">Weight' + infoBtn('weight') + '</div></div>' + rows +
     (st ? '<p class="sub" style="margin-top:12px">Measured over ' + st.years.toFixed(1) +
       ' years, the longest window in which all ' + st.used + ' priced holdings existed. ' +
       'Portfolio volatility is computed from the combined series, not averaged &mdash; the ' +
@@ -2011,22 +2858,68 @@ function fsBars(rows, total) {
   }).join('');
 }
 
+
+/* Which set of holdings the factsheet is describing. "choice" is the saved portfolio;
+   "growth" is whatever is currently in the growth calculator, valued at the end of each
+   fund's own period. Everything below reads rows from here rather than from My Choice
+   directly, so the analysis is identical for both and cannot drift between them. */
+let fsSource = 'choice';
+
+function fsRows() {
+  if (fsSource === 'growth') {
+    var rows = [], total = 0, weights = {};
+    gSel.forEach(function (sym) {
+      var f = fundBy(sym);
+      var S = SERIES && SERIES[sym];
+      if (!S) { rows.push({ f: f, sym: sym, units: null, value: null }); return; }
+      var from = gFromFor(sym), i = 0;
+      while (i < S.t.length - 1 && S.t[i] < from) i++;
+      var v = gAmountFor(sym) * (S.c[S.c.length - 1] / S.c[i]);
+      weights[sym] = v;
+      total += v;
+      rows.push({ f: f, sym: sym, units: null, value: v, invested: gAmountFor(sym),
+                  from: S.t[i] });
+    });
+    return { rows: rows, weights: weights, total: total,
+             title: 'Growth calculator mix', unitCol: false };
+  }
+  var held = myChoice.filter(function (x) { return myUnits[x] > 0; });
+  var w = {}, tot = 0, rs = [];
+  held.forEach(function (sym) {
+    var f = fundBy(sym);
+    var v = (f && f.last != null) ? myUnits[sym] * f.last : null;
+    if (v != null) { w[sym] = v; tot += v; }
+    rs.push({ f: f, sym: sym, units: myUnits[sym], value: v });
+  });
+  return { rows: rs, weights: w, total: tot, title: 'Portfolio factsheet', unitCol: true };
+}
+
+function growthToFactsheet() {
+  fsSource = 'growth';
+  document.querySelector('.nav a[data-view="factsheet"]').click();
+}
+
 function renderFactsheet() {
   var box = $('fsBody');
-  var held = myChoice.filter(function (s) { return myUnits[s] > 0; });
-  if (!held.length) {
-    box.innerHTML = '<p class="sub">No holdings yet. Star funds in <strong>Browse funds</strong>, ' +
-      'then enter the units you hold in <strong>My Choice</strong>.</p>';
+  var src = fsRows();
+  var rows = src.rows, weights = src.weights, total = src.total;
+
+  var srcBar = '<div class="srcbar">' +
+    '<button class="' + (fsSource === 'choice' ? 'on' : '') + '" data-fssrc="choice">' +
+    'My Choice holdings</button>' +
+    '<button class="' + (fsSource === 'growth' ? 'on' : '') + '" data-fssrc="growth">' +
+    'Growth calculator mix</button></div>';
+
+  if (!rows.length) {
+    box.innerHTML = srcBar + '<p class="sub">' + (fsSource === 'growth'
+      ? 'Nothing in the growth calculator yet. Add funds there, then come back.'
+      : 'No holdings yet. Star funds in <strong>Browse funds</strong>, then enter the units ' +
+        'you hold in <strong>My Choice</strong>.') + '</p>';
+    box.querySelectorAll('[data-fssrc]').forEach(function (b) {
+      b.onclick = function () { fsSource = b.dataset.fssrc; renderFactsheet(); };
+    });
     return;
   }
-
-  var weights = {}, total = 0, rows = [];
-  held.forEach(function (s) {
-    var f = fundBy(s);
-    var v = (f && f.last != null) ? myUnits[s] * f.last : null;
-    if (v != null) { weights[s] = v; total += v; }
-    rows.push({ f: f, sym: s, units: myUnits[s], value: v });
-  });
   rows.sort(function (a, b) { return (b.value || 0) - (a.value || 0); });
 
   var ser = fsWindowSeries(weights);
@@ -2076,7 +2969,7 @@ function renderFactsheet() {
     return v.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
-  box.innerHTML =
+  box.innerHTML = srcBar +
     '<div class="fshead">' +
       '<div><span>Total value</span><b>&pound;' + money(total) + '</b></div>' +
       '<div><span>Holdings</span><b>' + rows.length + '</b></div>' +
@@ -2097,22 +2990,32 @@ function renderFactsheet() {
       (stats.growth >= 0 ? '+' : '') + stats.growth.toFixed(1) + '%.</p>' +
       fsSparkline(ser.axis, ser.values, 760, 150) : '') +
 
-    '<h3 class="fsh">Holdings</h3>' +
+    '<h3 class="fsh">' + (src.unitCol ? 'Holdings' : 'The mix') + '</h3>' +
     '<div class="fhead" style="grid-template-columns:1fr 90px 90px 100px 70px 64px 66px">' +
-    '<div>Holding</div><div class="num">Units</div><div class="num">Price</div>' +
-    '<div class="num">Value</div><div class="num">Weight</div><div class="num">Vol %</div>' +
-    '<div class="num">Max DD</div></div>' +
+    '<div>Holding</div><div class="num">' + (src.unitCol ? 'Units' + infoBtn('units')
+      : 'Put in' + infoBtn('gamount')) + '</div>' +
+    '<div class="num">Price' + infoBtn('price') + '</div>' +
+    '<div class="num">Value' + infoBtn('value') + '</div>' +
+    '<div class="num">Weight' + infoBtn('weight') + '</div>' +
+    '<div class="num">Vol %' + infoBtn('volDaily') + '</div>' +
+    '<div class="num">Max DD' + infoBtn('maxDD') + '</div></div>' +
     rows.map(function (r) {
       var f = r.f || {};
       return '<div class="fundrow" style="grid-template-columns:1fr 90px 90px 100px 70px 64px 66px">' +
         '<div><div class="nm">' + esc(f.name || r.sym) + '</div><div class="meta">' +
         esc(r.sym) + (f.sector ? ' &middot; ' + esc(f.sector) : '') + '</div></div>' +
-        '<div class="num">' + r.units.toLocaleString('en-GB') + '</div>' +
-        '<div class="num">' + (f.last != null ? '&pound;' + f.last.toFixed(4) : '&mdash;') + '</div>' +
-        '<div class="num">' + (r.value == null ? '&mdash;' : '&pound;' + money(r.value)) + '</div>' +
-        '<div class="num">' + (r.value != null && total ? (r.value / total * 100).toFixed(1) + '%' : '&mdash;') + '</div>' +
-        '<div class="num">' + (f.volDaily != null ? f.volDaily.toFixed(1) : '&mdash;') + '</div>' +
-        '<div class="num">' + (f.maxDD != null ? f.maxDD.toFixed(1) : '&mdash;') + '</div></div>';
+        '<div class="num" data-l="' + (src.unitCol ? 'Units' : 'Put in') + '">' +
+          (src.unitCol ? r.units.toLocaleString('en-GB')
+                       : '&pound;' + (r.invested || 0).toFixed(0)) + '</div>' +
+        '<div class="num" data-l="' + (src.unitCol ? 'Price' : 'Growth') + '">' +
+          (src.unitCol
+            ? (f.last != null ? '&pound;' + f.last.toFixed(4) : '&mdash;')
+            : (r.invested ? ((r.value / r.invested - 1) * 100).toFixed(1) + '%' : '&mdash;')) +
+          '</div>' +
+        '<div class="num" data-l="Value">' + (r.value == null ? '&mdash;' : '&pound;' + money(r.value)) + '</div>' +
+        '<div class="num" data-l="Weight">' + (r.value != null && total ? (r.value / total * 100).toFixed(1) + '%' : '&mdash;') + '</div>' +
+        '<div class="num" data-l="Vol %">' + (f.volDaily != null ? f.volDaily.toFixed(1) : '&mdash;') + '</div>' +
+        '<div class="num" data-l="Max DD">' + (f.maxDD != null ? f.maxDD.toFixed(1) : '&mdash;') + '</div></div>';
     }).join('') +
 
     '<div class="fscols">' +
@@ -2136,8 +3039,11 @@ function renderFactsheet() {
       'movement is included where a holding is priced abroad.</li>' +
       '<li>Volatility and drawdown are computed from the combined monthly series over the ' +
       'window shown, not averaged across holdings.</li>' +
-      '<li>Values use the latest available price and the units entered. Nothing is verified ' +
-      'against a custodian or platform statement.</li>' +
+      (src.unitCol
+        ? '<li>Values use the latest available price and the units entered. Nothing is ' +
+          'verified against a custodian or platform statement.</li>'
+        : '<li>Values are what the amounts entered in the growth calculator would be worth ' +
+          'now, each grown over its own start date. Nothing was actually bought.</li>') +
       (ser && ser.missing.length ? '<li><strong>Excluded for want of price history: ' +
         ser.missing.map(esc).join(', ') + '.</strong> The figures above are not the whole ' +
         'portfolio.</li>' : '') +
@@ -2145,6 +3051,10 @@ function renderFactsheet() {
       '<li>This is a measurement of a portfolio you entered. It is not advice, not a ' +
       'recommendation, and not a suitability assessment.</li>' +
     '</ul>';
+
+  box.querySelectorAll('[data-fssrc]').forEach(function (b) {
+    b.onclick = function () { fsSource = b.dataset.fssrc; renderFactsheet(); };
+  });
 }
 
 if ($('fsPrint')) $('fsPrint').onclick = function () { window.print(); };
