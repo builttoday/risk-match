@@ -57,12 +57,37 @@ REDENOM_FACTORS = (0.001, 0.01, 100.0, 1000.0)
 REDENOM_TOL = 0.10               # +/- 10% of the round factor
 
 
-def redenomination(k):
-    """The round unit factor this break is, or None if it is not one."""
+# A hole in the data is not a repair job, it is missing history. Anything longer than this is
+# truncated away: returns and volatility computed across a gap are arithmetic on two different
+# periods pretending to be one. Six months is deliberately generous -- a suspended property
+# fund stops pricing for weeks, not years.
+MAX_GAP_DAYS = 180
+
+
+def redenomination(k, dt_days=0.0):
+    """The round unit factor this break is, or None if it is not one.
+
+    THE STEP MUST BE BETWEEN ADJACENT OBSERVATIONS. Three funds looked like clean 1/100
+    redenominations and were not: a December 2019 price sat next to a June 2026 price with
+    six and a half years missing in between, and the ratio of the two meant nothing. Rescaling
+    on that "factor" stitches two disconnected segments into a history that never happened,
+    which is worse than the -99% it replaces, because it looks right.
+    """
+    if dt_days > 10:
+        return None
     for f in REDENOM_FACTORS:
         if abs(k / f - 1.0) <= REDENOM_TOL:
             return f
     return None
+
+
+def cut_gap(c, t):
+    """Keep only the most recent stretch of continuous data."""
+    for i in range(len(t) - 1, 0, -1):
+        if (t[i] - t[i - 1]) / 86400.0 > MAX_GAP_DAYS:
+            return c[i:], t[i:], [f"dropped {i} points before a "
+                                  f"{(t[i] - t[i - 1]) / 86400.0:.0f}-day hole"]
+    return c, t, []
 
 
 def find_breaks(c):
@@ -71,9 +96,14 @@ def find_breaks(c):
 
 
 def repair(c, t):
-    """Returns (closes, times, notes). Rescales inverted pairs, then truncates at whatever
-    break is left, keeping the most recent segment."""
+    """Returns (closes, times, notes). Cuts holes, rescales inverted pairs and unit changes,
+    then truncates at whatever break is left, keeping the most recent segment."""
     c, t, notes = list(c), list(t), []
+
+    # Pass 0: holes first. A break either side of a multi-year gap is not a break at all, and
+    # every later test would misread it.
+    c, t, gap_notes = cut_gap(c, t)
+    notes += gap_notes
 
     # Pass 1: paired flips. Walk forward so a repair is visible to the next comparison.
     guard = 0
@@ -103,7 +133,8 @@ def repair(c, t):
     guard = 0
     while guard < 10:
         guard += 1
-        brk = [b for b in find_breaks(c) if redenomination(b[1])]
+        brk = [b for b in find_breaks(c)
+               if redenomination(b[1], (t[b[0]] - t[b[0] - 1]) / 86400.0)]
         if not brk:
             break
         i, k = brk[0]
@@ -149,8 +180,16 @@ def main():
                 return True
         return f.get("cagr") is not None and f["cagr"] <= -40
 
+    def has_gap(sym):
+        ser = S["series"].get(sym)
+        if not ser or len(ser["t"]) < 2:
+            return False
+        t = ser["t"]
+        return any((t[i] - t[i - 1]) / 86400.0 > MAX_GAP_DAYS for i in range(1, len(t)))
+
     suspect = [f for f in U["funds"]
                if (f.get("volDaily") or 0) > VOL_LIMIT
+               or has_gap(f["symbol"])
                or (is_fund(f) and (impossible(f) or has_break(f["symbol"])))]
     print(f"{len(suspect)} instruments look broken "
           f"(a price-series break, or a figure no fund produces)")

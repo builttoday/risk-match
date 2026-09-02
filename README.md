@@ -38,7 +38,7 @@ transmitted, and nothing reaches this repository, which is public.
 Leveraged and inverse products are excluded unless you ask for them: their volatility is a
 real figure, but it describes a daily-rebalancing trading instrument rather than a holding.
 
-**Browse funds** — all 986, A–Z, filtered by fund manager, sector, minimum history, and
+**Browse funds** — all 980, A–Z, filtered by fund manager, sector, minimum history, and
 sorted by clicking any column header. **Five-year return comes first, then volatility**, with
 Sharpe, beta and the worst twelve months beside them; **Show all figures** adds weekly
 volatility, the one- and three-year returns, maximum fall, Sortino, correlation and growth a
@@ -168,7 +168,7 @@ error stays invisible until a holding is valued.
 
 ## Coverage
 
-986 share classes and instruments, up to 25 years of history — median 8.7 years, with 456 funds
+980 share classes and instruments, up to 25 years of history — median 8.7 years, with 456 funds
 having ten years or more and 219 having twenty. Not the whole market: there is no free way to
 enumerate every UK fund. The FCA Register API returns at most 20 rows per search with no working
 pagination, and its bulk extract is a paid service.
@@ -246,6 +246,17 @@ in the price series, or any figure no fund produces. A break within 10% of a rou
 a redenomination and the earlier segment is **rescaled**, keeping the whole history; anything
 else is still truncated.
 
+**A hole in the data reads as a break, and that is how three "repairs" went wrong.** Three
+BlackRock and L&G share classes looked like clean 1/100 redenominations. They were not: a
+December 2019 price sat next to a June 2026 price with six and a half years of history simply
+missing, and the ratio between the two meant nothing at all. Rescaling on that "factor" stitches
+two disconnected segments into a history that never happened — worse than the −99% it replaces,
+because it looks right. A unit change now has to happen **between adjacent observations**, and
+holes are cut before any other test runs: nineteen series carried one, eleven of them longer than
+six months, and a fund claiming 12.6 years of history across a 2,814-day gap was reporting
+arithmetic on two different periods pretending to be one. Six months is the threshold, which is
+generous on purpose — a suspended property fund stops pricing for weeks, not years.
+
 **What counts as "still broken" after a repair is mechanical, and deliberately so.** An earlier
 version of that guard dropped anything with a drawdown worse than −90% and threw away twenty
 real shares — Lloyds and NatWest really did fall that far through 2008–09 — plus Liontrust Russia
@@ -272,7 +283,7 @@ entry. A dash means no confident name match was found — not that the fund is u
 status followed by "?" means the match was loose and may be the wrong fund. Click through before
 putting a reference number in a client file.
 
-**Only 50 of the 986 are currently matched.** The matches live in `build/fca_cache.json`, keyed
+**Only 50 of the 980 are currently matched.** The matches live in `build/fca_cache.json`, keyed
 by symbol, precisely so a rebuild of the universe carries them forward — when they were held
 only on the fund record, growing the universe from 190 funds to 982 wiped the entire FCA column
 and nothing failed loudly enough to notice. Filling in the rest means running `build/fca.py`

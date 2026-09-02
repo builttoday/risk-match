@@ -1,6 +1,6 @@
 {
- "builtAt": "2026-09-02T18:48:07Z",
- "count": 986,
+ "builtAt": "2026-09-02T19:00:25Z",
+ "count": 980,
  "riskFree": 4.0,
  "benchmark": "VWRP.L",
  "houses": [
@@ -126,10 +126,6 @@
   ],
   [
    "Aviva Investors",
-   7
-  ],
-  [
-   "BlackRock",
    7
   ],
   [
@@ -277,10 +273,6 @@
    5
   ],
   [
-   "Comgest",
-   5
-  ],
-  [
    "Fundsmith",
    5
   ],
@@ -310,10 +302,6 @@
   ],
   [
    "SPDR",
-   5
-  ],
-  [
-   "Slater",
    5
   ],
   [
@@ -353,6 +341,14 @@
    4
   ],
   [
+   "BlackRock",
+   4
+  ],
+  [
+   "Comgest",
+   4
+  ],
+  [
    "FISCH",
    4
   ],
@@ -378,6 +374,10 @@
   ],
   [
    "Sanlam",
+   4
+  ],
+  [
+   "Slater",
    4
   ],
   [
@@ -757,10 +757,6 @@
    1
   ],
   [
-   "Sumitomo Mitsui",
-   1
-  ],
-  [
    "Swiss",
    1
   ],
@@ -800,7 +796,7 @@
  "sectors": [
   [
    "Unclassified",
-   312
+   310
   ],
   [
    "Global Equity",
@@ -836,15 +832,15 @@
   ],
   [
    "Corporate Bond",
-   23
-  ],
-  [
-   "Europe",
-   20
+   22
   ],
   [
    "High Yield Bond",
    20
+  ],
+  [
+   "Europe",
+   19
   ],
   [
    "S&P 500",
@@ -887,15 +883,15 @@
    5
   ],
   [
-   "UK Smaller Companies",
-   5
-  ],
-  [
    "Property",
    4
   ],
   [
    "Index-Linked Gilts",
+   3
+  ],
+  [
+   "UK Smaller Companies",
    3
   ],
   [
@@ -1436,64 +1432,6 @@
    "hasSeries": true,
    "beta": 0.89,
    "corr": 0.91
-  },
-  {
-   "symbol": "0P00000R29.L",
-   "name": "BlackRock Corporate Bond A Acc",
-   "type": "MUTUALFUND",
-   "house": "BlackRock",
-   "sector": "Corporate Bond",
-   "currency": "GBP",
-   "gbpConverted": false,
-   "leveraged": false,
-   "years": 8.7,
-   "days": 552,
-   "volDaily": 3.06,
-   "volWeekly": 3.02,
-   "maxDD": -2.5,
-   "cagr": 0.54,
-   "sharpe": -1.13,
-   "sortino": -1.54,
-   "worst12m": -1.7,
-   "r1": 3.58,
-   "r3": null,
-   "r5": null,
-   "last": 3.5614,
-   "stem": "BlackRock Corporate Bond",
-   "derived": true,
-   "firstDate": "2018-01",
-   "hasSeries": true,
-   "beta": null,
-   "corr": null
-  },
-  {
-   "symbol": "0P00000R2D.L",
-   "name": "BlackRock UK Smaller Companies A Acc",
-   "type": "MUTUALFUND",
-   "house": "BlackRock",
-   "sector": "UK Smaller Companies",
-   "currency": "GBP",
-   "gbpConverted": false,
-   "leveraged": false,
-   "years": 8.7,
-   "days": 552,
-   "volDaily": 13.11,
-   "volWeekly": 12.6,
-   "maxDD": -21.9,
-   "cagr": 1.46,
-   "sharpe": -0.19,
-   "sortino": -0.27,
-   "worst12m": -14.2,
-   "r1": 22.89,
-   "r3": null,
-   "r5": null,
-   "last": 11.466,
-   "stem": "BlackRock UK Smaller Companies",
-   "derived": true,
-   "firstDate": "2018-01",
-   "hasSeries": true,
-   "beta": null,
-   "corr": null
   },
   {
    "symbol": "0P00000R8P",
@@ -4672,24 +4610,24 @@
    "currency": "GBP",
    "gbpConverted": false,
    "leveraged": false,
-   "years": 12.7,
-   "days": 2252,
-   "volDaily": 13.69,
-   "volWeekly": 15.33,
-   "maxDD": -43.6,
-   "cagr": 4.52,
-   "sharpe": 0.04,
-   "sortino": 0.04,
-   "worst12m": -42.2,
+   "years": 7.2,
+   "days": 1815,
+   "volDaily": 14.21,
+   "volWeekly": 16.0,
+   "maxDD": -43.0,
+   "cagr": 6.89,
+   "sharpe": 0.2,
+   "sortino": 0.22,
+   "worst12m": -23.5,
    "r1": 15.91,
    "r3": 48.49,
    "r5": 43.38,
    "last": 1.6447,
-   "beta": 0.5,
-   "corr": 0.54,
+   "beta": 0.41,
+   "corr": 0.47,
    "stem": "Slater",
    "derived": true,
-   "firstDate": "2014-01",
+   "firstDate": "2019-06",
    "hasSeries": true
   },
   {
@@ -4701,24 +4639,24 @@
    "currency": "GBP",
    "gbpConverted": false,
    "leveraged": false,
-   "years": 12.7,
-   "days": 2274,
-   "volDaily": 13.82,
-   "volWeekly": 15.21,
+   "years": 7.2,
+   "days": 1812,
+   "volDaily": 14.52,
+   "volWeekly": 17.55,
    "maxDD": -42.9,
-   "cagr": 5.15,
-   "sharpe": 0.08,
-   "sortino": 0.09,
-   "worst12m": -40.7,
+   "cagr": 7.43,
+   "sharpe": 0.24,
+   "sortino": 0.26,
+   "worst12m": -23.2,
    "r1": 16.52,
    "r3": 50.3,
    "r5": 47.49,
    "last": 1.7716,
-   "beta": 0.53,
-   "corr": 0.55,
+   "beta": 0.43,
+   "corr": 0.47,
    "stem": "Slater",
    "derived": true,
-   "firstDate": "2014-01",
+   "firstDate": "2019-06",
    "hasSeries": true
   },
   {
@@ -7919,35 +7857,6 @@
    "corr": 0.71
   },
   {
-   "symbol": "0P00015IAZ.L",
-   "name": "BlackRock UK Smaller Companies S GBP Acc",
-   "type": "MUTUALFUND",
-   "house": "BlackRock",
-   "sector": "UK Smaller Companies",
-   "currency": "GBP",
-   "gbpConverted": false,
-   "leveraged": false,
-   "years": 8.7,
-   "days": 553,
-   "volDaily": 13.09,
-   "volWeekly": 12.39,
-   "maxDD": -21.6,
-   "cagr": 1.82,
-   "sharpe": -0.17,
-   "sortino": -0.23,
-   "worst12m": -13.5,
-   "r1": 25.73,
-   "r3": null,
-   "r5": null,
-   "last": 1.9152,
-   "stem": "BlackRock UK Smaller Companies",
-   "derived": true,
-   "firstDate": "2018-01",
-   "hasSeries": true,
-   "beta": null,
-   "corr": null
-  },
-  {
    "symbol": "0P00015K6Z",
    "name": "ABITL Global High Yield TA USD",
    "type": "MUTUALFUND",
@@ -8628,24 +8537,24 @@
    "currency": "GBP",
    "gbpConverted": false,
    "leveraged": false,
-   "years": 8.7,
-   "days": 889,
-   "volDaily": 2.68,
-   "volWeekly": 2.47,
-   "maxDD": -3.0,
-   "cagr": 0.87,
-   "sharpe": -1.17,
-   "sortino": -1.77,
-   "worst12m": -1.5,
+   "years": 1.6,
+   "days": 392,
+   "volDaily": 3.08,
+   "volWeekly": 3.18,
+   "maxDD": -2.0,
+   "cagr": 3.9,
+   "sharpe": -0.03,
+   "sortino": -0.05,
+   "worst12m": 2.8,
    "r1": 2.8,
-   "r3": 8.03,
+   "r3": null,
    "r5": null,
    "last": 1.108,
    "beta": null,
    "corr": null,
    "stem": "Royal London Shrt Dur Glb Idx Lnkd",
    "derived": true,
-   "firstDate": "2018-01",
+   "firstDate": "2025-02",
    "hasSeries": true
   },
   {
@@ -8691,17 +8600,17 @@
    "currency": "GBP",
    "gbpConverted": false,
    "leveraged": false,
-   "years": 8.7,
-   "days": 889,
-   "volDaily": 0.37,
-   "volWeekly": 0.44,
-   "maxDD": -0.4,
-   "cagr": 0.8,
-   "sharpe": -8.71,
-   "sortino": -3.97,
-   "worst12m": -0.2,
+   "years": 1.6,
+   "days": 392,
+   "volDaily": 0.23,
+   "volWeekly": 0.14,
+   "maxDD": -0.0,
+   "cagr": 4.48,
+   "sharpe": 2.04,
+   "sortino": null,
+   "worst12m": 4.3,
    "r1": 4.35,
-   "r3": 7.15,
+   "r3": null,
    "r5": null,
    "last": 1.008,
    "beta": null,
@@ -8713,7 +8622,7 @@
    "fcaScore": 0.83,
    "fcaStatus": "Approved",
    "fcaUrl": "https://register.fca.org.uk/s/search?q=645821&type=Companies",
-   "firstDate": "2018-01",
+   "firstDate": "2025-02",
    "hasSeries": true
   },
   {
@@ -10185,21 +10094,21 @@
    "currency": "GBP",
    "gbpConverted": false,
    "leveraged": false,
-   "years": 8.4,
-   "days": 1923,
-   "volDaily": 4.95,
-   "volWeekly": 5.98,
+   "years": 7.6,
+   "days": 1921,
+   "volDaily": 4.82,
+   "volWeekly": 6.66,
    "maxDD": -26.0,
-   "cagr": 2.27,
-   "sharpe": -0.35,
-   "sortino": -0.39,
+   "cagr": 2.93,
+   "sharpe": -0.22,
+   "sortino": -0.26,
    "worst12m": -23.8,
    "r1": 3.19,
    "r3": 21.1,
    "r5": 1.38,
    "last": 0.8719,
    "beta": 0.3,
-   "corr": 0.47,
+   "corr": 0.48,
    "stem": "Rathbone Ethical Bond",
    "derived": true,
    "fcaPrn": "196624",
@@ -10207,7 +10116,7 @@
    "fcaScore": 1,
    "fcaStatus": "Authorised",
    "fcaUrl": "https://register.fca.org.uk/s/search?q=196624&type=Companies",
-   "firstDate": "2018-04",
+   "firstDate": "2019-01",
    "hasSeries": true
   },
   {
@@ -14542,25 +14451,25 @@
    "currency": "USD",
    "gbpConverted": true,
    "leveraged": false,
-   "years": 5.7,
-   "days": 1050,
-   "volDaily": 9.76,
-   "volWeekly": 7.43,
-   "maxDD": -10.0,
-   "cagr": 3.33,
-   "sharpe": -0.07,
-   "sortino": -0.11,
-   "worst12m": -3.1,
+   "years": 2.2,
+   "days": 532,
+   "volDaily": 7.66,
+   "volWeekly": 6.78,
+   "maxDD": -7.4,
+   "cagr": 3.64,
+   "sharpe": -0.05,
+   "sortino": -0.07,
+   "worst12m": -2.7,
    "r1": 4.63,
-   "r3": 19.47,
+   "r3": null,
    "r5": null,
    "last": 0.9949,
    "stem": "Sanlam Anchor Global Stable",
    "derived": true,
-   "firstDate": "2021-01",
+   "firstDate": "2024-06",
    "hasSeries": true,
-   "beta": 0.22,
-   "corr": 0.44
+   "beta": null,
+   "corr": null
   },
   {
    "symbol": "0P0001O6OR.F",
@@ -28116,35 +28025,6 @@
    "corr": 0.64
   },
   {
-   "symbol": "WYZD.F",
-   "name": "Comgest Growth plc - Comgest Growth Europe Smaller Companies",
-   "type": "ETF",
-   "house": "Comgest",
-   "sector": "Europe",
-   "currency": "EUR",
-   "gbpConverted": true,
-   "leveraged": false,
-   "years": 18.7,
-   "days": 1980,
-   "volDaily": 24.48,
-   "volWeekly": 24.91,
-   "maxDD": -31.5,
-   "cagr": 11.07,
-   "sharpe": 0.29,
-   "sortino": 0.32,
-   "worst12m": -13.5,
-   "r1": 20.43,
-   "r3": 69.05,
-   "r5": 136.18,
-   "last": 33.9067,
-   "stem": "Comgest Growth Comgest Growth Europe Smaller Companies",
-   "derived": true,
-   "firstDate": "2001-09",
-   "hasSeries": true,
-   "beta": null,
-   "corr": null
-  },
-  {
    "symbol": "XAD6.MI",
    "name": "Xtrackers Physical Silver ETC (EUR)",
    "type": "ETF",
@@ -28728,35 +28608,6 @@
    "hasSeries": true,
    "beta": 0.55,
    "corr": 0.43
-  },
-  {
-   "symbol": "0P0000UGKW.L",
-   "name": "Slater Artorius A GBP Acc",
-   "type": "MUTUALFUND",
-   "house": "Slater",
-   "sector": "Unclassified",
-   "currency": "GBP",
-   "gbpConverted": false,
-   "leveraged": false,
-   "years": 12.6,
-   "days": 258,
-   "volDaily": 90.89,
-   "volWeekly": 85.96,
-   "maxDD": -21.0,
-   "cagr": 7.61,
-   "sharpe": 0.04,
-   "sortino": 0.23,
-   "worst12m": null,
-   "r1": 141.96,
-   "r3": null,
-   "r5": null,
-   "last": 3.0835,
-   "stem": "Slater Artorius",
-   "derived": true,
-   "firstDate": "2014-01",
-   "hasSeries": true,
-   "beta": null,
-   "corr": null
   },
   {
    "symbol": "0P0001PVD2.F",
@@ -29843,10 +29694,10 @@
    "sharpe": -0.02,
    "sortino": -0.03,
    "worst12m": -78.3,
-   "r1": 74.4,
-   "r3": 27.03,
-   "r5": 158.62,
-   "last": 322.3215,
+   "r1": 74.52,
+   "r3": 27.11,
+   "r5": 158.79,
+   "last": 322.5281,
    "stem": "VanEck Oil Services",
    "derived": true,
    "firstDate": "2001-09",
@@ -29965,10 +29816,10 @@
    "sharpe": -0.14,
    "sortino": -0.22,
    "worst12m": -60.9,
-   "r1": 13.65,
-   "r3": 96.68,
-   "r5": 181.54,
-   "last": 32.5237,
+   "r1": 13.74,
+   "r3": 96.84,
+   "r5": 181.76,
+   "last": 32.5495,
    "stem": "Global Uranium",
    "derived": true,
    "firstDate": "2010-11",
@@ -30007,35 +29858,6 @@
    "industryAsAt": "2026-09-02",
    "firstDate": "2001-09",
    "hasSeries": true
-  },
-  {
-   "symbol": "XMF.F",
-   "name": "Sumitomo Mitsui Financial Group, Inc.",
-   "type": "MUTUALFUND",
-   "house": "Sumitomo Mitsui",
-   "sector": "Unclassified",
-   "currency": "EUR",
-   "gbpConverted": true,
-   "leveraged": false,
-   "years": 3.4,
-   "days": 493,
-   "volDaily": 89.36,
-   "volWeekly": 86.75,
-   "maxDD": -95.5,
-   "cagr": -51.52,
-   "sharpe": -0.62,
-   "sortino": -0.48,
-   "worst12m": -88.6,
-   "r1": -85.09,
-   "r3": null,
-   "r5": null,
-   "last": 32.7542,
-   "stem": "Sumitomo Mitsui Financial Group",
-   "derived": true,
-   "firstDate": "2023-03",
-   "hasSeries": true,
-   "beta": null,
-   "corr": null
   }
  ],
  "betaWindowMonths": 60,
